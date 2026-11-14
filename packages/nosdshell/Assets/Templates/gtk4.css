@@ -31,6 +31,14 @@
 @define-color link_visited_color @accent_on_bg_dim_color;
 @define-color link_hover_color @accent_hover_color;
 
+/* nosd 叠加梯契约面（DESIGN §1.3）：mix(surface,on_surface,α) 的不透明烘焙。
+   字段底 field=0.15、按钮底 strong=0.20、悬停 checked=0.30、禁用 idle=0.03。
+   主题文件里同名 define 是静态回退，此处在场即生效。 */
+@define-color field_color {{colors.overlay_field.default.hex}};
+@define-color strong_color {{colors.overlay_strong.default.hex}};
+@define-color checked_color {{colors.overlay_checked.default.hex}};
+@define-color idle_color {{colors.overlay_idle.default.hex}};
+
 @define-color destructive_bg_color {{colors.error.default.hex}};
 @define-color destructive_fg_color {{colors.on_error.default.hex}};
 

@@ -363,3 +363,74 @@ GTK 的 `checkbox-*`/`radio-*`/`switch-*` PNG 把旧默认蓝 `#2ca7f8` 烘死�
   换成更弱的语义键。
 - 其余控件族（tab、menu、header、scrollbar groove、树/列表行悬停）的
   圆角与面语义尚未纳入审计断言，后续按需扩展 `exp_radius` 表。
+
+## 2026-XX 叠加梯契约面收敛（nosd-theme overlay 派生键）
+
+全方案矩阵复跑（11 套配色 × 亮暗）暴露两类暗色偏差，根因是「控件面
+没有壳语义」：GTK 字段用 `shade(base,0.8)` 变暗、Qt 字段=surface，
+而 DESIGN §1.3 的契约是 `overlay("field")` = onSurface×0.15 叠在表面
+——暗态是**亮洗**、亮态是**暗洗**。Nord 暗色下三端三个方向：
+GTK #262a31（暗洗）/ Qt #2e3440（平）/ shell ≈ #4a505b（亮洗）。
+
+### 根因与收口
+
+模板引擎没有 RGB 混合能力（`blend` 是 HCT 色相，`lighten/darken` 是
+HSL 亮度，`{% if %}` 条件块部署版不支持）——单键无法表达
+「暗态亮洗、亮态暗洗」的同一语义。收口在渲染器：`scheme.rs` 新增
+`inject_overlay_ladder()`，与 `inject_accent_family` 同在出口统一派生
+（predefined scheme 与图片取色两条路径共用），把 §1.3 的 8 档
+`overlayLevels` 烘焙为 `mix(surface, on_surface, α)` 实色键
+`overlay_{idle,subtle,hover,field,strong,checked,press,indicator}`。
+键缺失时渲染为 `{{UNKNOWN:..}}` 字面（显眼失败、不静默）；模板与
+工具同包发版，运行时一致。
+
+### 映射（写入 DESIGN §1.3 的梯档语义）
+
+| 控件态 | 梯档 | 依据 |
+|---|---|---|
+| 字段面（entry/combo/spin interior） | `field` 0.15 | §3.5.4 文本输入底色 field |
+| 按钮面 | `strong` 0.20 | NButton `overlay("strong")` |
+| 按钮悬停 | `checked` 0.30 | RoundedButton hover 用 press(0.50) 是玻璃辉光语义，app 实心面取次一档 |
+| 禁用面 | `idle` 0.03 | NButton disabled `overlay("idle")` |
+| pressed/toggled | accent | 已有 |
+
+### 落地
+
+- **GTK 主题四份 css**：新增 `field/strong/checked/idle_color` define，
+  静态回退按原观感烘焙（dark: shade(.8/.85/1.15/.88)，light: @view_bg），
+  entry/focus/disabled、button/hover/disabled 规则重指；nosd.css 覆盖层
+  提供同名 define 实现动态接管（GTK define-color 后定义生效）。
+- **GTK 覆盖层模板 gtk3/gtk4.css**：新增四条梯档 define，渲染为
+  `{{colors.overlay_*.default.hex}}`。
+- **Kvantum svg.tpl**：button-normal/focused 族面色→`overlay_strong`
+  （15 处），button-pressed 族→`primary`（6 处，对齐契约 pressed=accent），
+  lineedit/combo/spin 族面色→`overlay_field`（36 处）；`nosd.kvconfig`
+  palette `base.color`→`overlay_field`、`button.color`→`overlay_strong`。
+- **qtct.conf**：QPalette `button`→`overlay_strong`、`base`→`overlay_field`。
+- **静态产物**：nosd.svg/kvconfig 以 Deepin 浅色重烘
+  （field=#dadada、strong=#d0d0d0）。
+
+### 审计升级
+
+- 断言从「GTK↔Qt 相等」升级为「两端各自 ≈ 契约梯档色」（容差 14），
+  等式成立不再掩盖共同偏离契约。
+- `button_toggled` accent 断言改 `dominant`（`center` 落在文字 AA
+  像素上的误报，Catppuccin/Tokyo-Night 曾触发）。
+- Qt 剪影掩码改「非窗口透出像素」：field 面亮于窗口时旧的面色掩码
+  只含描边环内侧矩形 → 圆角误报 0。
+
+### 验证
+
+- `theme-audit audit` **11/11 方案 × 亮暗双态全绿**（31 OK/0 FAIL ×22），
+  含上轮失败的 Nord/Catppuccin/Tokyo-Night/nosDshell-default。
+- `cargo test`（guix shell rust）：62 passed；`check-tokens` 全部一致；
+  `lint.sh --changed` 无新错。
+- 目视：Nord 暗色按钮/字段为亮洗浮起面，亮色为暗洗沉降面，
+  与 shell 梯档观感一致。
+
+### 遗留
+
+- 按钮 hover → checked 是取舍（契约 RoundedButton 用 press 0.50）；
+  Kvantum 无 pushbutton hover 态元素，Qt 侧 hover 与 normal 同面。
+- tab/menu/scrollbar、switch 轨道等其余控件族尚未映射梯档。
+- GTK3 探针仍未跑（Xvfb 超时遗留项）；GTK3 css 与 GTK4 同步修改。

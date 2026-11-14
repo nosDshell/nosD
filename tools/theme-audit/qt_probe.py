@@ -92,8 +92,9 @@ def measure_face(img, tol=14):
         return (p[3] > 100 and abs(p[0]-cp[0]) <= 3
                 and abs(p[1]-cp[1]) <= 3 and abs(p[2]-cp[2]) <= 3)
     def near(p):
-        return (p[3] > 100 and abs(p[0]-r0) <= tol and abs(p[1]-g0) <= tol
-                and abs(p[2]-b0) <= tol and not outside(p))
+        # 控件剪影 = 一切非"窗口透出"像素：面色可能与描边差到 tol 外
+        #（field 面 + outline 描边分属两个键），角部内缩量在剪影上。
+        return p[3] > 100 and not outside(p)
     def near_plain(p):
         return (p[3] > 100 and abs(p[0]-r0) <= tol and abs(p[1]-g0) <= tol
                 and abs(p[2]-b0) <= tol)

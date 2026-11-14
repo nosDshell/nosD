@@ -331,9 +331,10 @@ fn run() -> i32 {
         }
     }
 
-    // accent 阴影族统一在出口派生，predefined scheme 与图片取色两条路径共用。
+    // accent 阴影族与叠加梯统一在出口派生，predefined scheme 与图片取色两条路径共用。
     for (_, scheme) in result.iter_mut() {
         scheme::inject_accent_family(scheme);
+        scheme::inject_overlay_ladder(scheme);
     }
 
     let json_output = serde_json::to_string_pretty(&theme_to_json(&result)).unwrap_or_default();

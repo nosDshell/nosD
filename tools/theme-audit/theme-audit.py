@@ -292,14 +292,22 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
     wq = qt.get("widgets", {})
     qpal = qt.get("palette", {})
 
+    # 叠加梯档（nosd-theme 派生键；旧渲染器缺席时跳过，不阻断）
+    ovl_field = P.get("overlay_field")
+    ovl_strong = P.get("overlay_strong")
+
     # 2) Qt palette 契约（[GeneralColors] 全套角色）
     check("qt palette window == surface", close(qpal.get("window"), surf, 2),
           f"{qpal.get('window')} vs {surf}")
-    # qt Base 角色 = GTK view_bg = surface（视图与窗口同色）；
-    # 控件面由 SVG interior 画，不是 Base。
-    check("qt palette base == surface",
-          close(qpal.get("base"), surf, 2),
-          f"{qpal.get('base')} vs {surf}")
+    if ovl_field:
+        # qt Base 角色 = 可编辑面 = overlay_field（DESIGN §1.3 梯档烘焙）
+        check("qt palette base == overlay_field",
+              close(qpal.get("base"), ovl_field, 2),
+              f"{qpal.get('base')} vs {ovl_field}")
+    else:
+        check("qt palette base == surface",
+              close(qpal.get("base"), surf, 2),
+              f"{qpal.get('base')} vs {surf}")
     check("qt palette highlight == primary", close(qpal.get("highlight"), primary, 2),
           f"{qpal.get('highlight')} vs {primary}")
     check("qt palette text == on_surface", close(qpal.get("text"), onsurf, 2),
@@ -308,10 +316,23 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
           close(qpal.get("tool_tip_base"), scont, 2),
           f"{qpal.get('tool_tip_base')} vs {scont}")
 
-    # 3) 跨端「同一张脸」：关键控件像素对齐。
-    # dominant = 控件面主色；GTK 暗色控件按 deepin 语义 shade(base,~0.85)，
-    # Qt 侧单 SVG 无法按模式分支，统一取 surface——暗态差 ~6 是已知取舍，
-    # 亮态完全一致。
+    # 3a) 契约面：控件面应等于叠加梯烘焙色（按钮=strong、字段=field）。
+    #     dominant 是控件面主色；描边/文字是少数像素。
+    if ovl_strong:
+        for src, label in ((w4, "gtk4"), (wq, "qt")):
+            d = src.get("button", {}).get("dominant")
+            if d:
+                check(f"{label} 按钮面 ≈ overlay_strong", close(d, ovl_strong, 14),
+                      f"{d} vs {ovl_strong}")
+    if ovl_field:
+        for wname in ("entry", "combo"):
+            for src, label in ((w4, "gtk4"), (wq, "qt")):
+                d = src.get(wname, {}).get("dominant")
+                if d:
+                    check(f"{label} {wname}面 ≈ overlay_field",
+                          close(d, ovl_field, 14), f"{d} vs {ovl_field}")
+
+    # 3b) 跨端「同一张脸」：关键控件像素对齐。
     pairs = [
         ("按钮面", w4.get("button", {}).get("dominant"),
          wq.get("button", {}).get("dominant"), 14),
@@ -346,9 +367,10 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
             check(f"{label} {key} accent", close(sat, primary, 45),
                   f"{sat} vs {primary}")
     qtb = wq.get("button_toggled", {})
-    if qtb.get("center"):
-        check("qt button_toggled accent", close(qtb["center"], primary, 30),
-              f"{qtb['center']} vs {primary}")
+    if qtb.get("dominant"):
+        # center 会落在按钮文字 AA 像素上，面色用 dominant
+        check("qt button_toggled accent", close(qtb["dominant"], primary, 30),
+              f"{qtb['dominant']} vs {primary}")
 
     # 5) 几何令牌：按钮=radiusRow、文本字段=radiusItem（DESIGN.md / Style.qml）
     rt = tokens["radius"]

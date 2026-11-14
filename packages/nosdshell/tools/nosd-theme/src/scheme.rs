@@ -249,6 +249,32 @@ pub fn derive_accent_family(primary: Color) -> Vec<(String, String)> {
         .collect()
 }
 
+/// nosDshell 叠加梯（DESIGN.md §1.3 / Commons/Colors.qml `overlayLevels`）
+/// 的不透明烘焙。shell 里 `overlay(level)` 是 onShell×α 叠在表面上的
+/// 半透明层；应用窗口没有合成器模糊底，烘焙为 `mix(surface, on_surface, α)`
+/// 的等效实色。键序与 `Colors.qml` 的表一致（indicator 定义在表尾）。
+/// 暗态是亮洗、亮态是暗洗，GTK/Kvantum/fcitx5 模板共用同一份语义。
+const OVERLAY_LEVELS: &[(&str, f64)] = &[
+    ("idle", 0.03), ("subtle", 0.05), ("hover", 0.10), ("field", 0.15),
+    ("strong", 0.20), ("checked", 0.30), ("press", 0.50), ("indicator", 0.25),
+];
+
+/// 把叠加梯 8 档并入 scheme；`surface`/`on_surface` 缺任一则整体跳过。
+/// 与 `inject_accent_family` 同在出口统一派生，两条取色路径共用；
+/// 同名键已存在时不覆盖（图片取色路径可能自带同名键）。
+pub fn inject_overlay_ladder(scheme: &mut Scheme) {
+    let find = |k: &str| scheme.iter().find(|(n, _)| n == k).and_then(|(_, v)| hex_to_color(v));
+    let (Some(surface), Some(on_surface)) = (find("surface"), find("on_surface")) else {
+        return;
+    };
+    for (name, alpha) in OVERLAY_LEVELS {
+        let key = format!("overlay_{name}");
+        if !scheme.iter().any(|(k, _)| k == &key) {
+            scheme.push((key, interpolate(surface, on_surface, *alpha).to_hex()));
+        }
+    }
+}
+
 /// 把派生出的 9 条并入 scheme；同名键已存在时不覆盖。
 pub fn inject_accent_family(scheme: &mut Scheme) {
     let Some(primary) = scheme
@@ -345,6 +371,45 @@ mod tests {
         // 已有同名键不覆盖
         inject_accent_family(&mut scheme);
         assert_eq!(scheme.len(), 10);
+    }
+
+    #[test]
+    fn overlay_ladder_bakes_mix() {
+        // Nord 暗色：field = mix(#2e3440, #eceff4, 0.15) = #4a505b（±1 四舍五入）
+        let mut scheme: Scheme = vec![
+            ("surface".into(), "#2e3440".into()),
+            ("on_surface".into(), "#eceff4".into()),
+        ];
+        inject_overlay_ladder(&mut scheme);
+        assert_eq!(scheme.len(), 10);
+        let get = |k: &str| scheme.iter().find(|(n, _)| n == k).unwrap().1.clone();
+        let field = hex_to_color(&get("overlay_field")).unwrap();
+        // 目标 ≈ (74.5, 80, 91)
+        assert!((field.r as i16 - 75).abs() <= 1, "overlay_field r={}", field.r);
+        assert!((field.g as i16 - 80).abs() <= 1, "overlay_field g={}", field.g);
+        assert!((field.b as i16 - 91).abs() <= 1, "overlay_field b={}", field.b);
+        // 暗态亮洗、亮态暗洗：field 亮于 surface
+        assert!(field.r > 0x2e && field.g > 0x34);
+        // 重复注入不覆盖、不重复
+        inject_overlay_ladder(&mut scheme);
+        assert_eq!(scheme.len(), 10);
+    }
+
+    #[test]
+    fn overlay_ladder_light_washes_dark() {
+        // 亮色：on_surface 深 → 叠加是暗洗（field 暗于 surface）
+        let mut scheme: Scheme = vec![
+            ("surface".into(), "#fbfbfc".into()),
+            ("on_surface".into(), "#303030".into()),
+        ];
+        inject_overlay_ladder(&mut scheme);
+        let field = hex_to_color(
+            &scheme.iter().find(|(k, _)| k == "overlay_field").unwrap().1,
+        )
+        .unwrap();
+        assert!(field.r < 0xfb, "亮态 overlay_field 应是暗洗 r={}", field.r);
+        // 0.15 × 0x30 + 0.85 × 0xfb ≈ 221
+        assert!((field.r as i16 - 221).abs() <= 2, "r={}", field.r);
     }
 
     #[test]

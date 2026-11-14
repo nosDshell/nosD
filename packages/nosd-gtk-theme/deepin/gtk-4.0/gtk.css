@@ -54,6 +54,12 @@
 @define-color text_color @view_fg_color;
 @define-color bg_color @window_bg_color;
 @define-color base_color @view_bg_color;
+/* nosd 叠加梯契约面（DESIGN §1.3）：nosd.css 覆盖层在场时被方案
+   mix(surface,on_surface,α) 的烘焙值替换；以下为本主题静态回退。 */
+@define-color field_color @view_bg_color;
+@define-color strong_color @view_bg_color;
+@define-color checked_color @view_bg_color;
+@define-color idle_color @view_bg_color;
 @define-color selected_bg_color @accent_bg_color;
 @define-color selected_fg_color @accent_fg_color;
 @define-color insensitive_bg_color @view_bg_color;
@@ -264,8 +270,8 @@ entry {
     transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
     color: @theme_text_color;
     border-color: @border_color;
-    background-color: @view_bg_color;
-    background-image: linear-gradient(to bottom, @view_bg_color, @view_bg_color);
+    background-color: @field_color;
+    background-image: linear-gradient(to bottom, @field_color, @field_color);
 }
 entry.search {
     border-radius: 5px;
@@ -294,14 +300,14 @@ entry:focus {
     background-clip: border-box;
     color: @theme_text_color;
     border-color: @active_color;
-    background-color: @view_bg_color;
-    background-image: linear-gradient(to bottom, @view_bg_color, @view_bg_color);
+    background-color: @field_color;
+    background-image: linear-gradient(to bottom, @field_color, @field_color);
 }
 entry:disabled {
     color: alpha(@window_fg_color,0.55);
     border-color: alpha(@borders,0.55);
-    background-color: alpha(@_static_white,0.55);
-    background-image: linear-gradient(to bottom, alpha(@_static_white,0.55), alpha(@_static_white,0.55));
+    background-color: alpha(@idle_color,0.55);
+    background-image: linear-gradient(to bottom, alpha(@idle_color,0.55), alpha(@idle_color,0.55));
 }
 entry.warning {
     color: @warning_fg_color;
@@ -400,7 +406,7 @@ treeview entry.flat,
 treeview entry {
     border-radius: 0;
     background-image: none;
-    background-color: @view_bg_color;
+    background-color: @field_color;
 }
 treeview entry.flat:focus,
 treeview entry:focus {
@@ -424,7 +430,7 @@ button {
     color: @theme_text_color;
     outline-color: alpha(@window_fg_color,0.3);
     border-color: @border_color;
-    background-color: @view_bg_color;
+    background-color: @strong_color;
 }
 button separator {
     margin: 4px 1px;
@@ -449,7 +455,7 @@ button:hover {
     color: @theme_text_color;
     outline-color: alpha(@window_fg_color,0.3);
     border-color: @border_color;
-    background-color: @view_bg_color;
+    background-color: @checked_color;
 }
 button:active,
 button:checked {
@@ -475,7 +481,7 @@ button.sidebar-button:disabled {
 }
 button:disabled {
     border-color: alpha(@borders,0.55);
-    background-color: alpha(@view_bg_color,0.55);
+    background-color: alpha(@idle_color,0.55);
 }
 button:disabled label,
 button:disabled {
@@ -756,13 +762,13 @@ stacksidebar button row.needs-attention > label:dir(rtl) {
     color: @theme_text_color;
     outline-color: alpha(@window_fg_color,0.3);
     border-color: @border_color;
-    background-color: @view_bg_color;
+    background-color: @strong_color;
 }
 .inline-toolbar toolbutton > button:hover {
     color: @theme_text_color;
     outline-color: alpha(@window_fg_color,0.3);
     border-color: @border_color;
-    background-color: @view_bg_color;
+    background-color: @checked_color;
 }
 .inline-toolbar toolbutton > button:active,
 .inline-toolbar toolbutton > button:checked {
@@ -773,7 +779,7 @@ stacksidebar button row.needs-attention > label:dir(rtl) {
 }
 .inline-toolbar toolbutton > button:disabled {
     border-color: alpha(@borders,0.55);
-    background-color: alpha(@view_bg_color,0.55);
+    background-color: alpha(@idle_color,0.55);
 }
 .inline-toolbar toolbutton > button:disabled label,
 .inline-toolbar toolbutton > button:disabled {
@@ -2265,7 +2271,7 @@ treeview.view header button {
     padding: 3px 6px;
     font-weight: bold;
     color: @insensitive_fg_color;
-    background-color: @view_bg_color;
+    background-color: @strong_color;
     background-image: none;
     border-style: none solid none none;
     border-radius: 0;
@@ -2279,7 +2285,7 @@ treeview.view header button:active {
 }
 treeview.view header button:active,
 treeview.view header button:hover {
-    background-color: @view_bg_color;
+    background-color: @checked_color;
 }
 treeview.view header button:active:hover {
     color: @theme_text_color;
@@ -3979,13 +3985,13 @@ colorswatch#add-color-button {
     color: @theme_text_color;
     outline-color: alpha(@window_fg_color,0.3);
     border-color: @border_color;
-    background-color: @view_bg_color;
+    background-color: @strong_color;
 }
 colorswatch#add-color-button:hover {
     color: @theme_text_color;
     outline-color: alpha(@window_fg_color,0.3);
     border-color: @border_color;
-    background-color: @view_bg_color;
+    background-color: @checked_color;
 }
 colorswatch#add-color-button overlay {
     border-color: transparent;
@@ -4012,7 +4018,7 @@ colorchooser .popover.osd {
     color: @theme_text_color;
     outline-color: alpha(@window_fg_color,0.3);
     border-color: @border_color;
-    background-color: @view_bg_color;
+    background-color: @checked_color;
 }
 .context-menu,
 popover.touch-selection,
@@ -4455,8 +4461,8 @@ headerbar .nautilus-canvas-item.subtitle:selected:focus,
     border-radius: 4px;
     color: @theme_text_color;
     border-color: @active_color;
-    background-color: @view_bg_color;
-    background-image: linear-gradient(to bottom, @view_bg_color, @view_bg_color);
+    background-color: @field_color;
+    background-image: linear-gradient(to bottom, @field_color, @field_color);
 }
 .nemo-window .primary-toolbar widget.raised.linked:not(.vertical):not(.path-bar) > button {
     color: rgba(82, 93, 118, 0.8);
@@ -5232,13 +5238,13 @@ GtkListBox .h4 {
     color: @theme_text_color;
     outline-color: alpha(@window_fg_color,0.3);
     border-color: @border_color;
-    background-color: @view_bg_color;
+    background-color: @strong_color;
 }
 #content_frame button:hover {
     color: @theme_text_color;
     outline-color: alpha(@window_fg_color,0.3);
     border-color: @border_color;
-    background-color: @view_bg_color;
+    background-color: @checked_color;
 }
 #content_frame button:active,
 #content_frame button:checked {
@@ -5249,7 +5255,7 @@ GtkListBox .h4 {
 }
 #content_frame button:disabled {
     border-color: alpha(@borders,0.55);
-    background-color: alpha(@view_bg_color,0.55);
+    background-color: alpha(@idle_color,0.55);
 }
 #content_frame button:disabled label,
 #content_frame button:disabled {
