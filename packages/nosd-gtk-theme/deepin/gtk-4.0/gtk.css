@@ -261,7 +261,8 @@ spinner:checked {
 spinner:checked:disabled {
     opacity: 0.5;
 }
-entry {
+entry,
+spinbutton > text {
     min-height: 22px;
     border: 1px solid;
     padding: 2px 8px;
@@ -296,14 +297,16 @@ entry.flat:focus {
     border-radius: 0;
 
 }
-entry:focus {
+entry:focus,
+spinbutton > text:focus {
     background-clip: border-box;
     color: @theme_text_color;
     border-color: @active_color;
     background-color: @field_color;
     background-image: linear-gradient(to bottom, @field_color, @field_color);
 }
-entry:disabled {
+entry:disabled,
+spinbutton > text:disabled {
     color: alpha(@window_fg_color,0.55);
     border-color: alpha(@borders,0.55);
     background-color: alpha(@idle_color,0.55);
@@ -962,7 +965,7 @@ toolbar.inline-toolbar toolbutton > button.sidebar-button,
 .linked:not(.vertical) > button:active,
 .linked:not(.vertical) > button:checked,
 spinbutton:not(.vertical) button,
-spinbutton:not(.vertical) entry,
+spinbutton:not(.vertical) text,
 .primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button,
 headerbar .linked:not(.vertical):not(.path-bar).stack-switcher > button,
 .primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:hover,
@@ -1001,7 +1004,7 @@ toolbar.inline-toolbar toolbutton:first-child > button.flat,
 toolbar.inline-toolbar toolbutton:first-child > button.sidebar-button,
 .inline-toolbar toolbutton:first-child > button.sidebar-button,
 spinbutton:not(.vertical) button:first-child,
-spinbutton:not(.vertical) entry:first-child,
+spinbutton:not(.vertical) text:first-child,
 .linked:not(.vertical) > combobox:first-child > box > button.combo,
 .primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:first-child,
 headerbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:first-child,
@@ -1019,7 +1022,7 @@ toolbar.inline-toolbar toolbutton:last-child > button.flat,
 toolbar.inline-toolbar toolbutton:last-child > button.sidebar-button,
 .inline-toolbar toolbutton:last-child > button.sidebar-button,
 spinbutton:not(.vertical) button:last-child,
-spinbutton:not(.vertical) entry:last-child,
+spinbutton:not(.vertical) text:last-child,
 .linked:not(.vertical) > combobox:last-child > box > button.combo,
 .primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:last-child,
 headerbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:last-child,
@@ -1038,7 +1041,7 @@ toolbar.inline-toolbar toolbutton:only-child > button.flat,
 toolbar.inline-toolbar toolbutton:only-child > button.sidebar-button,
 .inline-toolbar toolbutton:only-child > button.sidebar-button,
 spinbutton:not(.vertical) button:only-child,
-spinbutton:not(.vertical) entry:only-child,
+spinbutton:not(.vertical) text:only-child,
 .linked:not(.vertical) > combobox:only-child > box > button.combo,
 .primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:only-child,
 headerbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:only-child,
@@ -1055,7 +1058,7 @@ headerbar .linked:not(.vertical).path-bar > button:only-child,
 .linked.vertical > button:active,
 .linked.vertical > button:checked,
 spinbutton.vertical button,
-spinbutton.vertical entry,
+spinbutton.vertical text,
 .linked.vertical > combobox > box > button.combo {
     border-radius: 0;
     border-bottom-style: none;
@@ -1063,7 +1066,7 @@ spinbutton.vertical entry,
 .linked.vertical > entry:first-child,
 .linked.vertical > button:first-child,
 spinbutton.vertical button:first-child,
-spinbutton.vertical entry:first-child,
+spinbutton.vertical text:first-child,
 .linked.vertical > combobox:first-child > box > button.combo {
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
@@ -1071,7 +1074,7 @@ spinbutton.vertical entry:first-child,
 .linked.vertical > entry:last-child,
 .linked.vertical > button:last-child,
 spinbutton.vertical button:last-child,
-spinbutton.vertical entry:last-child,
+spinbutton.vertical text:last-child,
 .linked.vertical > combobox:last-child > box > button.combo {
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
@@ -1080,7 +1083,7 @@ spinbutton.vertical entry:last-child,
 .linked.vertical > entry:only-child,
 .linked.vertical > button:only-child,
 spinbutton.vertical button:only-child,
-spinbutton.vertical entry:only-child,
+spinbutton.vertical text:only-child,
 .linked.vertical > combobox:only-child > box > button.combo {
     border-radius: 4px;
     border-style: solid;
@@ -1214,10 +1217,10 @@ spinbutton button:active {
 spinbutton:disabled {
     color: alpha(@window_fg_color,0.55);
 }
-spinbutton:not(.vertical) entry {
+spinbutton:not(.vertical) text {
     min-width: 28px;
 }
-spinbutton:not(.vertical):dir(ltr) entry,
+spinbutton:not(.vertical):dir(ltr) text,
 spinbutton:not(.vertical):dir(rtl) button.up {
     border-radius: 4px 0 0 4px;
 }
@@ -1230,13 +1233,13 @@ spinbutton:not(.vertical) > button:hover + button {
 }
 spinbutton:not(.vertical) > button:first-child:hover:not(:active),
 spinbutton:not(.vertical) > button.up:dir(rtl):hover:not(:active),
-spinbutton:not(.vertical) > entry + button:not(:active):hover {
+spinbutton:not(.vertical) > text + button:not(:active):hover {
     box-shadow: none;
 }
-spinbutton:not(.vertical) > entry:focus + button {
+spinbutton:not(.vertical) > text:focus + button {
     border-left-color: @active_color;
 }
-spinbutton:not(.vertical) > entry:drop(active) + button {
+spinbutton:not(.vertical) > text:drop(active) + button {
     border-left-color: @warning_color;
 }
 .osd spinbutton:not(.vertical) > button:hover:not(:active),
@@ -1245,14 +1248,14 @@ spinbutton:not(.vertical) > entry:drop(active) + button {
 }
 .osd spinbutton:not(.vertical) > button:first-child:hover:not(:active),
 .osd spinbutton:not(.vertical) > button.up:dir(rtl):hover:not(:active),
-.osd spinbutton:not(.vertical) > entry + button:not(:active):hover {
+.osd spinbutton:not(.vertical) > text + button:not(:active):hover {
     box-shadow: none;
 }
-.osd spinbutton:not(.vertical) > entry:focus + button {
+.osd spinbutton:not(.vertical) > text:focus + button {
     border-left-color: rgba(26, 28, 34, 0.35);
 }
 spinbutton.vertical button,
-spinbutton.vertical entry {
+spinbutton.vertical text {
     padding-left: 4px;
     padding-right: 4px;
     min-width: 0;
@@ -1260,10 +1263,10 @@ spinbutton.vertical entry {
 spinbutton.vertical button.up {
     border-radius: 4px 4px 0 0;
 }
-spinbutton.vertical > entry:focus + button {
+spinbutton.vertical > text:focus + button {
     border-top-color: @active_color;
 }
-spinbutton.vertical > entry:drop(active) + button {
+spinbutton.vertical > text:drop(active) + button {
     border-top-color: @warning_color;
 }
 combobox button.combo {
@@ -2032,12 +2035,12 @@ headerbar spinbutton:not(.vertical) > button:hover + button {
 }
 .primary-toolbar spinbutton:not(.vertical) > button:first-child:hover:not(:active),
 headerbar spinbutton:not(.vertical) > button:first-child:hover:not(:active),
-.primary-toolbar spinbutton:not(.vertical) > entry + button:not(:active):hover,
-headerbar spinbutton:not(.vertical) > entry + button:not(:active):hover {
+.primary-toolbar spinbutton:not(.vertical) > text + button:not(:active):hover,
+headerbar spinbutton:not(.vertical) > text + button:not(:active):hover {
     box-shadow: none;
 }
-.primary-toolbar spinbutton:not(.vertical) > entry:focus + button,
-headerbar spinbutton:not(.vertical) > entry:focus + button {
+.primary-toolbar spinbutton:not(.vertical) > text:focus + button,
+headerbar spinbutton:not(.vertical) > text:focus + button {
     border-left-color: @active_color;
 }
 .primary-toolbar combobox:disabled,

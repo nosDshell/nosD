@@ -433,4 +433,42 @@ HSL 亮度，`{% if %}` 条件块部署版不支持）——单键无法表达
 - 按钮 hover → checked 是取舍（契约 RoundedButton 用 press 0.50）；
   Kvantum 无 pushbutton hover 态元素，Qt 侧 hover 与 normal 同面。
 - tab/menu/scrollbar、switch 轨道等其余控件族尚未映射梯档。
-- GTK3 探针仍未跑（Xvfb 超时遗留项）；GTK3 css 与 GTK4 同步修改。
+
+## GTK3 探针复活 + spinbutton 节点代际差修复（2025-XX）
+
+### 根因（gtk3 超时）
+
+`probe_gtk3` 用 `for _ in range(30): ctx.iteration(True)` 泵主循环——
+`iteration(True)` 是**阻塞**语义，X 事件队列排空后第一次调用就
+永久等待，表现为 Xvfb 下无输出超时。GTK4 路径无此问题是因为它用
+deadline 有界等待 + `iteration(False)` 排空。修复：与 GTK4 同型，
+映射等待设 3s 上限 + 非阻塞迭代 + `usleep` 退避。
+
+### 根因（GTK4 spinbutton 面色）
+
+GTK4 `GtkSpinButton` 的文本节点名是 `text`（GTK3 里是实体 `entry`
+子控件）。deepin 系 gtk-4.0 里 22 条 `spinbutton … entry` 选择器
+全部落空：min-width/radius/边距失效，文本区只吃 GTK 内置默认样式
+（#19191f 而非 field #383738）。审计报出的 `gtk3↔gtk4 spin面`
+差异实为两处叠加：文本区缺字段面（真缺口）+ down 钮因 value=0
+合法禁用呈 idle（探针取值巧合）。
+
+修复：gtk-4.0 两份主题的 `spinbutton…entry` 选择器全改 `text`；
+`entry`/`entry:focus`/`entry:disabled` 基础规则组并入
+`spinbutton > text`（字段面/焦点描边/禁用梯档随动）。
+GTK3 文件不改——其子节点本就叫 `entry`。
+
+### 审计升级（gtk3 并入断言面）
+
+- 探针补 `saturated`/`strip` 指标、spin 取值 0→50（避开 down 钮
+  合法禁用造成的度量巧合）。
+- `evaluate()` 新增：gtk3 变量契约（theme_bg/selected）、面色≈梯档
+  （button/combo=strong，entry/spin=field——GTK3 下拉是按钮形态）、
+  accent 跟随（switch/check/radio/进度/toggled）、gtk3↔gtk4 同脸
+  （button/entry/spin）、按钮/entry 圆角。单态断言 31→47 项。
+- `--skip-gtk3` 或无数据时出 WARN 而非静默跳过。
+
+### 验证
+
+- `theme-audit audit` Kanagawa 亮暗 47 OK/0 FAIL ×2。
+- 全矩阵（11 方案 × 双态）gtk3+gtk4+qt 三探针复检见提交正文。
