@@ -242,6 +242,8 @@ def probe_gtk4(theme, outdir):
     pb.set_fraction(0.6)
     add("progressbar", pb)
     sb = Gtk.SpinButton.new_with_range(0, 100, 1)
+    # 取中间值：value=0 时 down 钮禁用、面色落 idle，不代表常规态
+    sb.set_value(50)
     add("spin", sb)
     cb = Gtk.ComboBoxText()
     cb.append("a", "选项A")
@@ -363,7 +365,9 @@ def probe_gtk3(theme, outdir):
     pb = Gtk.ProgressBar()
     pb.set_fraction(0.6)
     add("progressbar", pb)
-    add("spin", Gtk.SpinButton.new_with_range(0, 100, 1))
+    sb = Gtk.SpinButton.new_with_range(0, 100, 1)
+    sb.set_value(50)
+    add("spin", sb)
     cb = Gtk.ComboBoxText()
     cb.append("a", "选项A")
     cb.set_active(0)
@@ -381,8 +385,13 @@ def probe_gtk3(theme, outdir):
 
     win.show_all()
     ctx = GLib.MainContext.default()
+    deadline = GLib.get_monotonic_time() + 3_000_000
+    while not win.get_mapped() and GLib.get_monotonic_time() < deadline:
+        if not ctx.iteration(False):
+            GLib.usleep(10_000)
     for _ in range(30):
-        ctx.iteration(True)
+        if not ctx.iteration(False):
+            GLib.usleep(10_000)
 
     os.makedirs(outdir, exist_ok=True)
     out = {"theme": theme, "gtk": 3, "widgets": {}, "vars": {}}
@@ -410,6 +419,8 @@ def probe_gtk3(theme, outdir):
         out["widgets"][name] = {
             "center": center_hex(img),
             "dominant": dominant_hex(img),
+            "saturated": saturated_hex(img),
+            "strip": strip_hex(img),
             "alloc": [alloc.width, alloc.height],
             "geom": measure_alpha(img),
             "face": measure_face(img),

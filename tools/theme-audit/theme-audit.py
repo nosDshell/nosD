@@ -279,6 +279,12 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
     outline_v = P["outline_variant"]
 
     v4 = g4.get("vars", {})
+    v3 = g3.get("vars", {})
+    w4 = g4.get("widgets", {})
+    w3 = g3.get("widgets", {})
+    wq = qt.get("widgets", {})
+    qpal = qt.get("palette", {})
+
     # 1) GTK 变量契约：nosd.css 覆盖应解析为方案色
     check("gtk4 window_bg == surface", close(v4.get("window_bg_color"), surf, 2),
           f"{v4.get('window_bg_color')} vs {surf}")
@@ -287,10 +293,16 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
     check("gtk4 popover == surface_container",
           close(v4.get("popover_bg_color"), scont, 2),
           f"{v4.get('popover_bg_color')} vs {scont}")
-
-    w4 = g4.get("widgets", {})
-    wq = qt.get("widgets", {})
-    qpal = qt.get("palette", {})
+    if v3:
+        # GTK3 变量名沿用 theme_* 命名；accent 取选中背景（GTK3 无 accent_bg_color）
+        check("gtk3 theme_bg == surface", close(v3.get("theme_bg_color"), surf, 2),
+              f"{v3.get('theme_bg_color')} vs {surf}")
+        check("gtk3 accent == primary",
+              close(v3.get("theme_selected_bg_color") or v3.get("accent_bg_color"),
+                    primary, 2),
+              f"{v3.get('theme_selected_bg_color')} vs {primary}")
+    else:
+        res.append(("WARN", "gtk3 探针", "无数据（--skip-gtk3 或探针失败）"))
 
     # 叠加梯档（nosd-theme 派生键；旧渲染器缺席时跳过，不阻断）
     ovl_field = P.get("overlay_field")
@@ -319,11 +331,16 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
     # 3a) 契约面：控件面应等于叠加梯烘焙色（按钮=strong、字段=field）。
     #     dominant 是控件面主色；描边/文字是少数像素。
     if ovl_strong:
-        for src, label in ((w4, "gtk4"), (wq, "qt")):
+        for src, label in ((w4, "gtk4"), (wq, "qt"), (w3, "gtk3")):
             d = src.get("button", {}).get("dominant")
             if d:
                 check(f"{label} 按钮面 ≈ overlay_strong", close(d, ovl_strong, 14),
                       f"{d} vs {ovl_strong}")
+        # GTK3 下拉是按钮形态（切换钮+箭头），面色取 strong 而非 field
+        d = w3.get("combo", {}).get("dominant")
+        if d:
+            check("gtk3 combo面 ≈ overlay_strong", close(d, ovl_strong, 14),
+                  f"{d} vs {ovl_strong}")
     if ovl_field:
         for wname in ("entry", "combo"):
             for src, label in ((w4, "gtk4"), (wq, "qt")):
@@ -331,6 +348,11 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
                 if d:
                     check(f"{label} {wname}面 ≈ overlay_field",
                           close(d, ovl_field, 14), f"{d} vs {ovl_field}")
+        for wname in ("entry", "spin"):
+            d = w3.get(wname, {}).get("dominant")
+            if d:
+                check(f"gtk3 {wname}面 ≈ overlay_field",
+                      close(d, ovl_field, 14), f"{d} vs {ovl_field}")
 
     # 3b) 跨端「同一张脸」：关键控件像素对齐。
     pairs = [
@@ -354,11 +376,23 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
         else:
             res.append(("WARN", f"gtk4↔qt {name}", f"缺数据 gtk={g} qt={q}"))
 
+    # GTK3↔GTK4 同脸：同语义控件跨代面色一致（combo 除外——GTK3 是按钮形态）
+    if w3:
+        for name in ("button", "entry", "spin"):
+            g, q = (w3.get(name, {}).get("dominant"),
+                    w4.get(name, {}).get("dominant"))
+            if g and q:
+                check(f"gtk3↔gtk4 {name}面", close(g, q, 14),
+                      f"gtk3 {g} vs gtk4 {q}")
+
     # 4) accent 跟随：勾选/切换须命中 primary 家族。
     # 勾选标记是细笔画，用 saturated（最饱和像素）抓 accent。
     for src, key, label in ((w4, "switch_on", "gtk4"),
                             (w4, "check_on", "gtk4"),
                             (w4, "radio_on", "gtk4"),
+                            (w3, "switch_on", "gtk3"),
+                            (w3, "check_on", "gtk3"),
+                            (w3, "radio_on", "gtk3"),
                             (wq, "check_on", "qt"),
                             (wq, "radio_on", "qt")):
         rec = src.get(key, {})
@@ -371,6 +405,15 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
         # center 会落在按钮文字 AA 像素上，面色用 dominant
         check("qt button_toggled accent", close(qtb["dominant"], primary, 30),
               f"{qtb['dominant']} vs {primary}")
+    pb3 = w3.get("progressbar", {})
+    if pb3.get("dominant"):
+        check("gtk3 进度填充 accent", close(pb3["dominant"], primary, 45),
+              f"{pb3['dominant']} vs {primary}")
+    tb3 = w3.get("button_toggled", {})
+    if tb3.get("saturated"):
+        # GTK3 toggled 面是压暗色，accent 在描边/指示像素
+        check("gtk3 button_toggled accent", close(tb3["saturated"], primary, 45),
+              f"{tb3['saturated']} vs {primary}")
 
     # 5) 几何令牌：按钮=radiusRow、文本字段=radiusItem（DESIGN.md / Style.qml）
     rt = tokens["radius"]
@@ -381,8 +424,9 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
         g = rec.get("face") or rec.get("geom", {})
         return g.get("radius_est")
 
-    for src, name in ((w4, "button"), (wq, "button"), (w4, "entry"),
-                      (wq, "entry"), (wq, "combo"), (wq, "spin")):
+    for src, name in ((w4, "button"), (wq, "button"), (w3, "button"),
+                      (w4, "entry"), (wq, "entry"), (w3, "entry"),
+                      (wq, "combo"), (wq, "spin")):
         rec = src.get(name, {})
         est = radius_est(rec)
         want = exp_radius[name]
