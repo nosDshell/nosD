@@ -1,0 +1,35 @@
+# nosDshell → Flea style contract, rendered to ~/.config/flea/shell.toml.
+# Overlays the packaged theme's shell.toml key by key. Values follow the
+# DDE 15 recipe from gxde-file-manager's dark theme (references/):
+# resting controls are tonal (fg @ 15%), hover is fg @ 10%, checked/cursor
+# is accent @ 20%, hairlines stay under fg @ 12%.
+
+[font]
+# DDE base text size; Flea's spacing scales with it by default.
+base-size = 12
+
+[controls]
+# Resting control: tonal fill, no outline (DDE toolbar/crumb-box recipe).
+normal-fill-alpha      = 0.15
+normal-border-alpha    = 0.0
+# Hover: the GXDE #1Affffff wash.
+hover-cursor-fill-alpha   = 0.10
+hover-cursor-border-alpha = 0.0
+# Checked/cursor: accent @ 20% with accent ink (GXDE #332ca7f8 + #2ca7f8).
+selected-color        = accent
+selected-fill-alpha   = 0.20
+selected-border-alpha = 0.0
+pressed-fill-alpha    = 0.10
+focus-fill-alpha      = 0.10
+# Multi-select/marked plate: the GXDE #da2ca7f8 selection.
+selection-color      = accent
+selection-fill-alpha = 0.85
+# Wash roles (Flea ≥ the wash-key extension; unknown keys are ignored).
+menu-cursor-color      = accent
+menu-cursor-fill-alpha = 0.20
+window-hairline-alpha  = 0.10
+rule-alpha             = 0.15
+primary-wash-alpha     = 0.20
+
+[spacing]
+scale = 1.0

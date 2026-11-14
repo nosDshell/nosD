@@ -218,6 +218,21 @@ Singleton {
       ]
     },
     {
+      "id": "flea",
+      "name": "Flea",
+      "category": "system",
+      "input": "flea-colors.toml",
+      "outputs": [
+        {
+          "path": "~/.config/flea/colors.toml"
+        },
+        {
+          "path": "~/.config/flea/shell.toml",
+          "input": "flea-shell.toml"
+        }
+      ]
+    },
+    {
       "id": "shell-cinnamon",
       "name": "Cinnamon 取色",
       "category": "system",
