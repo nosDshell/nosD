@@ -84,9 +84,9 @@
 <path style="opacity:0;fill:{{colors.surface.default.hex}}" id="rect6725" d="m -607.493,8 h 24 v 24 h -24 z " transform="rotate(-90)"/>
 <path style="fill:{{colors.on_surface.default.hex}}" id="path6728" d="M 8,602.986 20,588 32,602.986 c 0,0 -7,-3.18601 -12,-3.18601 -5,0 -12,3.18601 -12,3.18601 z"/>
 </g>
-<circle cx="98" cy="1063" style="fill:{{colors.primary_container.default.hex}};fill-rule:evenodd" r="5" id="dial-handle"/>
-<path style="fill:{{colors.primary_container.default.hex}};fill-rule:evenodd" id="slider-toggled-topleft" d="m 195,721.7499 c -6.648,0 -12,5.352 -12,12 h 12 v -12 z "/>
-<path style="fill:{{colors.primary_container.default.hex}};fill-rule:evenodd" id="slider-toggled-left" d="m 183,733.7499 0,16.4063 0,.094 12,0 0,-16.5 -12,0 z "/>
+<circle cx="98" cy="1063" style="fill:{{colors.primary.default.hex}};fill-rule:evenodd" r="5" id="dial-handle"/>
+<path style="fill:{{colors.primary.default.hex}};fill-rule:evenodd" id="slider-toggled-topleft" d="m 195,721.7499 c -6.648,0 -12,5.352 -12,12 h 12 v -12 z "/>
+<path style="fill:{{colors.primary.default.hex}};fill-rule:evenodd" id="slider-toggled-left" d="m 183,733.7499 0,16.4063 0,.094 12,0 0,-16.5 -12,0 z "/>
 <g id="common-normal-left" transform="translate(35,5)">
 <path style="fill:{{colors.outline_variant.default.hex}}" id="rect4962" d="m 271,1170 h 2 v 30 h -2 z"/>
 <path style="fill:{{colors.surface.default.hex}}" id="path5131" d="m 272,1170 0,30 1,0 0,-30 z"/>
@@ -97,8 +97,8 @@
 <path style="fill:{{colors.surface.default.hex}}" id="path5157" d="m 273,1169 -1,0 0,1 1,0 z"/>
 <path style="fill-opacity:0" id="path5159" d="m 273,1167 -3,0 0,3 1,0 c 0,-1.125 0.875,-2 2,-2 z"/>
 </g>
-<path style="fill:{{colors.primary_container.default.hex}};fill-rule:evenodd" id="slider-toggled-topright" d="m 195,721.7499 c 6.648,0 12,5.352 12,12 h -12 v -12 z "/>
-<path style="fill:{{colors.primary_container.default.hex}};fill-rule:evenodd" id="slider-toggled-right" d="m 195,733.7499 0,16.4063 0,.094 12,0 0,-16.5 -12,0 z "/>
+<path style="fill:{{colors.primary.default.hex}};fill-rule:evenodd" id="slider-toggled-topright" d="m 195,721.7499 c 6.648,0 12,5.352 12,12 h -12 v -12 z "/>
+<path style="fill:{{colors.primary.default.hex}};fill-rule:evenodd" id="slider-toggled-right" d="m 195,733.7499 0,16.4063 0,.094 12,0 0,-16.5 -12,0 z "/>
 <use width="450" x="0" y="0" height="1230" xlink:href="#arrow-up-normal" id="arrow-down-normal" transform="matrix(1,0,0,-1,0,540)"/>
 <use width="450" x="0" y="0" height="1230" xlink:href="#arrow-up-normal" id="arrow-right-normal" transform="rotate(90,170.40356,411.40345)"/>
 <use width="450" x="0" y="0" height="1230" xlink:href="#arrow-up-normal" id="arrow-left-normal" transform="rotate(-90,196.40352,120.59649)"/>
@@ -218,19 +218,19 @@
 </g>
 <g style="fill-rule:evenodd" id="slider-normal-topleft">
 <path style="fill-opacity:0" id="path5018" d="m 92,717.5 -12,0 0,12 12,0 z"/>
-<path style="fill:{{colors.outline_variant.default.hex}}" id="path5020" d="m 92,719.5 c -4.5,0 -8,4 -8,9 v 1 h 8 z "/>
+<path style="fill:{{colors.surface_dim.default.hex}}" id="path5020" d="m 92,719.5 c -4.5,0 -8,4 -8,9 v 1 h 8 z "/>
 </g>
 <g style="fill-rule:evenodd" id="slider-normal-left">
 <path style="fill-opacity:0" id="path5024" d="m 80,729.5002 0,16.4064 0,.094 12,0 0,-16.5 -12,0 z "/>
-<path style="fill:{{colors.outline_variant.default.hex}}" id="path5026" d="m 84,729.5006 0,16.4058 0,0.094 8,2e-4 0,-16.4994 -8,-2e-4 z"/>
+<path style="fill:{{colors.surface_dim.default.hex}}" id="path5026" d="m 84,729.5006 0,16.4058 0,0.094 8,2e-4 0,-16.4994 -8,-2e-4 z"/>
 </g>
 <g style="fill-rule:evenodd" id="slider-normal-topright" transform="matrix(-1,0,0,1,184,0)">
 <path style="fill-opacity:0" id="path5085" d="m 92,717.5 -12,0 0,12 12,0 z"/>
-<path style="fill:{{colors.outline_variant.default.hex}}" id="path5087" d="m 92,719.5 c -4.5,0 -8,4 -8,9 v 1 h 8 z "/>
+<path style="fill:{{colors.surface_dim.default.hex}}" id="path5087" d="m 92,719.5 c -4.5,0 -8,4 -8,9 v 1 h 8 z "/>
 </g>
 <g style="fill-rule:evenodd" id="slider-normal-right" transform="matrix(-1,0,0,1,184,0)">
 <path style="fill-opacity:0" id="path5077" d="m 80,729.5002 0,16.4064 0,.094 12,0 0,-16.5 -12,0 z "/>
-<path style="fill:{{colors.outline_variant.default.hex}}" id="path5079" d="m 84,729.5006 0,16.4058 0,0.094 8,2e-4 0,-16.4994 -8,-2e-4 z"/>
+<path style="fill:{{colors.surface_dim.default.hex}}" id="path5079" d="m 84,729.5006 0,16.4058 0,0.094 8,2e-4 0,-16.4994 -8,-2e-4 z"/>
 </g>
 <use width="100%" x="0" y="0" height="100%" xlink:href="#slider-normal-topleft" id="slider-normal-bottomleft" transform="matrix(1,0,0,-1,0,1475.5)"/>
 <g id="resize-grip-normal" transform="translate(-7.5,-70)">
@@ -281,7 +281,7 @@
 <use width="450" x="0" y="0" height="1230" id="progress-pattern-disabled-bottomleft" xlink:href="#progress-pattern-disabled-topleft" transform="matrix(0,-1,1,0,67.5,368.5)"/>
 <use width="450" x="0" y="0" height="1230" id="progress-pattern-disabled" xlink:href="#progress-pattern-disabled-left" transform="matrix(2.1333333,0,0,1,-222,0)"/>
 <g style="fill-rule:evenodd">
-<g style="fill:{{colors.primary_container.default.hex}}">
+<g style="fill:{{colors.surface_dim.default.hex}}">
 <path id="progress-normal-left" d="m 320,172 0,-32 -10,0 0,32 z"/>
 <path id="progress-normal-topleft" d="m 320,130 c -5.5,0 -10,4.5 -10,10 h 10 z "/>
 <path id="progress-normal" d="m 320,140 0,32 32,0 0,-32 -32,0 z"/>
@@ -296,7 +296,7 @@
 <path id="expand-progress-normal" d="m 410,150 0,10 10,0 0,-10 -10,0 z"/>
 <path style="fill-opacity:0" id="grip-normal" d="m 337,1112 h 10 v 10 h -10 z"/>
 </g>
-<g style="fill:{{colors.surface.default.hex}}" id="arrow-down-toggled" transform="rotate(180,55,441.24649)">
+<g style="fill:{{colors.on_primary.default.hex}}" id="arrow-down-toggled" transform="rotate(180,55,441.24649)">
 <path style="opacity:0" id="rect1639" d="m -607.493,8 h 24 v 24 h -24 z " transform="rotate(-90)"/>
 <path id="path1641" d="M 8,602.986 20,588 32,602.986 c 0,0 -7,-3.18601 -12,-3.18601 -5,0 -12,3.18601 -12,3.18601 z"/>
 </g>
@@ -321,7 +321,7 @@
 <g style="fill-rule:evenodd">
 <path id="expand-button-normal" d="M 0,0 H 10 V 10 H 0 Z"/>
 <path id="expand-lineedit-normal" d="m 285,72.5 h 10 v 10 h -10 z"/>
-<g style="fill:{{colors.primary_container.default.hex}}">
+<g style="fill:{{colors.primary.default.hex}}">
 <path id="progress-pattern-normal-left" d="m 17.5,140 0,32.4998 -7.5,0 0,-32.5 z"/>
 <path id="progress-pattern-normal-bottomleft" d="m 17.5,180 c -4,0 -7.5,-3.5 -7.5,-7.5 h 7.5 z "/>
 <path id="progress-pattern-normal-topleft" d="m 10,140 c 0,-4 3.5,-7.5 7.5,-7.5 v 7.5 z "/>
@@ -361,8 +361,8 @@
 </g>
 </g>
 <g style="color:#000">
-<path style="fill:{{colors.outline_variant.default.hex}}" id="lineedit-normal-bottom" d="m 322.5,110 h 32 v -2 h -32 z"/>
-<path style="fill:{{colors.primary.default.hex}}" id="lineedit-focused-bottom" d="m 377.5,110.5 h 32 v -3 h -32 z"/>
+<g id="lineedit-normal-bottom"><path style="fill:{{colors.surface.default.hex}}" d="m 322.5,110 h 32 v -4 h -32 z"/><path style="fill:{{colors.outline_variant.default.hex}}" d="m 322.5,110 h 32 v -1 h -32 z"/></g>
+<g id="lineedit-focused-bottom"><path style="fill:{{colors.surface.default.hex}}" d="m 377.5,110.5 h 32 v -4 h -32 z"/><path style="fill:{{colors.primary.default.hex}}" d="m 377.5,110.5 h 32 v -1 h -32 z"/></g>
 </g>
 <g style="fill-rule:evenodd;fill:{{colors.primary.default.hex}}" id="spin-plus-focused" transform="matrix(1.1313709,1.1313709,-1.1313709,1.1313709,161.94019,338.6412)">
 <path id="path5069" d="m -45.114,35.7084 1.7678,1.7678 -8.8388,8.8388 -1.7678,-1.7678 z "/>
@@ -397,7 +397,7 @@
 <path style="fill:{{colors.primary.default.hex}};fill-rule:evenodd" id="path5083" d="m 283.3102,204.1733 -3.6775,4.2767 -1.9271,-1.3649 c -1.36466,-0.96654 -2.67814,1.25767 -1.56052,2.19687 l 3.5781,3.0068 5.5538,-6.5775 c 1.16417,-1.37876 -0.95766,-2.71149 -1.96677,-1.53793 z "/>
 </g>
 <g id="checkbox-tristate-focused" transform="translate(40,2.5)">
-<rect width="16" x="347.5" y="-213.5" rx="2" ry="2" height="16" ry="2" style="fill:none;stroke:{{colors.on_surface_variant.default.hex}};stroke-width:1.4" id="rect5109" transform="scale(1,-1)"/>
+<rect width="16" x="347.5" y="-213.5" rx="2" ry="2" height="16" style="fill:none;stroke:{{colors.on_surface_variant.default.hex}};stroke-width:1.4" id="rect5109" transform="scale(1,-1)"/>
 <path style="fill:{{colors.primary.default.hex}}" id="path5111" d="m 352.1,-207 6.8,0 c 0.8864,0 1.6,0.669 1.6,1.5 0,0.831 -0.7136,1.5 -1.6,1.5 h -6.8 c -0.8864,0 -1.6,-0.669 -1.6,-1.5 0,-0.831 0.7136,-1.5 1.6,-1.5 z " transform="scale(1,-1)"/>
 </g>
 </g>
@@ -631,10 +631,10 @@
 <use width="100%" x="0" y="0" height="100%" xlink:href="#spin-plus-focused" id="spin-plus-pressed" transform="translate(32)"/>
 <use width="100%" x="0" y="0" height="100%" xlink:href="#spin-plus-focused" id="spin-up-pressed" transform="translate(32,22)"/>
 <g id="button-normal-bottomleft">
-<path style="fill:{{colors.surface.default.hex}};fill-rule:evenodd" id="path1797" d="M 7,55 H 4 A 2,2 0 0 1 2,53 L 2,52 H 7 L 7,55 Z"/>
+<path style="fill:{{colors.surface.default.hex}};fill-rule:evenodd" id="path1797" d="M 7,59 H 4 A 4,4 0 0 1 0,55 L 0,52 H 7 Z"/>
 <g style="color:#000">
-<path style="fill:url(#radialGradient1856)" id="path1799" d="M 7,59 H 0 v -7 h 2 v 1 c 0,1.5 0.5,2 2,2 h 3 z"/>
-<path style="fill:url(#radialGradient2042)" id="path3801" d="M 7,59 H 0 v -7 h 2 v 1 c 0,1.5 0.5,2 2,2 h 3 z"/>
+<path style="fill:url(#radialGradient1856)" id="path1799" d="M 7,59 H 4 A 4,4 0 0 1 0,55 L 0,52 H 7 Z"/>
+<path style="fill:url(#radialGradient2042)" id="path3801" d="M 7,59 H 4 A 4,4 0 0 1 0,55 L 0,52 H 7 Z"/>
 </g>
 </g>
 <use width="100%" x="0" y="0" height="100%" xlink:href="#button-normal-bottomleft" id="button-normal-bottomright" transform="matrix(-1,0,0,1,46,0)"/>
@@ -651,34 +651,20 @@
 <path style="fill:url(#linearGradient3885);color:#000" id="path3863" d="M 85,18 H 53 v 1 h 32 z"/>
 </g>
 <g id="button-normal-topleft">
-<path style="fill:{{colors.surface.default.hex}};fill-rule:evenodd" id="path5119" d="M 7,14 H 4 A 2,2 0 0 0 2,16 L 2,20 H 7 L 7,14 Z"/>
+<path style="fill:{{colors.surface.default.hex}};fill-rule:evenodd" id="path5119" d="M 7,13 H 4 A 4,4 0 0 0 0,17 L 0,20 H 7 Z"/>
 <g style="color:#000">
-<path style="fill:url(#radialGradient1637)" id="path5121" d="M 7,13 H 0 v 7 h 2 v -4 c 0,-1.5 0.5,-2 2,-2 h 3 z"/>
-<path style="fill:url(#radialGradient2500)" id="path4718" d="M 7,13 H 0 v 7 h 2 v -4 c 0,-1.5 0.5,-2 2,-2 h 3 z"/>
+<path style="fill:url(#radialGradient1637)" id="path5121" d="M 7,13 H 4 A 4,4 0 0 0 0,17 L 0,20 H 7 Z"/>
+<path style="fill:url(#radialGradient2500)" id="path4718" d="M 7,13 H 4 A 4,4 0 0 0 0,17 L 0,20 H 7 Z"/>
 </g>
 </g>
 <use width="100%" x="0" y="0" height="100%" xlink:href="#button-normal-topleft" id="button-normal-topright" transform="matrix(-1,0,0,1,46,0)"/>
-<path style="fill:{{colors.surface_container_low.default.hex}}" id="lineedit-normal" d="m 322.5,95 h 10 v 10 h -10 z"/>
-<path style="fill:{{colors.primary.default.hex}};color:#000" id="combo-pressed-bottom" d="m 415.5,110.5 h 32 v -3 h -32 z"/>
-<path style="fill:{{colors.surface_container_low.default.hex}}" id="combo-normal" d="m 416.5,81.5001 h 10 v 10 h -10 z "/>
+<path style="fill:{{colors.surface.default.hex}}" id="lineedit-normal" d="m 322.5,95 h 10 v 10 h -10 z"/>
+<g id="combo-pressed-bottom"><path style="fill:{{colors.surface.default.hex}}" d="m 415.5,110.5 h 32 v -4 h -32 z"/><path style="fill:{{colors.primary.default.hex}}" d="m 415.5,110.5 h 32 v -1 h -32 z"/></g>
+<path style="fill:{{colors.surface.default.hex}}" id="combo-normal" d="m 416.5,81.5001 h 10 v 10 h -10 z "/>
 <g style="color:#000">
-<path style="fill:{{colors.outline_variant.default.hex}}" id="combo-normal-bottom" d="m 415.5,97 h 32 v -3 h -32 z"/>
-<path style="fill:{{colors.outline.default.hex}}" id="combo-focused-bottom" d="m 415.5,107.5 h 32 v -3 h -32 z"/>
+<g id="combo-normal-bottom"><path style="fill:{{colors.surface.default.hex}}" d="m 415.5,97 h 32 v -4 h -32 z"/><path style="fill:{{colors.outline_variant.default.hex}}" d="m 415.5,97 h 32 v -1 h -32 z"/></g>
+<g id="combo-focused-bottom"><path style="fill:{{colors.surface.default.hex}}" d="m 415.5,107.5 h 32 v -4 h -32 z"/><path style="fill:{{colors.primary.default.hex}}" d="m 415.5,107.5 h 32 v -1 h -32 z"/></g>
 </g>
-<path style="opacity:0" id="lineedit-normal-topleft" d="m 345,95.5 h 2 v 2 h -2 z"/>
-<path style="opacity:0" id="lineedit-normal-top" d="m 347,95.5 h 2 v 2 h -2 z"/>
-<path style="opacity:0" id="lineedit-normal-topright" d="m 349,95.5 h 2 v 2 h -2 z"/>
-<path style="opacity:0" id="lineedit-normal-bottomleft" d="m 345,99.5 h 2 v 2 h -2 z"/>
-<path style="opacity:0" id="lineedit-normal-left" d="m 345,97.5 h 2 v 2 h -2 z"/>
-<path style="opacity:0" id="lineedit-normal-bottomright" d="m 349,99.5 h 2 v 2 h -2 z"/>
-<path style="opacity:0" id="lineedit-normal-right" d="m 349,97.5 h 2 v 2 h -2 z"/>
-<path style="opacity:0" id="combo-normal-topleft" d="m 432.5,86 h 2 v 2 h -2 z"/>
-<path style="opacity:0" id="combo-normal-top" d="m 434.5,86 h 2 v 2 h -2 z"/>
-<path style="opacity:0" id="combo-normal-topright" d="m 436.5,86 h 2 v 2 h -2 z"/>
-<path style="opacity:0" id="combo-normal-bottomleft" d="m 432.5,90 h 2 v 2 h -2 z"/>
-<path style="opacity:0" id="combo-normal-left" d="m 432.5,88 h 2 v 2 h -2 z"/>
-<path style="opacity:0" id="combo-normal-bottomright" d="m 436.5,90 h 2 v 2 h -2 z"/>
-<path style="opacity:0" id="combo-normal-right" d="m 436.5,88 h 2 v 2 h -2 z"/>
 <g style="fill-rule:evenodd">
 <path style="opacity:.21" id="tab-focused-bottom" d="m 61,936 h 10 v 10 H 61 Z"/>
 <path style="opacity:.21" id="tab-focused-bottomright" d="m 71,936 h 10 v 10 H 71 Z"/>
@@ -715,59 +701,59 @@
 <path style="fill:url(#linearGradient1742);color:#000;stroke-width:1.263" id="path1738" d="m 46,20 v 32 h 3 V 20 Z"/>
 </g>
 <g id="button-focused-topright" transform="translate(1)">
-<path style="fill:{{colors.surface.default.hex}};fill-rule:evenodd" id="path1728" d="M 85,14 H 87 A 2,2 0 0 1 89,16 L 89,20 H 85 L 85,14 Z"/>
-<g style="color:#000" id="g1559">
-<path style="fill:url(#radialGradient1734)" id="path1730" d="m 85,13 h 7 v 7 h -3 v -4 c 0,-1.5 -0.5,-2 -2,-2 h -2 z"/>
-<path style="fill:url(#radialGradient1939)" id="path1937" d="m 85,13 h 7 v 7 h -3 v -4 c 0,-1.5 -0.5,-2 -2,-2 h -2 z"/>
+<path style="fill:{{colors.surface.default.hex}};fill-rule:evenodd" id="path1728" d="M 85,13 H 88 A 4,4 0 0 1 92,17 L 92,20 H 85 Z"/>
+<g style="color:#000" id="path1730">
+<path style="fill:url(#radialGradient1734)" id="path1937" d="M 85,13 H 88 A 4,4 0 0 1 92,17 L 92,20 H 85 Z"/>
+<path style="fill:url(#radialGradient1939)" id="M 85,13 H 88 A 4,4 0 0 1 92,17 L 92,20 H 85 Z" d="M 85,13 H 88 A 4,4 0 0 1 92,17 L 92,20 H 85 Z"/>
 </g>
 </g>
 <g id="button-focused-bottomright" transform="translate(1)">
-<path style="fill:{{colors.surface.default.hex}};fill-rule:evenodd;stroke-width:.462" id="path1745" d="m 85,54 h 2 c 1.5,0 2,-0.5 2,-2 h -4 z"/>
-<g style="color:#000;stroke-width:.864" id="g1565">
-<path style="fill:url(#radialGradient1751)" id="path1747" d="m 85,59 h 7 v -7 h -3 c 0,1.5 -0.5,2 -2,2 h -2 z"/>
-<path style="opacity:.7;fill:url(#radialGradient1954)" id="path1950" d="m 85,59 h 7 v -7 h -3 c 0,1.5 -0.5,2 -2,2 h -2 z"/>
+<path style="fill:{{colors.surface.default.hex}};fill-rule:evenodd;stroke-width:.462" id="path1745" d="M 85,52 H 92 V 55 A 4,4 0 0 1 88,59 H 85 Z"/>
+<g style="color:#000;stroke-width:.864" id="path1747">
+<path style="fill:url(#radialGradient1751)" id="path1950" d="M 85,52 H 92 V 55 A 4,4 0 0 1 88,59 H 85 Z"/>
+<path style="opacity:.7;fill:url(#radialGradient1954)" id="M 85,52 H 92 V 55 A 4,4 0 0 1 88,59 H 85 Z" d="M 85,52 H 92 V 55 A 4,4 0 0 1 88,59 H 85 Z"/>
 </g>
 </g>
 <g id="button-focused-bottomleft" transform="translate(1)">
-<path style="fill:{{colors.surface.default.hex}};fill-rule:evenodd;stroke-width:.462" id="path1816" d="m 53,54 h -3 c -1.5,0 -2,-0.5 -2,-2 h 5 z"/>
-<g style="color:#000;stroke-width:.864" id="g1571">
-<path style="fill:url(#radialGradient1987)" id="path1818" d="m 53,59 h -7 v -7 h 2 c 0,1.5 0.5,2 2,2 h 3 z"/>
-<path style="opacity:.6;fill:url(#radialGradient2009)" id="path2007" d="m 53,59 h -7 v -7 h 2 c 0,1.5 0.5,2 2,2 h 3 z"/>
+<path style="fill:{{colors.surface.default.hex}};fill-rule:evenodd;stroke-width:.462" id="path1816" d="M 53,59 H 50 A 4,4 0 0 1 46,55 L 46,52 H 53 Z"/>
+<g style="color:#000;stroke-width:.864" id="path1818">
+<path style="fill:url(#radialGradient1987)" id="path2007" d="M 53,59 H 50 A 4,4 0 0 1 46,55 L 46,52 H 53 Z"/>
+<path style="opacity:.6;fill:url(#radialGradient2009)" id="M 53,59 H 50 A 4,4 0 0 1 46,55 L 46,52 H 53 Z" d="M 53,59 H 50 A 4,4 0 0 1 46,55 L 46,52 H 53 Z"/>
 </g>
 </g>
 <g id="button-focused-topleft">
-<path style="fill:{{colors.surface.default.hex}};fill-rule:evenodd" id="path5070" d="M 54,14 H 51 A 2,2 0 0 0 49,16 L 49,20 H 54 L 54,14 Z"/>
+<path style="fill:{{colors.surface.default.hex}};fill-rule:evenodd" id="path5070" d="M 54,13 H 51 A 4,4 0 0 0 47,17 L 47,20 H 54 Z"/>
 <g style="color:#000">
-<path style="fill:url(#radialGradient1933)" id="path5072" d="m 54,13 h -7 v 7 h 2 v -4 c 0,-1.5 0.5,-2 2,-2 h 3 z"/>
-<path style="fill:url(#radialGradient1562)" id="path1558" d="m 54,13 h -7 v 7 h 2 v -4 c 0,-1.5 0.5,-2 2,-2 h 3 z"/>
+<path style="fill:url(#radialGradient1933)" id="path5072" d="M 54,13 H 51 A 4,4 0 0 0 47,17 L 47,20 H 54 Z"/>
+<path style="fill:url(#radialGradient1562)" id="path1558" d="M 54,13 H 51 A 4,4 0 0 0 47,17 L 47,20 H 54 Z"/>
 </g>
 </g>
 <g id="button-pressed-bottomleft" transform="translate(94)">
-<path style="fill:{{colors.surface.default.hex}};fill-rule:evenodd" id="path2228" d="M 7,55 H 4 A 2,2 0 0 1 2,53 L 2,52 H 7 L 7,55 Z"/>
+<path style="fill:{{colors.surface.default.hex}};fill-rule:evenodd" id="path2228" d="M 7,59 H 4 A 4,4 0 0 1 0,55 L 0,52 H 7 Z"/>
 <g style="color:#000">
-<path style="fill:url(#radialGradient2244)" id="path2230" d="M 7,59 H 0 v -7 h 2 v 1 c 0,1.5 0.5,2 2,2 h 3 z"/>
-<path style="fill:url(#radialGradient2246)" id="path2232" d="M 7,59 H 0 v -7 h 2 v 1 c 0,1.5 0.5,2 2,2 h 3 z"/>
+<path style="fill:url(#radialGradient2244)" id="path2230" d="M 7,59 H 4 A 4,4 0 0 1 0,55 L 0,52 H 7 Z"/>
+<path style="fill:url(#radialGradient2246)" id="path2232" d="M 7,59 H 4 A 4,4 0 0 1 0,55 L 0,52 H 7 Z"/>
 </g>
 </g>
 <g id="button-pressed-topleft" transform="translate(94)">
-<path style="fill:{{colors.surface.default.hex}};fill-rule:evenodd" id="path2236" d="M 7,14 H 4 A 2,2 0 0 0 2,16 L 2,20 H 7 L 7,14 Z"/>
+<path style="fill:{{colors.surface.default.hex}};fill-rule:evenodd" id="path2236" d="M 7,13 H 4 A 4,4 0 0 0 0,17 L 0,20 H 7 Z"/>
 <g style="color:#000">
-<path style="fill:url(#radialGradient2248)" id="path2238" d="M 7,13 H 0 v 7 h 2 v -4 c 0,-1.5 0.5,-2 2,-2 h 3 z"/>
-<path style="fill:url(#radialGradient2250)" id="path2240" d="M 7,13 H 0 v 7 h 2 v -4 c 0,-1.5 0.5,-2 2,-2 h 3 z"/>
+<path style="fill:url(#radialGradient2248)" id="path2238" d="M 7,13 H 4 A 4,4 0 0 0 0,17 L 0,20 H 7 Z"/>
+<path style="fill:url(#radialGradient2250)" id="path2240" d="M 7,13 H 4 A 4,4 0 0 0 0,17 L 0,20 H 7 Z"/>
 </g>
 </g>
 <g id="button-toggled-bottomleft" transform="translate(140)">
-<path style="fill:{{colors.primary.default.hex}};fill-rule:evenodd" id="path2256" d="M 7,55 H 4 A 2,2 0 0 1 2,53 L 2,52 H 7 L 7,55 Z"/>
+<path style="fill:{{colors.primary.default.hex}};fill-rule:evenodd" id="path2256" d="M 7,59 H 4 A 4,4 0 0 1 0,55 L 0,52 H 7 Z"/>
 <g style="color:#000">
-<path style="fill:url(#radialGradient2272)" id="path2258" d="M 7,59 H 0 v -7 h 2 v 1 c 0,1.5 0.5,2 2,2 h 3 z"/>
-<path style="fill:url(#radialGradient2274)" id="path2260" d="M 7,59 H 0 v -7 h 2 v 1 c 0,1.5 0.5,2 2,2 h 3 z"/>
+<path style="fill:url(#radialGradient2272)" id="path2258" d="M 7,59 H 4 A 4,4 0 0 1 0,55 L 0,52 H 7 Z"/>
+<path style="fill:url(#radialGradient2274)" id="path2260" d="M 7,59 H 4 A 4,4 0 0 1 0,55 L 0,52 H 7 Z"/>
 </g>
 </g>
 <g id="button-toggled-topleft" transform="translate(140)">
-<path style="fill:{{colors.primary.default.hex}};fill-rule:evenodd" id="path2264" d="M 7,14 H 4 A 2,2 0 0 0 2,16 L 2,20 H 7 L 7,14 Z"/>
+<path style="fill:{{colors.primary.default.hex}};fill-rule:evenodd" id="path2264" d="M 7,13 H 4 A 4,4 0 0 0 0,17 L 0,20 H 7 Z"/>
 <g style="color:#000">
-<path style="fill:url(#radialGradient2276)" id="path2266" d="M 7,13 H 0 v 7 h 2 v -4 c 0,-1.5 0.5,-2 2,-2 h 3 z"/>
-<path style="fill:url(#radialGradient2278)" id="path2268" d="M 7,13 H 0 v 7 h 2 v -4 c 0,-1.5 0.5,-2 2,-2 h 3 z"/>
+<path style="fill:url(#radialGradient2276)" id="path2266" d="M 7,13 H 4 A 4,4 0 0 0 0,17 L 0,20 H 7 Z"/>
+<path style="fill:url(#radialGradient2278)" id="path2268" d="M 7,13 H 4 A 4,4 0 0 0 0,17 L 0,20 H 7 Z"/>
 </g>
 </g>
 <use width="100%" x="0" y="0" height="100%" xlink:href="#button-pressed-left" id="button-pressed-right" transform="matrix(-1,0,0,1,234,0)"/>
@@ -919,4 +905,32 @@
 <use width="100%" x="0" y="0" height="100%" xlink:href="#flat-spin-down-focused" id="flat-spin-minus-focused" transform="translate(0,26)"/>
 <use width="100%" x="0" y="0" height="100%" xlink:href="#flat-spin-down-pressed" id="flat-spin-minus-pressed" transform="translate(0,26)"/>
 <use width="100%" x="0" y="0" height="100%" xlink:href="#flat-spin-down-disabled" id="flat-spin-minus-disabled" transform="translate(0,26)"/>
+<g id="lineedit-normal-topleft"><path style="fill:{{colors.outline_variant.default.hex}}" d="M 15,1180 A 5,5 0 0 0 10,1185 L 11,1185 A 4,4 0 0 1 15,1181 L 15,1180 Z"/><path style="fill:{{colors.surface.default.hex}}" d="M 15,1181 A 4,4 0 0 0 11,1185 L 15,1185 Z"/></g>
+<g id="lineedit-normal-topright"><path style="fill:{{colors.outline_variant.default.hex}}" d="M 17,1180 A 5,5 0 0 1 22,1185 L 21,1185 A 4,4 0 0 0 17,1181 L 17,1180 Z"/><path style="fill:{{colors.surface.default.hex}}" d="M 17,1181 A 4,4 0 0 1 21,1185 L 17,1185 Z"/></g>
+<g id="lineedit-normal-bottomleft"><path style="fill:{{colors.outline_variant.default.hex}}" d="M 24,1180 A 5,5 0 0 0 29,1185 L 29,1184 A 4,4 0 0 1 25,1180 L 24,1180 Z"/><path style="fill:{{colors.surface.default.hex}}" d="M 25,1180 A 4,4 0 0 1 29,1184 L 29,1180 Z"/></g>
+<g id="lineedit-normal-bottomright"><path style="fill:{{colors.outline_variant.default.hex}}" d="M 36,1180 A 5,5 0 0 1 31,1185 L 31,1184 A 4,4 0 0 0 35,1180 L 36,1180 Z"/><path style="fill:{{colors.surface.default.hex}}" d="M 35,1180 A 4,4 0 0 0 31,1184 L 31,1180 Z"/></g>
+<g id="lineedit-normal-top"><path style="fill:{{colors.outline_variant.default.hex}}" d="m 38,1180 h 32 v 1 h -32 z"/><path style="fill:{{colors.surface.default.hex}}" d="m 38,1181 h 32 v 4 h -32 z"/></g>
+<g id="lineedit-normal-left"><path style="fill:{{colors.outline_variant.default.hex}}" d="m 78,1180 v 32 h 1 v -32 z"/><path style="fill:{{colors.surface.default.hex}}" d="m 79,1180 h 4 v 32 h -4 z"/></g>
+<g id="lineedit-normal-right"><path style="fill:{{colors.outline_variant.default.hex}}" d="m 84,1180 h 5 v 32 h -5 z"/><path style="fill:{{colors.surface.default.hex}}" d="m 84,1180 h 4 v 32 h -4 z"/></g>
+<g id="lineedit-focused-topleft"><path style="fill:{{colors.primary.default.hex}}" d="M 115,1180 A 5,5 0 0 0 110,1185 L 111,1185 A 4,4 0 0 1 115,1181 L 115,1180 Z"/><path style="fill:{{colors.surface.default.hex}}" d="M 115,1181 A 4,4 0 0 0 111,1185 L 115,1185 Z"/></g>
+<g id="lineedit-focused-topright"><path style="fill:{{colors.primary.default.hex}}" d="M 117,1180 A 5,5 0 0 1 122,1185 L 121,1185 A 4,4 0 0 0 117,1181 L 117,1180 Z"/><path style="fill:{{colors.surface.default.hex}}" d="M 117,1181 A 4,4 0 0 1 121,1185 L 117,1185 Z"/></g>
+<g id="lineedit-focused-bottomleft"><path style="fill:{{colors.primary.default.hex}}" d="M 124,1180 A 5,5 0 0 0 129,1185 L 129,1184 A 4,4 0 0 1 125,1180 L 124,1180 Z"/><path style="fill:{{colors.surface.default.hex}}" d="M 125,1180 A 4,4 0 0 1 129,1184 L 129,1180 Z"/></g>
+<g id="lineedit-focused-bottomright"><path style="fill:{{colors.primary.default.hex}}" d="M 136,1180 A 5,5 0 0 1 131,1185 L 131,1184 A 4,4 0 0 0 135,1180 L 136,1180 Z"/><path style="fill:{{colors.surface.default.hex}}" d="M 135,1180 A 4,4 0 0 0 131,1184 L 131,1180 Z"/></g>
+<g id="lineedit-focused-top"><path style="fill:{{colors.primary.default.hex}}" d="m 138,1180 h 32 v 1 h -32 z"/><path style="fill:{{colors.surface.default.hex}}" d="m 138,1181 h 32 v 4 h -32 z"/></g>
+<g id="lineedit-focused-left"><path style="fill:{{colors.primary.default.hex}}" d="m 178,1180 v 32 h 1 v -32 z"/><path style="fill:{{colors.surface.default.hex}}" d="m 179,1180 h 4 v 32 h -4 z"/></g>
+<g id="lineedit-focused-right"><path style="fill:{{colors.primary.default.hex}}" d="m 184,1180 h 5 v 32 h -5 z"/><path style="fill:{{colors.surface.default.hex}}" d="m 184,1180 h 4 v 32 h -4 z"/></g>
+<g id="combo-normal-topleft"><path style="fill:{{colors.outline_variant.default.hex}}" d="M 215,1180 A 5,5 0 0 0 210,1185 L 211,1185 A 4,4 0 0 1 215,1181 L 215,1180 Z"/><path style="fill:{{colors.surface.default.hex}}" d="M 215,1181 A 4,4 0 0 0 211,1185 L 215,1185 Z"/></g>
+<g id="combo-normal-topright"><path style="fill:{{colors.outline_variant.default.hex}}" d="M 217,1180 A 5,5 0 0 1 222,1185 L 221,1185 A 4,4 0 0 0 217,1181 L 217,1180 Z"/><path style="fill:{{colors.surface.default.hex}}" d="M 217,1181 A 4,4 0 0 1 221,1185 L 217,1185 Z"/></g>
+<g id="combo-normal-bottomleft"><path style="fill:{{colors.outline_variant.default.hex}}" d="M 224,1180 A 5,5 0 0 0 229,1185 L 229,1184 A 4,4 0 0 1 225,1180 L 224,1180 Z"/><path style="fill:{{colors.surface.default.hex}}" d="M 225,1180 A 4,4 0 0 1 229,1184 L 229,1180 Z"/></g>
+<g id="combo-normal-bottomright"><path style="fill:{{colors.outline_variant.default.hex}}" d="M 236,1180 A 5,5 0 0 1 231,1185 L 231,1184 A 4,4 0 0 0 235,1180 L 236,1180 Z"/><path style="fill:{{colors.surface.default.hex}}" d="M 235,1180 A 4,4 0 0 0 231,1184 L 231,1180 Z"/></g>
+<g id="combo-normal-top"><path style="fill:{{colors.outline_variant.default.hex}}" d="m 238,1180 h 32 v 1 h -32 z"/><path style="fill:{{colors.surface.default.hex}}" d="m 238,1181 h 32 v 4 h -32 z"/></g>
+<g id="combo-normal-left"><path style="fill:{{colors.outline_variant.default.hex}}" d="m 278,1180 v 32 h 1 v -32 z"/><path style="fill:{{colors.surface.default.hex}}" d="m 279,1180 h 4 v 32 h -4 z"/></g>
+<g id="combo-normal-right"><path style="fill:{{colors.outline_variant.default.hex}}" d="m 284,1180 h 5 v 32 h -5 z"/><path style="fill:{{colors.surface.default.hex}}" d="m 284,1180 h 4 v 32 h -4 z"/></g>
+<g id="combo-focused-topleft"><path style="fill:{{colors.primary.default.hex}}" d="M 325,1180 A 5,5 0 0 0 320,1185 L 321,1185 A 4,4 0 0 1 325,1181 L 325,1180 Z"/><path style="fill:{{colors.surface.default.hex}}" d="M 325,1181 A 4,4 0 0 0 321,1185 L 325,1185 Z"/></g>
+<g id="combo-focused-topright"><path style="fill:{{colors.primary.default.hex}}" d="M 327,1180 A 5,5 0 0 1 332,1185 L 331,1185 A 4,4 0 0 0 327,1181 L 327,1180 Z"/><path style="fill:{{colors.surface.default.hex}}" d="M 327,1181 A 4,4 0 0 1 331,1185 L 327,1185 Z"/></g>
+<g id="combo-focused-bottomleft"><path style="fill:{{colors.primary.default.hex}}" d="M 334,1180 A 5,5 0 0 0 339,1185 L 339,1184 A 4,4 0 0 1 335,1180 L 334,1180 Z"/><path style="fill:{{colors.surface.default.hex}}" d="M 335,1180 A 4,4 0 0 1 339,1184 L 339,1180 Z"/></g>
+<g id="combo-focused-bottomright"><path style="fill:{{colors.primary.default.hex}}" d="M 346,1180 A 5,5 0 0 1 341,1185 L 341,1184 A 4,4 0 0 0 345,1180 L 346,1180 Z"/><path style="fill:{{colors.surface.default.hex}}" d="M 345,1180 A 4,4 0 0 0 341,1184 L 341,1180 Z"/></g>
+<g id="combo-focused-top"><path style="fill:{{colors.primary.default.hex}}" d="m 348,1180 h 32 v 1 h -32 z"/><path style="fill:{{colors.surface.default.hex}}" d="m 348,1181 h 32 v 4 h -32 z"/></g>
+<g id="combo-focused-left"><path style="fill:{{colors.primary.default.hex}}" d="m 388,1180 v 32 h 1 v -32 z"/><path style="fill:{{colors.surface.default.hex}}" d="m 389,1180 h 4 v 32 h -4 z"/></g>
+<g id="combo-focused-right"><path style="fill:{{colors.primary.default.hex}}" d="m 394,1180 h 5 v 32 h -5 z"/><path style="fill:{{colors.surface.default.hex}}" d="m 394,1180 h 4 v 32 h -4 z"/></g>
 </svg>

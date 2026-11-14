@@ -295,3 +295,71 @@ GTK 的 `checkbox-*`/`radio-*`/`switch-*` PNG 把旧默认蓝 `#2ca7f8` 烘死�
 - 图标主题：`icon_theme=Papirus-Dark` 未动。
 - 真机待验：Cinnamon/GNOME Shell `@import` 末尾层叠与换色渲染截图、CSD messagedialog 底角 8px 合成器截图、`TemplateRegistry` QML 条目运行时验证、`install-user` 真机全链路——均为容器无桌面会话的环境阻塞项，到真机窗口补。
 - PKGBUILD 建议加 `pkgver()`（`git describe`），版本号三处（debian/spec/PKGBUILD）现靠人工同步。
+
+## 2026-XX 控件级圆角收敛（Kvantum 几何重构 + GTK 字段令牌对齐）
+
+接「控件级审计管线」建设之后的几何收敛轮。审计断言把半径锚到令牌
+（按钮=radiusRow=4、文本字段=radiusItem=5，DESIGN.md §令牌表 /
+`Commons/Style.qml` settingsFieldRadius），暴露两处真偏差并修复。
+
+### Kvantum 几何模型（实测定论，防止后续再踩坑）
+
+- 角块尺寸 = `frame.left × frame.top`（角元素被缩放/裁切到角块框，不是按
+  自身元素大小锚定）。frame.left=1 时 6×6 的角元素压成 1×1 不可见；
+  frame.left=5 时同元素显示为 5×5 → r5 弧。
+- widget 矩形无 alpha：Kvantum 把控件整框画满，"圆角"只能是**画出来的
+  描边/面色弧**，角部"透明"实为透出窗口色（offscreen 截图 alpha 全 255）。
+- 帧边条（top/left/right/bottom 元素）按其 frame 度量拉伸/平铺，角元素
+  占据帧边交叉的角块区域。
+- 原 KvAdapta 字段族（lineedit/combo）所有 frame 元素是 `opacity:0` 的
+  2×2 占位 → 渲染为平面 field + 底部 `*-bottom` 下划线（Adwaita 风格），
+  与契约的圆角描边字段不符。
+
+### 修复一：按钮角弧 2px → radiusRow=4
+
+- 10 个角组（normal/pressed/toggled 的 topleft、bottomleft，focused 四角，
+  其余角为 `<use>` 镜像）原 `A 2,2` 弧 + 全盒辉光 → 剪影近方形。
+- 重写为单一楔形路径（盒扣除角弧外区域），三份文件同步：按钮剪影现为
+  可见 r4 圆角，辉光渐变随楔形裁剪（顺带去掉按钮下投影，与 GTK 扁平
+  按钮一致）。
+
+### 修复二：字段族重构（lineedit/combo 及继承它们的 spin/toolbar 字段）
+
+- kvconfig：`frame.top/bottom/left/right = 5`（角块 5×5 才能容纳 r5）；
+  `text.margin.left/right = 4`（内边距保持 ~9px 与 GTK `padding 2px 8px` 相当）。
+- 新增可见边框元素（每族 × normal/focused 两态）：
+  - 4 个角组 = 描边环（外 r5 弧→内 r4 弧）+ 面色扇形；
+  - top/left/right 边 = 1px 描边 + 4px 面色条（补满 frame 带避免窗色缝隙）；
+  - `*-bottom` 元素改为 `<g>`：4px 面色带 + 1px 描边条（原 2-3px 下划线
+    与角块几何不兼容）。
+- normal 描边 `outline_variant`，focused 全框 `primary`——对齐 GTK
+  `entry:focus { border-color: @active_color }` 的 accent 描边焦点态。
+
+### GTK 侧
+
+- `entry { border-radius: 4px→5px }` 四份文件统一（契约 radiusItem=5；
+  `entry.search` 本就是 5px）。
+
+### 审计/度量教训（写进探针，防误报）
+
+- GTK 快照有真实 alpha；Qt offscreen 无 alpha，"透明角"渲染为窗口色。
+- Qt 掩码测量需把"与字面角像素同色"的像素判为控件外（紧容差 ≤3），
+  且面色=窗口色时掩码只剩描边环是**合法稀疏**，回退阈值要 <5 像素。
+- 半径读数有系统性偏差（描边内缩+AA），探针报 `radius_est`
+  （角均值+GTK 2/Qt 1 修正），断言容差 ±2。
+
+### 验证
+
+- `theme-audit.py audit --scheme Kanagawa --mode both`：暗色 25 OK /
+  亮色 25 OK / 0 WARN / 0 FAIL（按钮、entry、combo、spin、progressbar、
+  slider、check/radio、link、scrollbar、header 面、焦点态全断言通过）。
+- `check-tokens.py`：全部一致（SVG 良构 + tpl↔shell 模板逐字节护栏仍绿）。
+- GTK3 探针本轮未跑（历史超时，环境项），GTK3 CSS 与 GTK4 同步修改。
+
+### 遗留
+
+- GTK 亮色 entry 描边近不可见（`@borders` 极淡）vs Qt `outline_variant`
+  偏明显——结构一致、描边令牌选择差异，若需完全隐形可把 Qt normal 描边
+  换成更弱的语义键。
+- 其余控件族（tab、menu、header、scrollbar groove、树/列表行悬停）的
+  圆角与面语义尚未纳入审计断言，后续按需扩展 `exp_radius` 表。

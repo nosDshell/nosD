@@ -27,6 +27,10 @@
 @define-color accent_border_color {{colors.accent_border_color.default.hex}};
 @define-color accent_on_bg_dim_color {{colors.accent_on_bg_dim_color.default.hex}};
 
+@define-color link_color @accent_standalone_color;
+@define-color link_visited_color @accent_on_bg_dim_color;
+@define-color link_hover_color @accent_hover_color;
+
 @define-color destructive_bg_color {{colors.error.default.hex}};
 @define-color destructive_fg_color {{colors.on_error.default.hex}};
 
