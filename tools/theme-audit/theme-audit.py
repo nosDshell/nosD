@@ -307,6 +307,7 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
     # 叠加梯档（nosd-theme 派生键；旧渲染器缺席时跳过，不阻断）
     ovl_field = P.get("overlay_field")
     ovl_strong = P.get("overlay_strong")
+    ovl_ind = P.get("overlay_indicator")
 
     # 2) Qt palette 契约（[GeneralColors] 全套角色）
     check("qt palette window == surface", close(qpal.get("window"), surf, 2),
@@ -327,6 +328,8 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
     check("qt palette tooltip == surface_container",
           close(qpal.get("tool_tip_base"), scont, 2),
           f"{qpal.get('tool_tip_base')} vs {scont}")
+    check("qt palette link == primary", close(qpal.get("link"), primary, 2),
+          f"{qpal.get('link')} vs {primary}")
 
     # 3a) 契约面：控件面应等于叠加梯烘焙色（按钮=strong、字段=field）。
     #     dominant 是控件面主色；描边/文字是少数像素。
@@ -353,6 +356,16 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
             if d:
                 check(f"gtk3 {wname}面 ≈ overlay_field",
                       close(d, ovl_field, 14), f"{d} vs {ovl_field}")
+    if ovl_ind:
+        # 滚动条滑块 = indicator 梯档：GTK 半透明滑块按窗口色合成取 edge，
+        # Qt 实心滑块取 dominant。GTK 允许更大容差（内容色参与合成）。
+        for src, label, key, tol in ((w4, "gtk4", "edge", 20),
+                                   (w3, "gtk3", "edge", 20),
+                                   (wq, "qt", "dominant", 14)):
+            d = src.get("scrollbar", {}).get(key)
+            if d:
+                check(f"{label} 滚动条滑块 ≈ overlay_indicator",
+                      close(d, ovl_ind, tol), f"{d} vs {ovl_ind}")
 
     # 3b) 跨端「同一张脸」：关键控件像素对齐。
     pairs = [
@@ -414,6 +427,21 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
         # GTK3 toggled 面是压暗色，accent 在描边/指示像素
         check("gtk3 button_toggled accent", close(tb3["saturated"], primary, 45),
               f"{tb3['saturated']} vs {primary}")
+
+    # 链接 = accent_standalone 族（背景上可读的 accent 文本色）
+    for src, label in ((w4, "gtk4"), (w3, "gtk3")):
+        d = src.get("link", {}).get("dominant")
+        if d and P.get("accent_standalone_color"):
+            check(f"{label} link ≈ accent_standalone",
+                  close(d, P["accent_standalone_color"], 14),
+                  f"{d} vs {P['accent_standalone_color']}")
+
+    # 容器面：menubar/toolbar/notebook 贴窗口 surface（Qt 端采样）
+    for wname in ("menubar", "toolbar", "notebook"):
+        d = wq.get(wname, {}).get("dominant")
+        if d:
+            check(f"qt {wname} ≈ surface", close(d, surf, 4),
+                  f"{d} vs {surf}")
 
     # 5) 几何令牌：按钮=radiusRow、文本字段=radiusItem（DESIGN.md / Style.qml）
     rt = tokens["radius"]

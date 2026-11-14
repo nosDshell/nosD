@@ -171,6 +171,26 @@ def strip_hex(img, min_alpha=200, rows=4):
     return rgba_hex(*cnt.most_common(1)[0][0])
 
 
+def edge_hex(img, bg_hex=None, cols=12, rows=40):
+    """右上缘主色：滚动条滑块贴控件右缘顶端（value=0 时 thumb 在顶部）。
+    半透明滑块先按窗口底色合成再取主色。"""
+    from collections import Counter
+    from PIL import Image
+    img = img.convert("RGBA")
+    if bg_hex:
+        r, g, b = int(bg_hex[1:3], 16), int(bg_hex[3:5], 16), int(bg_hex[5:7], 16)
+        img = Image.alpha_composite(
+            Image.new("RGBA", img.size, (r, g, b, 255)), img)
+    w, h = img.size
+    cnt = Counter()
+    for y in range(min(rows, h)):
+        for x in range(max(0, w - cols), w):
+            p = img.getpixel((x, y))
+            if p[3] > 120:
+                cnt[p[:3]] += 1
+    return rgba_hex(*cnt.most_common(1)[0][0]) if cnt else None
+
+
 def dominant_hex(img, min_alpha=200):
     """控件面主色：不透明像素里出现最多的颜色（跳过文字这类少数派像素）。"""
     from collections import Counter
@@ -257,9 +277,17 @@ def probe_gtk4(theme, outdir):
     add("notebook", nb)
     sep = Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL)
     add("separator", sep)
-    scb = Gtk.Scrollbar(orientation=Gtk.Orientation.HORIZONTAL, adjustment=Gtk.Adjustment.new(0.3, 0, 1, 0.1, 0.1, 0.4))
-    scb.set_size_request(160, -1)
-    add("scrollbar", scb)
+    # 持久滚动条：overlay 瞬态滑条是 0.4 透明度的指示器，快照里近似不可见；
+    # 关掉全局 overlay-scrolling，ALWAYS 给出真实 trough+slider 供测量
+    Gtk.Settings.get_default().set_property("gtk-overlay-scrolling", False)
+    sw = Gtk.ScrolledWindow()
+    sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
+    sw.set_size_request(160, 120)
+    lb = Gtk.ListBox()
+    for i in range(40):
+        lb.append(Gtk.Label(label=f"列表项 {i}", xalign=0))
+    sw.set_child(lb)
+    add("scrollbar", sw)
     lab = Gtk.Label(label="正文文本")
     add("label", lab)
     dimb = Gtk.Button(label="禁用")
@@ -310,6 +338,7 @@ def probe_gtk4(theme, outdir):
             "dominant": dominant_hex(img),
             "saturated": saturated_hex(img),
             "strip": strip_hex(img),
+            "edge": edge_hex(img, out["vars"].get("window_bg_color")),
             "alloc": [w.get_width(), w.get_height()],
             "geom": measure_alpha(img),
             "face": measure_face(img),
@@ -378,6 +407,17 @@ def probe_gtk3(theme, outdir):
     nb.set_size_request(220, 90)
     add("notebook", nb)
     add("separator", Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL))
+    Gtk.Settings.get_default().set_property("gtk-overlay-scrolling", False)
+    sw = Gtk.ScrolledWindow()
+    sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
+    sw.set_size_request(160, 120)
+    lb = Gtk.ListBox()
+    for i in range(40):
+        lb.add(Gtk.Label(label=f"列表项 {i}", xalign=0))
+    sw.add(lb)
+    add("scrollbar", sw)
+    lb2 = Gtk.LinkButton(uri="https://example.invalid", label="链接")
+    add("link", lb2)
     add("label", Gtk.Label(label="正文文本"))
     dimb = Gtk.Button(label="禁用")
     dimb.set_sensitive(False)
@@ -421,6 +461,7 @@ def probe_gtk3(theme, outdir):
             "dominant": dominant_hex(img),
             "saturated": saturated_hex(img),
             "strip": strip_hex(img),
+            "edge": edge_hex(img, out["vars"].get("theme_bg_color")),
             "alloc": [alloc.width, alloc.height],
             "geom": measure_alpha(img),
             "face": measure_face(img),
