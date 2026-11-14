@@ -623,9 +623,9 @@
 <path style="fill:{{colors.primary_container.default.hex}}" id="slidercursor-normal" d="m 395,742.5 c -2.64704,2.20595 -5.58246,7.5 -10.553,7.5 -4.97054,0 -7.45032,-3.52943 -7.44696,-7.5 0.003,-3.97108 2.47642,-7.5 7.44696,-7.5 4.97055,0 7.90598,5.29415 10.553,7.5 z "/>
 <path style="fill:{{colors.surface_container_low.default.hex}};stroke:{{colors.surface_container_low.default.hex}};stroke-width:3" id="slidercursor-disabled" d="m 426.6782,742.5 c -2.085,1.76471 -4.39719,6 -8.31243,6 -3.91516,0 -5.86847,-2.82358 -5.86582,-6 0.002,-3.17691 1.95066,-6 5.86582,-6 3.91522,0 6.22741,4.23539 8.31243,6 z "/>
 </g>
-<path style="fill:{{colors.outline_variant.default.hex}}" id="scrollbarslider-normal" d="m 10,1102.5 h 7.5 V 1115 H 10 Z"/>
-<path style="fill:{{colors.outline.default.hex}}" id="scrollbarslider-focused" d="M 17.5,1102.5 H 25 v 12.5 h -7.5 z"/>
-<path style="fill:{{colors.on_surface_variant.default.hex}}" id="scrollbarslider-pressed" d="m 25,1102.5 h 7.5 V 1115 H 25 Z"/>
+<path style="fill:{{colors.overlay_indicator.default.hex}}" id="scrollbarslider-normal" d="m 10,1102.5 h 7.5 V 1115 H 10 Z"/>
+<path style="fill:{{colors.overlay_checked.default.hex}}" id="scrollbarslider-focused" d="M 17.5,1102.5 H 25 v 12.5 h -7.5 z"/>
+<path style="fill:{{colors.overlay_press.default.hex}}" id="scrollbarslider-pressed" d="m 25,1102.5 h 7.5 V 1115 H 25 Z"/>
 <use width="100%" x="0" y="0" height="100%" xlink:href="#tree-plus-normal" id="tree-minus-normal" transform="rotate(90,160,344)"/>
 <use width="100%" x="0" y="0" height="100%" xlink:href="#tree-plus-focused" id="tree-minus-focused" transform="rotate(90,192.50702,345)"/>
 <use width="100%" x="0" y="0" height="100%" xlink:href="#spin-plus-focused" id="spin-plus-pressed" transform="translate(32)"/>

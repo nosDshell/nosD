@@ -2748,13 +2748,13 @@ scrollbar slider {
     border: 4px solid transparent;
     border-radius: 8px;
     background-clip: padding-box;
-    background-color: alpha(@_static_black,0.4);
+    background-color: mix(@base_color, @text_color, 0.25);
 }
 scrollbar slider:hover {
-    background-color: alpha(@_static_black,0.6);
+    background-color: mix(@base_color, @text_color, 0.30);
 }
 scrollbar slider:hover:active {
-    background-color: alpha(@_static_black,0.8);
+    background-color: mix(@base_color, @text_color, 0.50);
 }
 scrollbar slider:disabled {
     background-color: transparent;
@@ -2778,8 +2778,8 @@ scrollbar.overlay-indicator:not(.dragging):not(.hovering) slider {
     margin: 0;
     min-width: 4px;
     min-height: 4px;
-    background-color: @placeholder_text_color;
-    border: 1px solid alpha(@_static_white,0.6);
+    background-color: alpha(@text_color, 0.55);
+    border: 1px solid alpha(@text_color, 0.7);
 }
 scrollbar.overlay-indicator:not(.dragging):not(.hovering).horizontal slider {
     margin: 0 2px;
@@ -5667,19 +5667,19 @@ filechooser placessidebar.sidebar scrollbar,
   border-color: alpha(@nosd_literal_2a2d37,0.95); }
   filechooser placessidebar.sidebar scrollbar.overlay-indicator:not(.dragging):not(.hovering) slider,
   .nautilus-window placessidebar.sidebar scrollbar.overlay-indicator:not(.dragging):not(.hovering) slider, .nemo-window .sidebar scrollbar.overlay-indicator:not(.dragging):not(.hovering) slider, .caja-side-pane scrollbar.overlay-indicator:not(.dragging):not(.hovering) slider {
-    background-color: alpha(@_static_black,0.4);
-    border: 1px solid alpha(@_static_black,0.5); }
+    background-color: alpha(@text_color, 0.55);
+    border: 1px solid alpha(@text_color, 0.7); }
   filechooser placessidebar.sidebar scrollbar slider,
   .nautilus-window placessidebar.sidebar scrollbar slider, .nemo-window .sidebar scrollbar slider, .caja-side-pane scrollbar slider {
-    background-color: alpha(@scrollbar_slider_color,0.7); }
+    background-color: mix(@base_color, @text_color, 0.35); }
     filechooser placessidebar.sidebar scrollbar slider:hover,
     .nautilus-window placessidebar.sidebar scrollbar slider:hover, .nemo-window .sidebar scrollbar slider:hover, .caja-side-pane scrollbar slider:hover {
-      background-color: alpha(@_static_black,0.6);
+      background-color: mix(@base_color, @text_color, 0.30);
 border:1px solid alpha(@_static_black,0.7);
 box-shadow: none;}
     filechooser placessidebar.sidebar scrollbar slider:hover:active,
     .nautilus-window placessidebar.sidebar scrollbar slider:hover:active, .nemo-window .sidebar scrollbar slider:hover:active, .caja-side-pane scrollbar slider:hover:active {
-      background-color: alpha(@_static_black,0.8); }
+      background-color: mix(@base_color, @text_color, 0.50); }
     filechooser placessidebar.sidebar scrollbar slider:disabled,
     .nautilus-window placessidebar.sidebar scrollbar slider:disabled, .nemo-window .sidebar scrollbar slider:disabled, .caja-side-pane scrollbar slider:disabled {
       background-color: transparent; }

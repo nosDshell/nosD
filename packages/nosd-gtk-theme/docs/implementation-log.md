@@ -472,3 +472,39 @@ GTK3 文件不改——其子节点本就叫 `entry`。
 
 - `theme-audit audit` Kanagawa 亮暗 47 OK/0 FAIL ×2。
 - 全矩阵（11 方案 × 双态）gtk3+gtk4+qt 三探针复检见提交正文。
+
+## 滚动条滑块接叠加梯（2026-11-15）
+
+### 根因
+
+GTK 滚动条滑块是方案无关的烘焙值：暗色 `rgba(255,255,255,.3/.5/.4)`、
+亮色 `alpha(@_static_black,.4/.6/.8)`、OID 实底 `#8a8e96`——不随配色
+方案变；Qt/Kvantum 用 `outline_variant` 等离散键，三态间也无梯档
+递进语义。shell 的梯档里 `indicator`(0.25) 正是"指示性控件"档。
+
+### 收敛方案
+
+- **GTK（4 份 css）持久滑块**：`mix(@base_color, @text_color, W)`
+  不透明梯档——normal 0.25/hover 0.30/press 0.50。
+  选用 mix() 而非 alpha()：半透明色在深色 trough 上二次合成会偏离
+  梯档（实测偏亮 ~30）；mix() 直接产出与烘焙 overlay_* 同值的不透明
+  色，静态主题与覆盖层下都正确。注意 GTK `mix(c1,c2,f)` 的 f 是
+  **第二参数**权重（曾传反实测验证）。
+- **GTK OID/侧栏滑块**：保留 `alpha(@text_color, …)` 半透明——
+  瞬态指示器需要透出内容；`.category-label` 等借用
+  `@scrollbar_slider_color` 做弱化文字色的调用点保持原值不动。
+- **Kvantum**：`scrollbarslider-normal/focused/pressed` 填色
+  `outline_variant/outline/on_surface_variant` →
+  `overlay_indicator/overlay_checked/overlay_press`，与 GTK 同梯档。
+- 静态 nosd.svg 重烘（Deepin light：#c6c6c6/#bcbcbc/#949494）。
+
+### 审计升级
+
+- 探针滚动条改为真实 `ScrolledWindow`+`ListBox`（40 行）：
+  裸 `Gtk.Scrollbar` 无滚动上下文画不出滑块；
+  `gtk-overlay-scrolling=False` + `POLICY.ALWAYS` 拿持久滑条
+  （OID 瞬态滑条仅 0.4 透明度，快照近似不可见）。
+- 新指标 `edge`：右上缘主色，半透明滑块按窗口底色合成。
+- 新断言：滚动条滑块 ≈ overlay_indicator（三端）；
+  `qt palette link == primary`；`gtk4/gtk3 link ≈ accent_standalone`；
+  `qt menubar/toolbar/notebook ≈ surface`。单态断言 47→56 项。
