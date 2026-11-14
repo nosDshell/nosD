@@ -17,6 +17,13 @@
    出现过的角色；漏掉的角色回落到 QPalette 默认构造值（Window = #efefef），
    表现为菜单栏/工具栏/页签栏露出的浅灰带。
 5. packages/nosdshell/Commons/Style.qml 的 radius 家族与 tokens.toml 一致。
+6. Kvantum SVG 与模板 XML 良构性。Qt SVG 是严格 XML 解析：一个重复属性
+   （如 ry="2" 出现两次）就让 QSvgRenderer.isValid() 为 false，Kvantum
+   整图拒载、全部元素回落内置默认主题——单个字符级手误即可让主题整体
+   失效，必须进检查。
+7. nosd-kvantum-theme 的 *.tpl 与 packages/nosdshell/Assets/Templates/
+   下对应模板逐字节一致。两份是同一模板在「仓库静态版」与「shell 渲染
+   输入」两种角色下的存放形态，漂移会让部署产物与仓内校验结果脱节。
 
 用法: tools/check-tokens.py [--stats] [nosd 仓根目录]
 退出码: 0 = 全部通过；1 = 存在漂移（打印每一项）。
@@ -24,6 +31,7 @@
 import re
 import sys
 import tomllib
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 GTK_PKG = Path("packages") / "nosd-gtk-theme"
@@ -341,6 +349,37 @@ def main() -> int:
             m = re.search(rf"property int {prop}: Math\.round\((\d+) \*", style)
             if m and int(m.group(1)) != tokens["radius"][token]:
                 failures.append(f"Style.qml {prop}={m.group(1)} 与 {token}={tokens['radius'][token]} 不一致")
+
+    # 6. Kvantum SVG / 模板 XML 良构性（QSvgRenderer 严格解析，坏一处整图失效）
+    placeholder_re = re.compile(r"\{\{[^}]*\}\}")
+    svg_paths = [
+        root / KVANTUM_PKG / "nosd" / "nosd.svg",
+        root / KVANTUM_PKG / "nosd" / "nosd.svg.tpl",
+        root / SHELL_PKG / "Assets" / "Templates" / "kvantum-nosd.svg",
+    ]
+    for svg in svg_paths:
+        rel = svg.relative_to(root)
+        if not svg.exists():
+            failures.append(f"{rel} 不存在")
+            continue
+        body = placeholder_re.sub("#123456", svg.read_text(errors="replace"))
+        try:
+            ET.fromstring(body)
+        except ET.ParseError as e:
+            failures.append(
+                f"{rel} XML 解析失败：{e}"
+                "（QSvgRenderer 会拒载整图，Kvantum 全部回落内置默认主题）"
+            )
+
+    # 7. 主题包 tpl 与 shell 侧模板逐字节一致
+    for name in ("nosd.svg", "nosd.kvconfig"):
+        tpl = root / KVANTUM_PKG / "nosd" / f"{name}.tpl"
+        shell_tpl = root / SHELL_PKG / "Assets" / "Templates" / f"kvantum-{name}"
+        if tpl.exists() and shell_tpl.exists() and tpl.read_bytes() != shell_tpl.read_bytes():
+            failures.append(
+                f"{tpl.relative_to(root)} 与 {shell_tpl.relative_to(root)} 不一致"
+                "（同一模板两份存放已漂移）"
+            )
 
     if want_stats:
         print(
