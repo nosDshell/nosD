@@ -76,7 +76,12 @@ jobs:
           ref: ${{ env.TAG }}
 
       - name: install build deps
-        run: sudo apt-get update && sudo apt-get install -y dpkg-dev devscripts debhelper fakeroot rpm
+        # dpkg-buildpackage 的依赖检查把 build-essential:native 当作隐式
+        # Build-Depends，所以 debian/control 里没写也得装，否则
+        # dpkg-checkbuilddeps 直接报 unmet build dependencies。
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential dpkg-dev devscripts debhelper fakeroot rpm
 
       - name: build deb + rpm
         env:
@@ -136,9 +141,19 @@ jobs:
           echo "::notice::组件 $COMPONENT 发布完成：$TAG"
 
   # ── 4. reopen development（仅 nosdshell：isDevelopment 回 true）──
+  #
+  # ⚠️ 必须显式写 always()：该 job 的隐式条件是 success()，而 needs 图上
+  #    游的 packaging 在 nosdshell tag 下是 skipped，skip 会沿 needs 传播，
+  #    github-release 用 always() 顶住了、reopen 没顶 → isDevelopment 永远
+  #    回不到 true。改成“不管上游结果如何都评估本 job”，再用 result 条件
+  #    把真正需要的两个前置（build、github-release）自己判一遍。
   reopen:
     needs: [build, github-release]
-    if: needs.build.outputs.component == 'nosdshell'
+    if: >-
+      always()
+      && needs.build.result == 'success'
+      && needs.github-release.result == 'success'
+      && needs.build.outputs.component == 'nosdshell'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
