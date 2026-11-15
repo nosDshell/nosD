@@ -9,6 +9,15 @@
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-11-16
+
+### 变更
+
+- *皮肤更名 nosd*：`deepin-light`/`deepin-dark` 两套 fcitx5 皮肤更名为
+  `nosd`/`nosd-dark`（deepin 为历史残留），与 nosDshell 品牌一致。deb/arch
+  打包物料与安装路径同步更新；fcitx5 配置里引用旧皮肤名的需改为
+  `nosd`/`nosd-dark`。
+
 ## [1.1.0] - 2026-11-14
 
 ### 变更
