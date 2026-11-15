@@ -266,9 +266,9 @@ ColumnLayout {
               baseSize: Style.baseWidgetSize * 0.75
               colorBorder: Qt.alpha(Colors.borderShell, Style.opacityLight)
               colorBg: Colors.alert
-              colorFg: Colors.onAccent
+              colorFg: Colors.onPrimary
               colorBgHover: Qt.alpha(Colors.alert, Style.opacityMedium)
-              colorFgHover: Colors.onAccent
+              colorFgHover: Colors.onPrimary
               onClicked: {
                 removeStateCheck(currentIndex);
               }

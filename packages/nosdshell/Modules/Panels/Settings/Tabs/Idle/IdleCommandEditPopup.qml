@@ -129,7 +129,7 @@ Popup {
         text: I18n.tr("common.save")
         icon: "check"
         backgroundColor: Colors.accent
-        textColor: Colors.onAccent
+        textColor: Colors.onPrimary
         onClicked: {
           root.saved(timeoutSpinBox.value, commandInput.text, resumeCommandInput.text, nameInput.text);
           root.close();

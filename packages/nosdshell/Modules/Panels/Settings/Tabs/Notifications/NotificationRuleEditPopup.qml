@@ -120,7 +120,7 @@ Popup {
         text: I18n.tr("common.save")
         icon: "check"
         backgroundColor: Colors.accent
-        textColor: Colors.onAccent
+        textColor: Colors.onPrimary
         enabled: patternInput.text.trim() !== ""
         onClicked: {
           root.saved(patternInput.text.trim(), _selectedAction || "block");

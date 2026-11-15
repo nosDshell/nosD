@@ -466,7 +466,7 @@ Singleton {
   readonly property color accent: root.mPrimary
   readonly property color accentAlt: root.mSecondary
   readonly property color accentAction: root.mTertiary
-  readonly property color onAccent: root.mOnPrimary
+  readonly property color onPrimary: mOnPrimary
 
   readonly property color attention: "#F18A2E"
   // Scheme error role (DESIGN §5): Deepin's mError is the same #F9704F; other
@@ -627,7 +627,7 @@ Singleton {
   // name for the different role.
   readonly property color knobBorder: Qt.rgba(0, 0, 0, 0.1)
 
-  // Slider knob fill (§3.5.4): always a white dot — onAccent is dark in dark
+  // Slider knob fill (§3.5.4): always a white dot — onPrimary is dark in dark
   // Material schemes (mOnPrimary ≈ #0e0e43), so the knob cannot share it.
   readonly property color knobFill: "#FFFFFF"
 

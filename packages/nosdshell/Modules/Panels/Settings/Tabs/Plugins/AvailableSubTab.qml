@@ -211,14 +211,14 @@ ColumnLayout {
                 NIcon {
                   icon: "official-plugin"
                   pointSize: Style.fontSizeXXS
-                  color: Colors.onAccent
+                  color: Colors.onPrimary
                 }
 
                 NText {
                   text: I18n.tr("common.official")
                   font.pointSize: Style.fontSizeXXS
                   font.weight: Style.fontWeightMedium
-                  color: Colors.onAccent
+                  color: Colors.onPrimary
                 }
               }
             }

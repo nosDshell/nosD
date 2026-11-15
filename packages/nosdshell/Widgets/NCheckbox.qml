@@ -14,7 +14,7 @@ NDccRow {
   property string description: ""
   property bool checked: false
   property color activeColor: Colors.accent
-  property color activeOnColor: Colors.onAccent
+  property color activeOnColor: Colors.onPrimary
   property int baseSize: root.defaultSize
   property real labelSize: Style.fontSizeTitle
   // A labelled option is a settings row; a bare one is not.

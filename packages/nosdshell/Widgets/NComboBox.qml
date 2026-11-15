@@ -318,7 +318,7 @@ NDccRow {
             verticalAlignment: Text.AlignVCenter
             elide: Text.ElideRight
             pointSize: Style.fontSizeM
-            color: delegateRect.isHighlighted ? Colors.onAccent : Colors.onShell
+            color: delegateRect.isHighlighted ? Colors.onPrimary : Colors.onShell
             text: {
               var item = root._modelRows[delegateRect.index];
               return item && item.name ? item.name : "";

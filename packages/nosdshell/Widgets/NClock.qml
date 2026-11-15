@@ -18,7 +18,7 @@ Item {
 
   // Color properties
   property color backgroundColor: Colors.accent
-  property color clockColor: Colors.onAccent
+  property color clockColor: Colors.onPrimary
 
   property color secondHandColor: {
     var defaultColor = Colors.alert;
@@ -133,7 +133,7 @@ Item {
   component NClockAnalog: Item {
     property var now
     property color backgroundColor: Colors.accent
-    property color clockColor: Colors.onAccent
+    property color clockColor: Colors.onPrimary
     property color secondHandColor: Colors.alert
     property real scaleRatio: Style.uiScaleRatio
     anchors.fill: parent
@@ -234,7 +234,7 @@ Item {
   component NClockDigital: Item {
     property var now
     property color backgroundColor: Colors.accent
-    property color clockColor: Colors.onAccent
+    property color clockColor: Colors.onPrimary
     property color progressColor: Colors.alert
     property real hoursFontSize: Style.fontSizeXS
     property real minutesFontSize: Style.fontSizeXXS
@@ -316,7 +316,7 @@ Item {
   component NClockBinary: Item {
     property var now
     property color backgroundColor
-    property color clockColor: Colors.onAccent
+    property color clockColor: Colors.onPrimary
 
     anchors.fill: parent
 
@@ -400,7 +400,7 @@ Item {
     property int value: 0
     property int bits: 4
     property real dotSize: 10
-    property color activeColor: Colors.onAccent
+    property color activeColor: Colors.onPrimary
 
     spacing: dotSize * 0.4
 

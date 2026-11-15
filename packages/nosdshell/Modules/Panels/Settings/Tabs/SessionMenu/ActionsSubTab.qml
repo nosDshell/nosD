@@ -142,7 +142,7 @@ ColumnLayout {
             anchors.centerIn: parent
             anchors.horizontalCenterOffset: -1
             icon: "check"
-            color: Colors.onAccent
+            color: Colors.onPrimary
             pointSize: Math.max(Style.fontSizeXS, Style.baseWidgetSize * 0.35)
           }
 

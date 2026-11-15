@@ -601,7 +601,7 @@ Popup {
                   NIcon {
                     icon: "filepicker-check"
                     pointSize: Style.fontSizeS
-                    color: Colors.onAccent
+                    color: Colors.onPrimary
                     anchors.centerIn: parent
                   }
                 }
@@ -704,12 +704,12 @@ Popup {
               NIcon {
                 icon: fileIsDir ? "filepicker-folder" : root.getFileIcon(fileName)
                 pointSize: Style.fontSizeL
-                color: fileIsDir ? (filePickerPanel.currentSelection.includes(filePath) ? Colors.onAccent : Colors.accent) : Colors.onShellSecondary
+                color: fileIsDir ? (filePickerPanel.currentSelection.includes(filePath) ? Colors.onPrimary : Colors.accent) : Colors.onShellSecondary
               }
 
               NText {
                 text: fileName
-                color: filePickerPanel.currentSelection.includes(filePath) ? Colors.onAccent : Colors.onShell
+                color: filePickerPanel.currentSelection.includes(filePath) ? Colors.onPrimary : Colors.onShell
                 pointSize: Style.fontSizeM
                 font.weight: filePickerPanel.currentSelection.includes(filePath) ? Style.fontWeightSemiBold : Style.fontWeightRegular
                 Layout.fillWidth: true
@@ -718,7 +718,7 @@ Popup {
 
               NText {
                 text: fileIsDir ? "" : root.formatFileSize(fileSize)
-                color: filePickerPanel.currentSelection.includes(filePath) ? Colors.onAccent : Colors.onShellSecondary
+                color: filePickerPanel.currentSelection.includes(filePath) ? Colors.onPrimary : Colors.onShellSecondary
                 pointSize: Style.fontSizeS
                 visible: !fileIsDir
                 Layout.preferredWidth: implicitWidth

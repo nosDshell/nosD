@@ -104,7 +104,7 @@ ColumnLayout {
       visible: (updateCount > 0)
       enabled: !isUpdating
       backgroundColor: Colors.accent
-      textColor: Colors.onAccent
+      textColor: Colors.onPrimary
       Layout.fillWidth: true
       onClicked: {
         isUpdating = true;
@@ -226,14 +226,14 @@ ColumnLayout {
                   NIcon {
                     icon: "official-plugin"
                     pointSize: Style.fontSizeXXS
-                    color: Colors.onAccent
+                    color: Colors.onPrimary
                   }
 
                   NText {
                     text: I18n.tr("common.official")
                     font.pointSize: Style.fontSizeXXS
                     font.weight: Style.fontWeightMedium
-                    color: Colors.onAccent
+                    color: Colors.onPrimary
                   }
                 }
               }
@@ -321,7 +321,7 @@ ColumnLayout {
                 visible: modelData.updateInfo !== undefined
                 enabled: !isUpdating
                 backgroundColor: Colors.accent
-                textColor: Colors.onAccent
+                textColor: Colors.onPrimary
                 fontSize: Style.fontSizeXXS
                 fontWeight: Style.fontWeightMedium
                 onClicked: {
@@ -533,7 +533,7 @@ ColumnLayout {
         NButton {
           text: I18n.tr("common.uninstall")
           backgroundColor: Colors.accent
-          textColor: Colors.onAccent
+          textColor: Colors.onPrimary
           onClicked: {
             if (uninstallDialog.pluginToUninstall) {
               root.uninstallPlugin(uninstallDialog.pluginToUninstall.compositeKey);

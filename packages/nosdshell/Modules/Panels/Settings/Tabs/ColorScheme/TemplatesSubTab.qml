@@ -217,7 +217,7 @@ ColumnLayout {
         tooltipText: root.showOnlyActive ? I18n.tr("actions.show-all") : I18n.tr("actions.show-active-only")
 
         colorBg: root.showOnlyActive ? Colors.accent : Colors.overlay("strong")
-        colorFg: root.showOnlyActive ? Colors.onAccent : Colors.onShell
+        colorFg: root.showOnlyActive ? Colors.onPrimary : Colors.onShell
 
         onClicked: root.showOnlyActive = !root.showOnlyActive
       }

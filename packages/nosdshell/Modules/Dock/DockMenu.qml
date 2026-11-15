@@ -775,7 +775,7 @@ PopupWindow {
                 NIcon {
                   icon: modelData.icon
                   pointSize: Style.fontSizeL
-                  color: root.hoveredItem === index ? Colors.onAccent : Colors.onShellSecondary
+                  color: root.hoveredItem === index ? Colors.onPrimary : Colors.onShellSecondary
                   visible: icon !== ""
                   anchors.verticalCenter: parent.verticalCenter
                 }
@@ -783,7 +783,7 @@ PopupWindow {
                 NText {
                   text: modelData.text
                   pointSize: Style.fontSizeS
-                  color: root.hoveredItem === index ? Colors.onAccent : Colors.onShell
+                  color: root.hoveredItem === index ? Colors.onPrimary : Colors.onShell
                   anchors.verticalCenter: parent.verticalCenter
                   width: rowLayout.width - ((modelData.icon && modelData.icon !== "") ? (Style.fontSizeL + Style.marginS) : 0)
                   elide: Text.ElideRight
@@ -868,7 +868,7 @@ PopupWindow {
               NIcon {
                 icon: modelData.icon
                 pointSize: Style.fontSizeL
-                color: root.hoveredItem === fixedItemRect.globalIndex ? Colors.onAccent : Colors.onShellSecondary
+                color: root.hoveredItem === fixedItemRect.globalIndex ? Colors.onPrimary : Colors.onShellSecondary
                 visible: icon !== ""
                 anchors.verticalCenter: parent.verticalCenter
               }
@@ -876,7 +876,7 @@ PopupWindow {
               NText {
                 text: modelData.text
                 pointSize: Style.fontSizeS
-                color: root.hoveredItem === fixedItemRect.globalIndex ? Colors.onAccent : Colors.onShell
+                color: root.hoveredItem === fixedItemRect.globalIndex ? Colors.onPrimary : Colors.onShell
                 anchors.verticalCenter: parent.verticalCenter
                 width: fixedRowLayout.width - ((modelData.icon && modelData.icon !== "") ? (Style.fontSizeL + Style.marginS) : 0)
                 elide: Text.ElideRight

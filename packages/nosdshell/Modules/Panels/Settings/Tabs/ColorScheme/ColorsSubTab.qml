@@ -445,12 +445,12 @@ ColumnLayout {
             radius: Math.min(Style.radiusL, width / 2)
             color: Colors.accent
             border.width: Style.borderS
-            border.color: Colors.onAccent
+            border.color: Colors.onPrimary
 
             NIcon {
               icon: "check"
               pointSize: Style.fontSizeXS
-              color: Colors.onAccent
+              color: Colors.onPrimary
               anchors.centerIn: parent
             }
           }

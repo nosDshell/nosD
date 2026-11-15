@@ -578,14 +578,14 @@ PopupWindow {
                   icon: modelData.icon || ""
                   pointSize: Style.fontSizeS
                   applyUiScale: false
-                  color: !menuItem.rowEnabled ? root._disabledColor : menuItem.active ? Colors.onAccent : root._textColor
+                  color: !menuItem.rowEnabled ? root._disabledColor : menuItem.active ? Colors.onPrimary : root._textColor
                   verticalAlignment: Text.AlignVCenter
                 }
 
                 NText {
                   text: modelData.label || modelData.text || ""
                   pointSize: Style.fontSizeS
-                  color: !menuItem.rowEnabled ? root._disabledColor : menuItem.active ? Colors.onAccent : root._textColor
+                  color: !menuItem.rowEnabled ? root._disabledColor : menuItem.active ? Colors.onPrimary : root._textColor
                   verticalAlignment: Text.AlignVCenter
                   Layout.fillWidth: true
                 }
@@ -595,7 +595,7 @@ PopupWindow {
                   visible: modelData.checked === true || menuItem.hasSubmenu || modelData.hasSubmenu === true
                   icon: (menuItem.hasSubmenu || modelData.hasSubmenu === true) ? "chevron-right" : "check"
                   pointSize: Style.fontSizeXL
-                  color: !menuItem.rowEnabled ? root._disabledColor : menuItem.active ? Colors.onAccent : root._textColor
+                  color: !menuItem.rowEnabled ? root._disabledColor : menuItem.active ? Colors.onPrimary : root._textColor
                 }
               }
 

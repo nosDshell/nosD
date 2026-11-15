@@ -809,7 +809,7 @@ Popup {
         anchors.margins: Style.marginM
         text: downloadError
         pointSize: Style.fontSizeS
-        color: Colors.onAccent
+        color: Colors.onPrimary
         wrapMode: Text.WordWrap
       }
     }

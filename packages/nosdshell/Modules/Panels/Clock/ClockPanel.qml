@@ -388,7 +388,7 @@ SmartPanel {
                           text: modelData.day
                           color: {
                             if (modelData.today)
-                              return Colors.onAccent;
+                              return Colors.onPrimary;
                             if (modelData.currentMonth)
                               return Colors.onShell;
                             return Colors.onShellTertiary;
@@ -412,7 +412,7 @@ SmartPanel {
                               width: Style.calendarEventDotSize
                               height: width
                               radius: Style.calendarEventDotSize / 2
-                              color: modelData.today ? Colors.onAccent : Colors.accent
+                              color: modelData.today ? Colors.onPrimary : Colors.accent
                             }
                           }
                         }

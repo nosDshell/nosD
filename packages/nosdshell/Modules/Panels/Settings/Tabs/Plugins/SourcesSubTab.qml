@@ -153,7 +153,7 @@ ColumnLayout {
         NButton {
           text: I18n.tr("common.add")
           backgroundColor: Colors.accent
-          textColor: Colors.onAccent
+          textColor: Colors.onPrimary
           enabled: sourceNameInput.text.length > 0 && sourceUrlInput.text.length > 0
           onClicked: {
             if (PluginRegistry.addPluginSource(sourceNameInput.text, sourceUrlInput.text)) {

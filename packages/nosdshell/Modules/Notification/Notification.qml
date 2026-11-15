@@ -634,7 +634,7 @@ Variants {
                         return actionText;
                       }
                       pointSize: Style.fontSizeS
-                      color: actionArea.containsMouse ? Colors.onAccent : Colors.transientAction
+                      color: actionArea.containsMouse ? Colors.onPrimary : Colors.transientAction
                       elide: Text.ElideRight
                       horizontalAlignment: Text.AlignHCenter
                     }

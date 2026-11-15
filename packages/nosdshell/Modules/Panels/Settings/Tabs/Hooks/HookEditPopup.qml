@@ -109,7 +109,7 @@ Popup {
         text: I18n.tr("common.save")
         icon: "check"
         backgroundColor: Colors.accent
-        textColor: Colors.onAccent
+        textColor: Colors.onPrimary
         onClicked: {
           root.saved(commandInput.text);
           root.close();

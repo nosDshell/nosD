@@ -373,7 +373,7 @@ Item {
         Layout.topMargin: Style.marginXS
         fontSize: Style.fontSizeS
         backgroundColor: Colors.accent
-        textColor: Colors.onAccent
+        textColor: Colors.onPrimary
         hoverColor: Colors.accentHover
         outlined: false
         implicitHeight: Style.toastActionHeight

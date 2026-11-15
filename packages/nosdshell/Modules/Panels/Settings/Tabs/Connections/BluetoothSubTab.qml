@@ -668,7 +668,7 @@ Item {
           text: I18n.tr("common.confirm")
           icon: "check"
           backgroundColor: Colors.accent
-          textColor: Colors.onAccent
+          textColor: Colors.onPrimary
           enabled: pinInput.text.length > 0
           onClicked: {
             BluetoothService.submitPin(pinInput.text);

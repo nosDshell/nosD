@@ -10,7 +10,7 @@ Item {
   property var model: []
   property var disabledIds: []
   property color activeColor: Colors.accent
-  property color activeOnColor: Colors.onAccent
+  property color activeOnColor: Colors.onPrimary
   property color dragHandleColor: Colors.onShellTertiary
   property int baseSize: Style.baseWidgetSize * 0.7
   property int spacing: Style.settingsGroupGap

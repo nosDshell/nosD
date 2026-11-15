@@ -199,14 +199,14 @@ Popup {
           visible: modelData.icon !== undefined
           icon: modelData.icon || ""
           pointSize: Style.fontSizeM
-          color: !menuItem.enabled ? root._disabledColor : (menuItem.highlighted || menuItem.hovered) ? Colors.onAccent : root._textColor
+          color: !menuItem.enabled ? root._disabledColor : (menuItem.highlighted || menuItem.hovered) ? Colors.onPrimary : root._textColor
           Layout.leftMargin: root.itemPadding
         }
 
         NText {
           text: modelData.label || modelData.text || ""
           pointSize: Style.fontSizeM
-          color: !menuItem.enabled ? root._disabledColor : (menuItem.highlighted || menuItem.hovered) ? Colors.onAccent : root._textColor
+          color: !menuItem.enabled ? root._disabledColor : (menuItem.highlighted || menuItem.hovered) ? Colors.onPrimary : root._textColor
           verticalAlignment: Text.AlignVCenter
           Layout.fillWidth: true
           Layout.leftMargin: modelData.icon === undefined ? root.itemPadding : 0
@@ -217,7 +217,7 @@ Popup {
           visible: modelData.checked === true || modelData.hasSubmenu === true
           icon: modelData.hasSubmenu === true ? "chevron-right" : "check"
           pointSize: Style.fontSizeXL
-          color: !menuItem.enabled ? root._disabledColor : (menuItem.highlighted || menuItem.hovered) ? Colors.onAccent : root._textColor
+          color: !menuItem.enabled ? root._disabledColor : (menuItem.highlighted || menuItem.hovered) ? Colors.onPrimary : root._textColor
           Layout.rightMargin: root.itemPadding
         }
       }

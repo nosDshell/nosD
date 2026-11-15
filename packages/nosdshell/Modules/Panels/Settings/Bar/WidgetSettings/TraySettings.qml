@@ -173,7 +173,7 @@ ColumnLayout {
           colorBg: Colors.overlay("field")
           colorFg: Colors.onShellTertiary
           colorBgHover: Colors.alert
-          colorFgHover: Colors.onAccent
+          colorFgHover: Colors.onPrimary
           onClicked: {
             blacklistModel.remove(index);
             saveSettings();

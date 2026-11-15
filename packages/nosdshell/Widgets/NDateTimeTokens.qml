@@ -281,7 +281,7 @@ Rectangle {
                 NText {
                   anchors.centerIn: parent
                   text: modelData.token
-                  color: tokenMouseArea.containsMouse ? Colors.onAccent : Colors.onShell
+                  color: tokenMouseArea.containsMouse ? Colors.onPrimary : Colors.onShell
                   pointSize: Style.fontSizeS
                   font.weight: Style.fontWeightSemiBold
                 }
@@ -310,7 +310,7 @@ Rectangle {
                 NText {
                   anchors.centerIn: parent
                   text: I18n.locale.toString(root.sampleDate, modelData.token)
-                  color: tokenMouseArea.containsMouse ? Colors.onAccent : Colors.onShellTertiary
+                  color: tokenMouseArea.containsMouse ? Colors.onPrimary : Colors.onShellTertiary
                   pointSize: Style.fontSizeS
                 }
               }
@@ -324,23 +324,23 @@ Rectangle {
   function getCategoryColor(category) {
     switch (category) {
     case "Year":
-      return [Colors.accent, Colors.onAccent];
+      return [Colors.accent, Colors.onPrimary];
     case "Month":
-      return [Colors.accentAlt, Colors.onAccent];
+      return [Colors.accentAlt, Colors.onPrimary];
     case "Day":
-      return [Colors.accentAction, Colors.onAccent];
+      return [Colors.accentAction, Colors.onPrimary];
     case "Hour":
-      return [Colors.accent, Colors.onAccent];
+      return [Colors.accent, Colors.onPrimary];
     case "Minute":
-      return [Colors.accentAlt, Colors.onAccent];
+      return [Colors.accentAlt, Colors.onPrimary];
     case "Second":
-      return [Colors.accentAction, Colors.onAccent];
+      return [Colors.accentAction, Colors.onPrimary];
     case "AM/PM":
-      return [Colors.alert, Colors.onAccent];
+      return [Colors.alert, Colors.onPrimary];
     case "Timezone":
       return [Colors.overlay("checked"), Colors.onShell];
     case "Common":
-      return [Colors.alert, Colors.onAccent];
+      return [Colors.alert, Colors.onPrimary];
     default:
       return [Colors.overlay("strong"), Colors.onShellTertiary];
     }

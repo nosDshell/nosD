@@ -369,7 +369,7 @@ PopupWindow {
                   readonly property bool isChecked: entry?.checkState === Qt.Checked || (entry?.checked ?? false)
 
                   // Color Logic — OptionItem style: accent check, white when the row is hovered
-                  readonly property color activeColor: mouseArea.containsMouse ? Colors.onAccent : Colors.accent
+                  readonly property color activeColor: mouseArea.containsMouse ? Colors.onPrimary : Colors.accent
                   readonly property color borderColor: activeColor
 
                   // Checkbox Visuals
@@ -418,7 +418,7 @@ PopupWindow {
                 NText {
                   id: text
                   Layout.fillWidth: true
-                  color: (entry?.enabled ?? true) ? (mouseArea.containsMouse ? Colors.onAccent : Colors.onShell) : Colors.textDisabledDark
+                  color: (entry?.enabled ?? true) ? (mouseArea.containsMouse ? Colors.onPrimary : Colors.onShell) : Colors.textDisabledDark
                   text: (entry?.text ?? "") !== "" ? entry.text.replace(/[\n\r]+/g, ' ') : "..."
                   pointSize: Style.fontSizeS
                   verticalAlignment: Text.AlignVCenter
@@ -439,7 +439,7 @@ PopupWindow {
                   applyUiScale: false
                   verticalAlignment: Text.AlignVCenter
                   visible: entry?.hasChildren ?? false
-                  color: (mouseArea.containsMouse ? Colors.onAccent : Colors.onShellSecondary)
+                  color: (mouseArea.containsMouse ? Colors.onPrimary : Colors.onShellSecondary)
                 }
               }
 
@@ -560,12 +560,12 @@ PopupWindow {
               pointSize: Style.fontSizeS
               applyUiScale: false
               verticalAlignment: Text.AlignVCenter
-              color: pinUnpinMouseArea.containsMouse ? Colors.onAccent : Colors.accent
+              color: pinUnpinMouseArea.containsMouse ? Colors.onPrimary : Colors.accent
             }
 
             NText {
               Layout.fillWidth: true
-              color: pinUnpinMouseArea.containsMouse ? Colors.onAccent : Colors.accent
+              color: pinUnpinMouseArea.containsMouse ? Colors.onPrimary : Colors.accent
               text: root.isPinned ? I18n.tr("panels.bar.tray-unpin-application") : I18n.tr("panels.bar.tray-pin-application")
               pointSize: Style.fontSizeS
               verticalAlignment: Text.AlignVCenter
