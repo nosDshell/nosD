@@ -18,9 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: archlinux:latest
-    defaults:
-      run:
-        working-directory: packages/nosdshell
+    # 不要在这里设 defaults.run.working-directory：checkout 之前的步骤
+    # （Install tools）也会套用它，而容器是在空目录里起的，于是
+    # `chdir .../packages/nosdshell: no such file or directory` → 127。
     steps:
       - name: Install tools
         run: |
@@ -37,6 +37,7 @@ jobs:
           echo "bin=$bin" >> "$GITHUB_OUTPUT"
 
       - name: Lint all QML files
+        working-directory: packages/nosdshell
         env:
           QMLLINT: ${{ steps.qmllint.outputs.bin }}
           QTQML: /usr/lib/qt6/qml
