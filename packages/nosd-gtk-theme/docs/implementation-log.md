@@ -508,3 +508,128 @@ GTK 滚动条滑块是方案无关的烘焙值：暗色 `rgba(255,255,255,.3/.5/
 - 新断言：滚动条滑块 ≈ overlay_indicator（三端）；
   `qt palette link == primary`；`gtk4/gtk3 link ≈ accent_standalone`；
   `qt menubar/toolbar/notebook ≈ surface`。单态断言 47→56 项。
+
+## 设置控件族对齐 shell §3.5.4（2026-11-15）
+
+### 根因
+
+GTK/Kvantum 的设置控件沿用 KvAdapta/deepin 旧造型：开关 36×20，
+滑块 15px accent 色钮，字段 22px，建议按钮 accent 实底白字，
+boxed-list 无边框容器语义缺失，Kvantum 按钮四角残留径向渐变叠层
+（截图四角黑斑），滑块槽/进度槽取 `surface_dim`/`shade(base,0.8)`
+近黑——全部偏离 DESIGN §3.5.4 的壳内控件契约。
+
+### 收敛方案
+
+- **开关（GTK3+4）**：40×22 胶囊、18px 白钮（off=@strong_color 轨+
+  白钮；on=@accent_bg_color 轨+@accent_fg_color 钮——对应 shell
+  NToggle 的 onAccent/onWallpaper 双态），禁用透明度 0.6。
+- **滑块/进度条（GTK3+4+Kvantum）**：2px 槽 @strong_color/overlay_strong，
+  accent 填充，12px 白钮 1px rgba(0,0,0,.1) 描边（Colors.knobBorder/
+  knobFill 常量直译）；进度槽同步换 @strong_color，填充等高满槽。
+- **字段**：entry/spinbutton/combobox-entry/dropdown 30px 高、
+  @field_color 面、r5、idle 无边框（border-color transparent，
+  保留 1px 宽防布局跳动）、focus 1px accent（GTK4 `entry:focus-within`）；
+  placeholder = alpha(@text_color,0.6)。
+- **GTK4 DropDown**：arrow 恢复 `pan-down-symbolic` 16px（一度置空，
+  与 shell 下拉框右侧 ▾ 对齐后恢复）；GTK3 combobox 小三角保留。
+- **SpinButton**：整控 30px 字段面+r5 描边，内部 text/±钮透明无分隔，
+  钮 hover 仅 @checked_color 淡染。
+- **行组**：`list.boxed-list`+`list.content` 透明底无边框，行
+  @strong_color、min-height 36px、padding 0/10/0/20、行间 1px 透明缝、
+  首尾行 r5、`activatable:hover` @checked_color；QGroupBox
+  （Kvantum `[GroupBox]`）改 overlay_strong r5 面板（新增 gbox-*
+  几何元）。
+- **建议按钮**：`button.suggested-action` 面 @strong_color +
+  文字 @accent_standalone_color，:active/:checked 才 accent 实底；
+  flat/sidebar 变体不动。
+- **Kvantum 按钮四角**：删 normal/focused/pressed/toggled 各态
+  corner 元素内嵌 `color:#000` 径向渐变叠层，留净 r4 角。
+- **模板与静态产物**：svg.tpl/kvconfig.tpl 与
+  `nosdshell/Assets/Templates/kvantum-*` 副本保持逐字节一致；
+  静态 nosd.svg/kvconfig 用 Deepin light 重烘（release 构建的
+  nosd-theme，1.x 旧线不识 overlay_* 键）。
+
+### 审计/护栏
+
+- `spec/tokens.toml` [radius.exempt] 登记 `switch`=11px
+  （40×22 胶囊=高度一半）；其余槽/钮/进度节点用令牌内 5px
+  （GTK 按短边钳制即半圆端）或 50%（仅 18×18 正圆钮）——
+  `border-radius:50%` 对长条会收成椭圆尖角，进度填充采样曾
+  因此落空，是本轮实测踩出的坑。
+- GTK4 `trough>progress` 无固有高度，需显式 min-height 才会渲染，
+  且须等于槽高（6px）——矮于槽则底缘行全落槽色，审计 strip 采样
+  取到的是槽而非填充。
+
+### 验证
+
+- `theme-audit audit` 全矩阵（11 方案×双态）0 FAIL。
+- `check-tokens.py` 全一致；`nosd-kvantum-theme make check` 通过。
+- showcase 三组合（Deepin dark/light、Kanagawa dark）四列复核：
+  开关 40×22 accent+白钮、行缝 1px、字段焦点框、DropDown ▾ 箭头。
+- 附注：verify.sh 隔离会话里 NToggle on 钮一度渲染为 #000000——
+  根因是 `Colors.qml` 的 `onAccent` 别名与 `accent` 属性构成
+  `onX`/`X` 信号处理器命名碰撞，绑定从不安装（已最小复现）。
+  fbd15a8d5 改名 `onPrimary` 修复，51041c339 加了 lint 护栏；
+  旋钮白点与主题侧 accent_fg 语义一致。
+
+## 控件几何令牌化 + gtk-dark 变体补齐（2026-11-16）
+
+### 根因
+
+第一轮对齐只覆盖每个变体目录的 `gtk.css`：4 个 `gtk-dark.css`
+（prefer-dark 样式表，8 文件矩阵的另一半）仍是旧几何——字段 22px、
+开关 36×20/14px 钮、滑块 15px，且没有叠加面 define。`tools/check-tokens.py`
+当时也只检查圆角，抓不到这类几何/梯级漂移。
+
+### 收敛方案
+
+- `spec/tokens.toml` 新增 `[overlay]`（8 级梯 α）与 `[controls]`
+  控件几何（field 30×170、row 36、switch 40×22/18、slider 2/12）；
+  DESIGN.md 新增 §8 应用主题契约（shell 令牌 ↔ GTK/Kvantum 映射表）。
+- `check-tokens.py` 第 8 项检查：`@define-color <level>_color alpha()`
+  的 α ↔ `[overlay]`；完整样式表必须声明 idle/field/strong/checked
+  四面；GTK `entry`/`combobox`/`spinbutton`/`dropdown`/`switch`/
+  `scale` 的 `min-*` 几何 ↔ `[controls]`；kvconfig `slider_handle_*`/
+  `scroll_width`/`check_size`；`Style.qml` `switchWidth`/`switchHeight`/
+  `settingsFieldHeight`/`settingsFieldWidth`/`detailRowHeight`。
+- 4 个 `gtk-dark.css` 逐块移植 gtk.css 的控件契约（保留各自
+  调色 defines），补齐叠加面 define。
+- Kvantum 通用 `focus-*` 元素由 2×2 角标+虚线改为实心 1px accent
+  框（四边实线 + 四角方块），与 `lineedit-focused-*`/`combo-focused-*`
+  同一形态；`[Focus]` frame 仍是 1px。
+
+### 验证
+
+- `check-tokens.py`：gtk.css 四文件 0 漂移；gtk-dark.css 补齐后 0。
+- showcase 截图复核字段/开关/滑块/下拉四族。
+
+## 菜单/弹层/提示框对齐（§3.3、§1.2、§1.6）
+
+- GTK 菜单面：`menu`/`.menu` 底色 `view_bg/shade(base,0.8)` →
+  `@popover_bg_color`（运行时 = `surface_container` ≈ `mSurfaceVariant`），
+  圆角按 §1.5 分模式：浅色 8（`radiusWindow`）、深色 4（`radiusRow`）。
+  `.csd menu` 补上契约发丝边 `alpha(@window_fg_color,0.10)`（≈
+  `borderDark`=`mOutline`×0.10），深色文件再叠 §1.6 的白×0.10
+  顶边内高光 `inset 0 1px alpha(@_static_white,0.10)`。
+- 菜单/popover 分隔线：与底色同色的不可见分隔 → 发丝线
+  `alpha(@window_fg_color,0.10)`；deepin-dark 原本就是「暗线+亮线」
+  分隔槽一对刻线（§1.2 固定元素），保留。
+- `popover.background`：圆角 4→6（`radiusPopup`），投影改契约值
+  （浅 `0 2px 6 .08` / 深 `0 2px 8 .27`），边 `@borders` → 发丝线。
+- `tooltip`：硬编码蓝灰 `rgba(75,81,98,0.95)` + 文字 `@borders`
+  （深色下不可见）→ 契约黑×0.8 底 + 恒白文字（§3.2 提示框），
+  圆角 4→6。
+- 修复 `deepin/gtk-*.css` 使用未定义 `@hightlight_line`（suggested-action
+  移植带入，只有深色文件定义过）→ 补 define `alpha(@_static_white,0.15)`。
+- Kvantum：补 `menuitem-focused-*` 九切片（`use` 引用 primary 填充的
+  `menuitem-toggled-*`）——此前 Qt 菜单无悬停底色；`[MenuItem]`
+  `text.focus.color` → `on_primary`（悬停行文字落在 accent 上）；
+  `tooltip.*` → shadow 底 + 恒白文字（原 `on_surface` 浅色方案下
+  是深文字压黑底）。Kvantum menu frame 切片保留 surface 填充：
+  边缘分离已由 shadow-hint 条提供，整圈改 outline 会得到 5px 粗边
+  而非契约发丝线。
+- 验证：GTK4 实弹菜单截图（Deepin light）——表面 #EBEBEB=方案
+  `mSurfaceVariant`、accent 圆角悬停行、发丝分隔线可见；
+  Qt offscreen QMenu.grab——表面同为 #EBEBEB、分隔线可见；
+  GTK3 gtk-dark.css 实载解析零新错（仅既有 linear-gradient 弃用警告）。

@@ -125,7 +125,7 @@
 <path style="fill:{{colors.surface.default.hex}}" id="titlebar-normal" d="m 397.5,622.5 0,32 32,0 0,-32 z"/>
 <g id="button-default-indicator" transform="translate(-367.5,-22.5)">
 <path style="opacity:0;fill:{{colors.on_surface_variant.default.hex}}" id="rect5404" d="m 375,87.5 h 25 v 25 h -25 z"/>
-<path style="opacity:.5;stroke-width:.935" id="path5406" d="m 396.25,86.25 -17.5,17.5 h 17.5 z"/>
+<path style="opacity:0;stroke-width:.935" id="path5406" d="m 396.25,86.25 -17.5,17.5 h 17.5 z"/>
 </g>
 <g style="fill:{{colors.surface.default.hex}}">
 <path id="menubar-normal" d="m 305,805 h 20 v 20 h -20 z"/>
@@ -218,19 +218,19 @@
 </g>
 <g style="fill-rule:evenodd" id="slider-normal-topleft">
 <path style="fill-opacity:0" id="path5018" d="m 92,717.5 -12,0 0,12 12,0 z"/>
-<path style="fill:{{colors.surface_dim.default.hex}}" id="path5020" d="m 92,719.5 c -4.5,0 -8,4 -8,9 v 1 h 8 z "/>
+<path style="fill:{{colors.overlay_strong.default.hex}}" id="path5020" d="m 92,719.5 c -4.5,0 -8,4 -8,9 v 1 h 8 z "/>
 </g>
 <g style="fill-rule:evenodd" id="slider-normal-left">
 <path style="fill-opacity:0" id="path5024" d="m 80,729.5002 0,16.4064 0,.094 12,0 0,-16.5 -12,0 z "/>
-<path style="fill:{{colors.surface_dim.default.hex}}" id="path5026" d="m 84,729.5006 0,16.4058 0,0.094 8,2e-4 0,-16.4994 -8,-2e-4 z"/>
+<path style="fill:{{colors.overlay_strong.default.hex}}" id="path5026" d="m 84,729.5006 0,16.4058 0,0.094 8,2e-4 0,-16.4994 -8,-2e-4 z"/>
 </g>
 <g style="fill-rule:evenodd" id="slider-normal-topright" transform="matrix(-1,0,0,1,184,0)">
 <path style="fill-opacity:0" id="path5085" d="m 92,717.5 -12,0 0,12 12,0 z"/>
-<path style="fill:{{colors.surface_dim.default.hex}}" id="path5087" d="m 92,719.5 c -4.5,0 -8,4 -8,9 v 1 h 8 z "/>
+<path style="fill:{{colors.overlay_strong.default.hex}}" id="path5087" d="m 92,719.5 c -4.5,0 -8,4 -8,9 v 1 h 8 z "/>
 </g>
 <g style="fill-rule:evenodd" id="slider-normal-right" transform="matrix(-1,0,0,1,184,0)">
 <path style="fill-opacity:0" id="path5077" d="m 80,729.5002 0,16.4064 0,.094 12,0 0,-16.5 -12,0 z "/>
-<path style="fill:{{colors.surface_dim.default.hex}}" id="path5079" d="m 84,729.5006 0,16.4058 0,0.094 8,2e-4 0,-16.4994 -8,-2e-4 z"/>
+<path style="fill:{{colors.overlay_strong.default.hex}}" id="path5079" d="m 84,729.5006 0,16.4058 0,0.094 8,2e-4 0,-16.4994 -8,-2e-4 z"/>
 </g>
 <use width="100%" x="0" y="0" height="100%" xlink:href="#slider-normal-topleft" id="slider-normal-bottomleft" transform="matrix(1,0,0,-1,0,1475.5)"/>
 <g id="resize-grip-normal" transform="translate(-7.5,-70)">
@@ -281,7 +281,7 @@
 <use width="450" x="0" y="0" height="1230" id="progress-pattern-disabled-bottomleft" xlink:href="#progress-pattern-disabled-topleft" transform="matrix(0,-1,1,0,67.5,368.5)"/>
 <use width="450" x="0" y="0" height="1230" id="progress-pattern-disabled" xlink:href="#progress-pattern-disabled-left" transform="matrix(2.1333333,0,0,1,-222,0)"/>
 <g style="fill-rule:evenodd">
-<g style="fill:{{colors.surface_dim.default.hex}}">
+<g style="fill:{{colors.overlay_strong.default.hex}}">
 <path id="progress-normal-left" d="m 320,172 0,-32 -10,0 0,32 z"/>
 <path id="progress-normal-topleft" d="m 320,130 c -5.5,0 -10,4.5 -10,10 h 10 z "/>
 <path id="progress-normal" d="m 320,140 0,32 32,0 0,-32 -32,0 z"/>
@@ -318,6 +318,15 @@
 <use width="100%" x="0" y="0" height="100%" style="fill:{{colors.surface.default.hex}}" xlink:href="#menuitem-toggled-right" id="menuitem-pressed-right" transform="translate(-50,0)"/>
 <use width="100%" x="0" y="0" height="100%" style="fill:{{colors.surface.default.hex}}" xlink:href="#menuitem-toggled-bottomright" id="menuitem-pressed-bottomright" transform="translate(-50,0)"/>
 <use width="100%" x="0" y="0" height="100%" style="fill:{{colors.surface.default.hex}}" xlink:href="#menuitem-toggled-topright" id="menuitem-pressed-topright" transform="translate(-50,0)"/>
+<use width="100%" x="0" y="0" height="100%" xlink:href="#menuitem-toggled" id="menuitem-focused"/>
+<use width="100%" x="0" y="0" height="100%" xlink:href="#menuitem-toggled-left" id="menuitem-focused-left"/>
+<use width="100%" x="0" y="0" height="100%" xlink:href="#menuitem-toggled-topleft" id="menuitem-focused-topleft"/>
+<use width="100%" x="0" y="0" height="100%" xlink:href="#menuitem-toggled-top" id="menuitem-focused-top"/>
+<use width="100%" x="0" y="0" height="100%" xlink:href="#menuitem-toggled-topright" id="menuitem-focused-topright"/>
+<use width="100%" x="0" y="0" height="100%" xlink:href="#menuitem-toggled-right" id="menuitem-focused-right"/>
+<use width="100%" x="0" y="0" height="100%" xlink:href="#menuitem-toggled-bottomright" id="menuitem-focused-bottomright"/>
+<use width="100%" x="0" y="0" height="100%" xlink:href="#menuitem-toggled-bottom" id="menuitem-focused-bottom"/>
+<use width="100%" x="0" y="0" height="100%" xlink:href="#menuitem-toggled-bottomleft" id="menuitem-focused-bottomleft"/>
 <g style="fill-rule:evenodd">
 <path id="expand-button-normal" d="M 0,0 H 10 V 10 H 0 Z"/>
 <path id="expand-lineedit-normal" d="m 285,72.5 h 10 v 10 h -10 z"/>
@@ -505,23 +514,16 @@
 <path id="header-normal-topleft" d="m 90.5,90.5 -6,0 0,6 6,0 z"/>
 </g>
 <g style="color:#000">
-<g style="fill-opacity:.119">
+<g style="fill:{{colors.primary.default.hex}}">
 <path id="focus-bottomleft" d="m 192.5,101.5 2,0 0,-2 -2,0 z"/>
 <path id="focus-bottomright" d="m 214.5,101.5 2,0 0,-2 -2,0 z"/>
-</g>
-<g style="fill:{{colors.primary.default.hex}}">
 <path id="focus-topleft" d="m 192.5,79.5 2,0 0,-2 -2,0 z"/>
 <path id="focus-topright" d="m 214.5,79.5 2,0 0,-2 -2,0 z"/>
 </g>
 </g>
 <g style="color:#000" id="focus-top" transform="translate(104.5,-30)">
 <path style="fill-opacity:0" id="focus-top0" d="m 90,109.5 20,0 0,-2 -20,0 z"/>
-<g style="fill:{{colors.primary.default.hex}}">
-<path id="path4914" d="m 90,109.5 2.5,0 0,-2 -2.5,0 z"/>
-<path id="path4922" d="m 95,109.5 2.5,0 0,-2 -2.5,0 z"/>
-<path id="path4924" d="m 99.75,109.5 2.5,0 0,-2 -2.5,0 z"/>
-<path id="path4926" d="m 105,109.5 2.5,0 0,-2 -2.5,0 z"/>
-</g>
+<path style="fill:{{colors.primary.default.hex}}" id="focus-top-line" d="m 90,109.5 20,0 0,-2 -20,0 z"/>
 </g>
 <use width="100%" x="0" y="0" height="100%" xlink:href="#focus-top" id="focus-right" transform="matrix(0,1,-1,0,294,-115)"/>
 <use width="100%" x="0" y="0" height="100%" xlink:href="#focus-top" id="focus-bottom" transform="matrix(-1,0,0,-1,409,179)"/>
@@ -620,7 +622,7 @@
 <path id="tab-toggled-bottomright" d="m 35,936 h 10 v 10 H 35 Z"/>
 <path id="tab-toggled-bottomleft" d="m 15,936 h 10 v 10 H 15 Z"/>
 </g>
-<path style="fill:{{colors.primary_container.default.hex}}" id="slidercursor-normal" d="m 395,742.5 c -2.64704,2.20595 -5.58246,7.5 -10.553,7.5 -4.97054,0 -7.45032,-3.52943 -7.44696,-7.5 0.003,-3.97108 2.47642,-7.5 7.44696,-7.5 4.97055,0 7.90598,5.29415 10.553,7.5 z "/>
+<circle cx="384.45" cy="735" r="5.5" id="slidercursor-normal" style="fill:#ffffff;stroke:#000000;stroke-opacity:0.1;stroke-width:1"/>
 <path style="fill:{{colors.surface_container_low.default.hex}};stroke:{{colors.surface_container_low.default.hex}};stroke-width:3" id="slidercursor-disabled" d="m 426.6782,742.5 c -2.085,1.76471 -4.39719,6 -8.31243,6 -3.91516,0 -5.86847,-2.82358 -5.86582,-6 0.002,-3.17691 1.95066,-6 5.86582,-6 3.91522,0 6.22741,4.23539 8.31243,6 z "/>
 </g>
 <path style="fill:{{colors.overlay_indicator.default.hex}}" id="scrollbarslider-normal" d="m 10,1102.5 h 7.5 V 1115 H 10 Z"/>
@@ -632,10 +634,6 @@
 <use width="100%" x="0" y="0" height="100%" xlink:href="#spin-plus-focused" id="spin-up-pressed" transform="translate(32,22)"/>
 <g id="button-normal-bottomleft">
 <path style="fill:{{colors.overlay_strong.default.hex}};fill-rule:evenodd" id="path1797" d="M 7,59 H 4 A 4,4 0 0 1 0,55 L 0,52 H 7 Z"/>
-<g style="color:#000">
-<path style="fill:url(#radialGradient1856)" id="path1799" d="M 7,59 H 4 A 4,4 0 0 1 0,55 L 0,52 H 7 Z"/>
-<path style="fill:url(#radialGradient2042)" id="path3801" d="M 7,59 H 4 A 4,4 0 0 1 0,55 L 0,52 H 7 Z"/>
-</g>
 </g>
 <use width="100%" x="0" y="0" height="100%" xlink:href="#button-normal-bottomleft" id="button-normal-bottomright" transform="matrix(-1,0,0,1,46,0)"/>
 <g id="button-toggled-left" transform="translate(94)">
@@ -652,10 +650,6 @@
 </g>
 <g id="button-normal-topleft">
 <path style="fill:{{colors.overlay_strong.default.hex}};fill-rule:evenodd" id="path5119" d="M 7,13 H 4 A 4,4 0 0 0 0,17 L 0,20 H 7 Z"/>
-<g style="color:#000">
-<path style="fill:url(#radialGradient1637)" id="path5121" d="M 7,13 H 4 A 4,4 0 0 0 0,17 L 0,20 H 7 Z"/>
-<path style="fill:url(#radialGradient2500)" id="path4718" d="M 7,13 H 4 A 4,4 0 0 0 0,17 L 0,20 H 7 Z"/>
-</g>
 </g>
 <use width="100%" x="0" y="0" height="100%" xlink:href="#button-normal-topleft" id="button-normal-topright" transform="matrix(-1,0,0,1,46,0)"/>
 <path style="fill:{{colors.overlay_field.default.hex}}" id="lineedit-normal" d="m 322.5,95 h 10 v 10 h -10 z"/>
@@ -702,59 +696,27 @@
 </g>
 <g id="button-focused-topright" transform="translate(1)">
 <path style="fill:{{colors.overlay_strong.default.hex}};fill-rule:evenodd" id="path1728" d="M 85,13 H 88 A 4,4 0 0 1 92,17 L 92,20 H 85 Z"/>
-<g style="color:#000" id="path1730">
-<path style="fill:url(#radialGradient1734)" id="path1937" d="M 85,13 H 88 A 4,4 0 0 1 92,17 L 92,20 H 85 Z"/>
-<path style="fill:url(#radialGradient1939)" id="M 85,13 H 88 A 4,4 0 0 1 92,17 L 92,20 H 85 Z" d="M 85,13 H 88 A 4,4 0 0 1 92,17 L 92,20 H 85 Z"/>
-</g>
 </g>
 <g id="button-focused-bottomright" transform="translate(1)">
 <path style="fill:{{colors.overlay_strong.default.hex}};fill-rule:evenodd;stroke-width:.462" id="path1745" d="M 85,52 H 92 V 55 A 4,4 0 0 1 88,59 H 85 Z"/>
-<g style="color:#000;stroke-width:.864" id="path1747">
-<path style="fill:url(#radialGradient1751)" id="path1950" d="M 85,52 H 92 V 55 A 4,4 0 0 1 88,59 H 85 Z"/>
-<path style="opacity:.7;fill:url(#radialGradient1954)" id="M 85,52 H 92 V 55 A 4,4 0 0 1 88,59 H 85 Z" d="M 85,52 H 92 V 55 A 4,4 0 0 1 88,59 H 85 Z"/>
-</g>
 </g>
 <g id="button-focused-bottomleft" transform="translate(1)">
 <path style="fill:{{colors.overlay_strong.default.hex}};fill-rule:evenodd;stroke-width:.462" id="path1816" d="M 53,59 H 50 A 4,4 0 0 1 46,55 L 46,52 H 53 Z"/>
-<g style="color:#000;stroke-width:.864" id="path1818">
-<path style="fill:url(#radialGradient1987)" id="path2007" d="M 53,59 H 50 A 4,4 0 0 1 46,55 L 46,52 H 53 Z"/>
-<path style="opacity:.6;fill:url(#radialGradient2009)" id="M 53,59 H 50 A 4,4 0 0 1 46,55 L 46,52 H 53 Z" d="M 53,59 H 50 A 4,4 0 0 1 46,55 L 46,52 H 53 Z"/>
-</g>
 </g>
 <g id="button-focused-topleft">
 <path style="fill:{{colors.overlay_strong.default.hex}};fill-rule:evenodd" id="path5070" d="M 54,13 H 51 A 4,4 0 0 0 47,17 L 47,20 H 54 Z"/>
-<g style="color:#000">
-<path style="fill:url(#radialGradient1933)" id="path5072" d="M 54,13 H 51 A 4,4 0 0 0 47,17 L 47,20 H 54 Z"/>
-<path style="fill:url(#radialGradient1562)" id="path1558" d="M 54,13 H 51 A 4,4 0 0 0 47,17 L 47,20 H 54 Z"/>
-</g>
 </g>
 <g id="button-pressed-bottomleft" transform="translate(94)">
 <path style="fill:{{colors.primary.default.hex}};fill-rule:evenodd" id="path2228" d="M 7,59 H 4 A 4,4 0 0 1 0,55 L 0,52 H 7 Z"/>
-<g style="color:#000">
-<path style="fill:url(#radialGradient2244)" id="path2230" d="M 7,59 H 4 A 4,4 0 0 1 0,55 L 0,52 H 7 Z"/>
-<path style="fill:url(#radialGradient2246)" id="path2232" d="M 7,59 H 4 A 4,4 0 0 1 0,55 L 0,52 H 7 Z"/>
-</g>
 </g>
 <g id="button-pressed-topleft" transform="translate(94)">
 <path style="fill:{{colors.primary.default.hex}};fill-rule:evenodd" id="path2236" d="M 7,13 H 4 A 4,4 0 0 0 0,17 L 0,20 H 7 Z"/>
-<g style="color:#000">
-<path style="fill:url(#radialGradient2248)" id="path2238" d="M 7,13 H 4 A 4,4 0 0 0 0,17 L 0,20 H 7 Z"/>
-<path style="fill:url(#radialGradient2250)" id="path2240" d="M 7,13 H 4 A 4,4 0 0 0 0,17 L 0,20 H 7 Z"/>
-</g>
 </g>
 <g id="button-toggled-bottomleft" transform="translate(140)">
 <path style="fill:{{colors.primary.default.hex}};fill-rule:evenodd" id="path2256" d="M 7,59 H 4 A 4,4 0 0 1 0,55 L 0,52 H 7 Z"/>
-<g style="color:#000">
-<path style="fill:url(#radialGradient2272)" id="path2258" d="M 7,59 H 4 A 4,4 0 0 1 0,55 L 0,52 H 7 Z"/>
-<path style="fill:url(#radialGradient2274)" id="path2260" d="M 7,59 H 4 A 4,4 0 0 1 0,55 L 0,52 H 7 Z"/>
-</g>
 </g>
 <g id="button-toggled-topleft" transform="translate(140)">
 <path style="fill:{{colors.primary.default.hex}};fill-rule:evenodd" id="path2264" d="M 7,13 H 4 A 4,4 0 0 0 0,17 L 0,20 H 7 Z"/>
-<g style="color:#000">
-<path style="fill:url(#radialGradient2276)" id="path2266" d="M 7,13 H 4 A 4,4 0 0 0 0,17 L 0,20 H 7 Z"/>
-<path style="fill:url(#radialGradient2278)" id="path2268" d="M 7,13 H 4 A 4,4 0 0 0 0,17 L 0,20 H 7 Z"/>
-</g>
 </g>
 <use width="100%" x="0" y="0" height="100%" xlink:href="#button-pressed-left" id="button-pressed-right" transform="matrix(-1,0,0,1,234,0)"/>
 <use width="100%" x="0" y="0" height="100%" xlink:href="#button-pressed-bottomleft" id="button-pressed-bottomright" transform="matrix(-1,0,0,1,234,0)"/>
@@ -812,7 +774,7 @@
 <use width="100%" x="0" y="0" height="100%" xlink:href="#tabBarFrame-normal-bottom" id="tabBarFrame-normal-bottomleft" transform="translate(-4)"/>
 <g style="fill-rule:evenodd">
 <path style="fill:{{colors.primary.default.hex}}" id="header-toggled" d="m 124,84.5 h -6 v 6 h 6 z "/>
-<circle cx="386" cy="721" style="fill:{{colors.primary_container.default.hex}}" id="slidercursor-tickless-normal" r="9"/>
+<circle cx="386" cy="721" style="fill:#ffffff;stroke:#000000;stroke-opacity:0.1;stroke-width:1" id="slidercursor-tickless-normal" r="5.5"/>
 <circle cx="420" cy="721" style="fill:{{colors.surface_container_low.default.hex}};stroke:{{colors.surface_container_low.default.hex}};stroke-linejoin:round;stroke-linecap:round;stroke-width:3" r="7.5" id="slidercursor-tickless-disabled"/>
 </g>
 <g style="color:#000">
@@ -933,4 +895,14 @@
 <g id="combo-focused-top"><path style="fill:{{colors.primary.default.hex}}" d="m 348,1180 h 32 v 1 h -32 z"/><path style="fill:{{colors.overlay_field.default.hex}}" d="m 348,1181 h 32 v 4 h -32 z"/></g>
 <g id="combo-focused-left"><path style="fill:{{colors.primary.default.hex}}" d="m 388,1180 v 32 h 1 v -32 z"/><path style="fill:{{colors.overlay_field.default.hex}}" d="m 389,1180 h 4 v 32 h -4 z"/></g>
 <g id="combo-focused-right"><path style="fill:{{colors.primary.default.hex}}" d="m 394,1180 h 5 v 32 h -5 z"/><path style="fill:{{colors.overlay_field.default.hex}}" d="m 394,1180 h 4 v 32 h -4 z"/></g>
+
+<path style="fill:{{colors.overlay_strong.default.hex}}" id="gbox-normal" d="M 0,0 H 10 V 10 H 0 Z"/>
+<path style="fill:{{colors.overlay_strong.default.hex}}" id="gbox-normal-top" d="M 0,0 H 10 V 5 H 0 Z"/>
+<path style="fill:{{colors.overlay_strong.default.hex}}" id="gbox-normal-bottom" d="M 0,0 H 10 V 5 H 0 Z"/>
+<path style="fill:{{colors.overlay_strong.default.hex}}" id="gbox-normal-left" d="M 0,0 H 5 V 10 H 0 Z"/>
+<path style="fill:{{colors.overlay_strong.default.hex}}" id="gbox-normal-right" d="M 0,0 H 5 V 10 H 0 Z"/>
+<path style="fill:{{colors.overlay_strong.default.hex}}" id="gbox-normal-topleft" d="M 7,0 H 5 A 5,5 0 0 0 0,5 L 0,7 H 7 Z"/>
+<path style="fill:{{colors.overlay_strong.default.hex}}" id="gbox-normal-topright" d="M 0,0 H 2 A 5,5 0 0 1 7,5 L 7,7 H 0 Z"/>
+<path style="fill:{{colors.overlay_strong.default.hex}}" id="gbox-normal-bottomleft" d="M 7,7 H 5 A 5,5 0 0 1 0,2 L 0,0 H 7 Z"/>
+<path style="fill:{{colors.overlay_strong.default.hex}}" id="gbox-normal-bottomright" d="M 0,7 H 2 A 5,5 0 0 0 7,2 L 7,0 H 0 Z"/>
 </svg>

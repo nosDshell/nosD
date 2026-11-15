@@ -88,9 +88,10 @@ NDccRow {
       implicitWidth: Math.round(18 * root._switchScale)
       implicitHeight: Math.round(18 * root._switchScale)
       radius: height / 2
-      // Off-track is the light overlay (DDE white disc); on-track is accent,
-      // so the knob follows onPrimary to stay readable under accentOverride.
-      color: root.checked ? Colors.onPrimary : Colors.onWallpaper
+      // DESIGN §3.5.4: the knob is a fixed white disc on both track states
+      // (same contract as the slider's knobFill) — onPrimary is dark in
+      // dark Material schemes and would turn the disc black.
+      color: root.checked ? Colors.knobFill : Colors.onWallpaper
       anchors.verticalCenter: parent.verticalCenter
       anchors.verticalCenterOffset: 0
       x: root.checked ? switcher.width - width - 2 : 2

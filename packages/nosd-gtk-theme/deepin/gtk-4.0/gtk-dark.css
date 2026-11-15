@@ -35,7 +35,7 @@
 @define-color warning_fg_color #ffffff;
 @define-color success_color #73d216;
 @define-color link_color #2679db;
-@define-color placeholder_text_color #A8A8A8;
+@define-color placeholder_text_color alpha(@text_color,0.6);
 @define-color scrollbar_slider_color #e7eaee;
 @define-color _static_white #ffffff;
 @define-color _static_black #000000;
@@ -53,6 +53,14 @@
 @define-color text_color @view_fg_color;
 @define-color bg_color @window_bg_color;
 @define-color base_color @view_bg_color;
+/* nosd 叠加梯契约面（DESIGN §1.3）：nosd.css 覆盖层在场时被方案
+   mix(surface,on_surface,α) 的烘焙值替换；以下为静态回退，直接以
+   表面前景色 × 阶梯透明度实现（field 0.15 / strong 0.20 /
+   checked 0.30 / idle 0.03）。 */
+@define-color field_color alpha(@text_color, 0.15);
+@define-color strong_color alpha(@text_color, 0.20);
+@define-color checked_color alpha(@text_color, 0.30);
+@define-color idle_color alpha(@text_color, 0.03);
 @define-color selected_bg_color @accent_bg_color;
 @define-color selected_fg_color @accent_fg_color;
 @define-color insensitive_bg_color @view_bg_color;
@@ -66,7 +74,9 @@
 @define-color theme_unfocused_selected_fg_color @accent_fg_color;
 @define-color borders shade(@base_color, 0.7);
 @define-color switch_trough_color #4d5364;
-@define-color switch_knob_color #0e0e0e;
+@define-color switch_knob_color #ffffff;
+@define-color slider_knob_color #ffffff;
+@define-color slider_knob_border_color rgba(0,0,0,0.1);
 @define-color unfocused_borders @borders;
 @define-color error_color @error_bg_color;
 @define-color content_view_bg @view_bg_color;
@@ -249,16 +259,15 @@ spinner:checked:disabled {
     opacity: 0.5;
 }
 entry {
-    min-height: 22px;
+    min-height: 30px;
     border: 1px solid;
     padding: 2px 8px;
     caret-color: currentColor;
-    border-radius: 4px;
+    border-radius: 5px;
     transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
     color: @text_color;
-    border-color: @borders;
-    background-color: shade(@base_color, 0.8);
-    box-shadow: 0 1px @hightlight_line;
+    border-color: transparent;
+    background-color: @field_color;
 }
 entry.search {
     border-radius: 5px;
@@ -282,16 +291,20 @@ entry.flat:focus {
     border-color: transparent;
     border-radius: 0;
 }
-entry:focus {
+entry placeholder {
+    color: @placeholder_text_color;
+}
+entry:focus,
+entry:focus-within {
     background-clip: border-box;
     color: shade(@text_color, 1.2);
     border-color: @active_color;
-    background-color: shade(@base_color, 0.8);
+    background-color: @field_color;
 }
 entry:disabled {
     color: alpha(@text_color, 0.3);
-    border-color: shade(@base_color, 0.8);
-    background-color: shade(@base_color, 0.9);
+    border-color: transparent;
+    background-color: @idle_color;
 }
 entry.warning {
     color: @warning_fg_color;
@@ -608,10 +621,10 @@ button.osd:disabled {
 }
 button.suggested-action {
     background-clip: border-box;
-    color: @accent_fg_color;
-    outline-color: alpha(@_static_white,0.3);
-    background-color: @accent_bg_color;
-    border-color: @accent_bg_color;
+    color: @accent_standalone_color;
+    border-color: @borders;
+    background-color: @strong_color;
+    box-shadow: inset 0 1px @hightlight_line;
 }
 button.suggested-action.flat,
 button.suggested-action.sidebar-button {
@@ -623,17 +636,17 @@ button.suggested-action.sidebar-button {
 }
 button.suggested-action:hover {
     background-clip: border-box;
-    color: @accent_fg_color;
-    outline-color: alpha(@_static_white,0.3);
-    background-color: @accent_bg_color;
-    border-color: @accent_bg_color;
+    color: @accent_standalone_color;
+    border-color: shade(@base_color, 0.5);
+    background-color: @checked_color;
+    box-shadow: inset 0 1px @hightlight_line;
 }
 button.suggested-action:active,
 button.suggested-action:checked {
     background-clip: border-box;
     color: @accent_fg_color;
-    outline-color: alpha(@_static_white,0.3);
     background-color: @accent_bg_color;
+    background-image: none;
     border-color: @accent_bg_color;
 }
 button.suggested-action.flat:disabled,
@@ -952,7 +965,7 @@ toolbar.inline-toolbar toolbutton > button.sidebar-button,
 .linked:not(.vertical) > button:active,
 .linked:not(.vertical) > button:checked,
 spinbutton:not(.vertical) button,
-spinbutton:not(.vertical) entry,
+spinbutton:not(.vertical) text,
 .primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button,
 headerbar .linked:not(.vertical):not(.path-bar).stack-switcher > button,
 .primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:hover,
@@ -991,7 +1004,7 @@ toolbar.inline-toolbar toolbutton:first-child > button.flat,
 toolbar.inline-toolbar toolbutton:first-child > button.sidebar-button,
 .inline-toolbar toolbutton:first-child > button.sidebar-button,
 spinbutton:not(.vertical) button:first-child,
-spinbutton:not(.vertical) entry:first-child,
+spinbutton:not(.vertical) text:first-child,
 .linked:not(.vertical) > combobox:first-child > box > button.combo,
 .primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:first-child,
 headerbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:first-child,
@@ -1009,7 +1022,7 @@ toolbar.inline-toolbar toolbutton:last-child > button.flat,
 toolbar.inline-toolbar toolbutton:last-child > button.sidebar-button,
 .inline-toolbar toolbutton:last-child > button.sidebar-button,
 spinbutton:not(.vertical) button:last-child,
-spinbutton:not(.vertical) entry:last-child,
+spinbutton:not(.vertical) text:last-child,
 .linked:not(.vertical) > combobox:last-child > box > button.combo,
 .primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:last-child,
 headerbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:last-child,
@@ -1028,7 +1041,7 @@ toolbar.inline-toolbar toolbutton:only-child > button.flat,
 toolbar.inline-toolbar toolbutton:only-child > button.sidebar-button,
 .inline-toolbar toolbutton:only-child > button.sidebar-button,
 spinbutton:not(.vertical) button:only-child,
-spinbutton:not(.vertical) entry:only-child,
+spinbutton:not(.vertical) text:only-child,
 .linked:not(.vertical) > combobox:only-child > box > button.combo,
 .primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:only-child,
 headerbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:only-child,
@@ -1045,7 +1058,7 @@ headerbar .linked:not(.vertical).path-bar > button:only-child,
 .linked.vertical > button:active,
 .linked.vertical > button:checked,
 spinbutton.vertical button,
-spinbutton.vertical entry,
+spinbutton.vertical text,
 .linked.vertical > combobox > box > button.combo {
     border-radius: 0;
     border-bottom-style: none;
@@ -1053,7 +1066,7 @@ spinbutton.vertical entry,
 .linked.vertical > entry:first-child,
 .linked.vertical > button:first-child,
 spinbutton.vertical button:first-child,
-spinbutton.vertical entry:first-child,
+spinbutton.vertical text:first-child,
 .linked.vertical > combobox:first-child > box > button.combo {
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
@@ -1061,7 +1074,7 @@ spinbutton.vertical entry:first-child,
 .linked.vertical > entry:last-child,
 .linked.vertical > button:last-child,
 spinbutton.vertical button:last-child,
-spinbutton.vertical entry:last-child,
+spinbutton.vertical text:last-child,
 .linked.vertical > combobox:last-child > box > button.combo {
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
@@ -1070,7 +1083,7 @@ spinbutton.vertical entry:last-child,
 .linked.vertical > entry:only-child,
 .linked.vertical > button:only-child,
 spinbutton.vertical button:only-child,
-spinbutton.vertical entry:only-child,
+spinbutton.vertical text:only-child,
 .linked.vertical > combobox:only-child > box > button.combo {
     border-radius: 4px;
     border-style: solid;
@@ -1205,30 +1218,40 @@ spinbutton button:active {
 spinbutton:disabled {
     color: alpha(@window_fg_color,0.55);
 }
-spinbutton:not(.vertical) entry {
-    min-width: 28px;
-}
-spinbutton:not(.vertical):dir(ltr) entry,
-spinbutton:not(.vertical):dir(rtl) button.up {
-    border-radius: 4px 0 0 4px;
-}
-spinbutton:not(.vertical) > button + button {
-    border-left-style: none;
-}
-spinbutton:not(.vertical) > button:hover:not(:active),
-spinbutton:not(.vertical) > button:hover + button {
-    box-shadow: inset 1px 0 @borders;
-}
-spinbutton:not(.vertical) > button:first-child:hover:not(:active),
-spinbutton:not(.vertical) > button.up:dir(rtl):hover:not(:active),
-spinbutton:not(.vertical) > entry + button:not(:active):hover {
+spinbutton:not(.vertical) button {
+    padding: 0 6px;
+    border: none;
+    border-radius: 4px;
+    background-color: transparent;
+    background-image: none;
     box-shadow: none;
+    color: @text_color;
 }
-spinbutton:not(.vertical) > entry:focus + button {
-    border-left-color: @active_color;
+spinbutton:not(.vertical) button:hover {
+    background-color: @checked_color;
 }
-spinbutton:not(.vertical) > entry:drop(active) + button {
-    border-left-color: @warning_color;
+spinbutton:not(.vertical) button:active {
+    color: @accent_standalone_color;
+    background-color: @checked_color;
+}
+spinbutton:not(.vertical) {
+    min-height: 30px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    background-color: @field_color;
+    color: @text_color;
+}
+spinbutton:not(.vertical):focus-within {
+    border-color: @active_color;
+}
+spinbutton:not(.vertical) text {
+    min-width: 28px;
+    min-height: 0;
+    padding: 0 4px;
+    border: none;
+    border-radius: 0;
+    background-color: transparent;
+    box-shadow: none;
 }
 .osd spinbutton:not(.vertical) > button:hover:not(:active),
 .osd spinbutton:not(.vertical) > button:hover + button {
@@ -1236,14 +1259,14 @@ spinbutton:not(.vertical) > entry:drop(active) + button {
 }
 .osd spinbutton:not(.vertical) > button:first-child:hover:not(:active),
 .osd spinbutton:not(.vertical) > button.up:dir(rtl):hover:not(:active),
-.osd spinbutton:not(.vertical) > entry + button:not(:active):hover {
+.osd spinbutton:not(.vertical) > text + button:not(:active):hover {
     box-shadow: none;
 }
-.osd spinbutton:not(.vertical) > entry:focus + button {
+.osd spinbutton:not(.vertical) > text:focus + button {
     border-left-color: rgba(26, 28, 34, 0.35);
 }
 spinbutton.vertical button,
-spinbutton.vertical entry {
+spinbutton.vertical text {
     padding-left: 4px;
     padding-right: 4px;
     min-width: 0;
@@ -1251,21 +1274,54 @@ spinbutton.vertical entry {
 spinbutton.vertical button.up {
     border-radius: 4px 4px 0 0;
 }
-spinbutton.vertical > entry:focus + button {
+spinbutton.vertical > text:focus + button {
     border-top-color: @active_color;
 }
-spinbutton.vertical > entry:drop(active) + button {
+spinbutton.vertical > text:drop(active) + button {
     border-top-color: @warning_color;
 }
 combobox button.combo {
     min-width: 0;
-    padding-left: 8px;
-    padding-right: 8px;
+    min-height: 30px;
+    padding: 2px 8px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    background-color: @field_color;
+    color: @text_color;
+    box-shadow: none;
+}
+combobox button.combo:hover,
+combobox button.combo:active,
+combobox button.combo:checked {
+    background-color: @field_color;
 }
 combobox arrow {
     -gtk-icon-source: -gtk-icontheme("pan-down-symbolic");
     min-height: 16px;
     min-width: 16px;
+}
+dropdown > button {
+    min-height: 30px;
+    padding: 2px 8px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    background-color: @field_color;
+    background-image: none;
+    color: @text_color;
+    box-shadow: none;
+}
+dropdown > button:hover {
+    background-color: @field_color;
+}
+dropdown:focus-within > button,
+dropdown > button:active {
+    border-color: @active_color;
+}
+dropdown arrow {
+    -gtk-icon-source: -gtk-icontheme("pan-down-symbolic");
+    min-height: 16px;
+    min-width: 16px;
+    color: @window_fg_color;
 }
 toolbar,
 .inline-toolbar {
@@ -2034,12 +2090,12 @@ headerbar spinbutton:not(.vertical) > button:hover + button {
 }
 .primary-toolbar spinbutton:not(.vertical) > button:first-child:hover:not(:active),
 headerbar spinbutton:not(.vertical) > button:first-child:hover:not(:active),
-.primary-toolbar spinbutton:not(.vertical) > entry + button:not(:active):hover,
-headerbar spinbutton:not(.vertical) > entry + button:not(:active):hover {
+.primary-toolbar spinbutton:not(.vertical) > text + button:not(:active):hover,
+headerbar spinbutton:not(.vertical) > text + button:not(:active):hover {
     box-shadow: none;
 }
-.primary-toolbar spinbutton:not(.vertical) > entry:focus + button,
-headerbar spinbutton:not(.vertical) > entry:focus + button {
+.primary-toolbar spinbutton:not(.vertical) > text:focus + button,
+headerbar spinbutton:not(.vertical) > text:focus + button {
     border-left-color: @active_color;
 }
 .primary-toolbar combobox:disabled,
@@ -2127,7 +2183,10 @@ headerbar switch:backdrop {
 }
 .primary-toolbar progressbar trough,
 headerbar progressbar trough {
-    background-color: rgba(82, 93, 118, 0.15);
+    border: none;
+    border-radius: 5px;
+    min-height: 4px;
+    background-color: @strong_color;
 }
 .primary-toolbar progressbar:backdrop,
 headerbar progressbar:backdrop {
@@ -2139,27 +2198,34 @@ headerbar scale:backdrop {
 }
 .primary-toolbar scale slider,
 headerbar scale slider {
-    background-color: @view_bg_color;
-    border-color: rgba(82, 93, 118, 0.3);
+    background-color: @slider_knob_color;
+    border: 1px solid @slider_knob_border_color;
+    border-radius: 6px;
+    box-shadow: none;
+    transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition-property: background, border;
 }
 .primary-toolbar scale slider:hover,
 headerbar scale slider:hover {
-    background-color: @view_bg_color;
-    border-color: rgba(82, 93, 118, 0.3);
+    background-color: @slider_knob_color;
 }
 .primary-toolbar scale slider:active,
 headerbar scale slider:active {
-    background-color: @active_color;
-    border-color: @active_color;
+    background-clip: border-box;
+    background-color: @slider_knob_color;
+    box-shadow: none;
+    transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 .primary-toolbar scale slider:disabled,
 headerbar scale slider:disabled {
-    background-color: alpha(@view_bg_color,0.985);
-    border-color: rgba(82, 93, 118, 0.3);
+    background-color: @slider_knob_color;
+    border-color: @slider_knob_border_color;
 }
 .primary-toolbar scale trough,
 headerbar scale trough {
-    background-color: rgba(82, 93, 118, 0.15);
+    outline-offset: 2px;
+    border-radius: 5px;
+    background-color: @strong_color;
 }
 .primary-toolbar scale trough:disabled,
 headerbar scale trough:disabled {
@@ -2456,20 +2522,20 @@ menu > arrow:disabled,
 popover,
 popover.background {
     padding: 2px;
-    border-radius: 4px;
+    border-radius: 6px;
     background-clip: border-box;
     background-color: @popover_bg_color;
-    box-shadow: 0 2px 6px 1px alpha(@_static_black,0.07);
+    box-shadow: 0 2px 8px alpha(@_static_black,0.27);
 }
 .csd popover,
 popover,
 .csd popover.background,
 popover.background {
-    border: 1px solid @borders;
+    border: 1px solid alpha(@window_fg_color, 0.10);
 }
 popover separator,
 popover.background separator {
-    background-color: @borders;
+    background-color: alpha(@window_fg_color, 0.10);
 }
 popover > list,
 popover > .view,
@@ -2788,27 +2854,30 @@ scrollbar.vertical slider {
    由 shell 模板注入的 nosd.css 驱动 accent，不再使用烘焙死颜色的 PNG。
    造型对齐 deepin 原版素材：中性盒体 + accent 对勾/圆点；开关为灰轨 + 深/白滑块。 */
 switch {
-    min-width: 36px;
-    min-height: 20px;
+    min-width: 40px;
+    min-height: 22px;
     padding: 0;
     border: none;
-    border-radius: 10px;
+    border-radius: 11px;
     outline-color: transparent;
     color: transparent;
     box-shadow: none;
-    background-color: @switch_trough_color;
+    background-color: @strong_color;
 }
 switch slider {
-    min-width: 14px;
-    min-height: 14px;
-    margin: 3px;
+    min-width: 18px;
+    min-height: 18px;
+    margin: 2px;
     border: none;
-    border-radius: 10px;
+    border-radius: 50%;
     box-shadow: none;
     background-color: @switch_knob_color;
 }
 switch:checked {
     background-color: @accent_bg_color;
+}
+switch:checked slider {
+    background-color: @switch_knob_color;
 }
 switch:disabled {
     background-color: alpha(@switch_trough_color, 0.5);
@@ -3028,6 +3097,7 @@ scale {
 }
 scale.horizontal trough {
     padding: 0 4px;
+    min-height: 2px;
 }
 scale.horizontal highlight,
 scale.horizontal fill {
@@ -3035,15 +3105,16 @@ scale.horizontal fill {
 }
 scale.vertical trough {
     padding: 4px 0;
+    min-width: 2px;
 }
 scale.vertical highlight,
 scale.vertical fill {
     margin: 0;
 }
 scale slider {
-    min-height: 15px;
-    min-width: 15px;
-    margin: -6px;
+    min-height: 12px;
+    min-width: 12px;
+    margin: -5px;
 }
 scale.fine-tune slider {
     margin: -4px;
@@ -3056,11 +3127,10 @@ scale.fine-tune trough {
 scale trough {
     outline-offset: 2px;
     border-radius: 5px;
-    background-color: alpha(@_static_black,0.1);
-    box-shadow: 0 1px @hightlight_line;
+    background-color: @strong_color;
 }
 scale trough:disabled {
-    background-color: alpha(@_static_black,0.15);
+    background-color: @field_color;
 }
 .osd scale trough {
     background-color: rgba(69, 74, 89, 0.95);
@@ -3091,38 +3161,37 @@ infobar scale trough:disabled {
 scale highlight {
     border-radius: 5px;
     background-color: @active_color;
-    box-shadow: inset 0 1px alpha(@_static_white,0.05);
 }
 scale highlight:disabled {
-    background-color: alpha(@_static_black,0.1);
+    background-color: @checked_color;
     box-shadow: none;
 }
 scale fill {
     border-radius: 5px;
-    background-color: rgba(82, 148, 226, 0.5);
+    background-color: transparent;
 }
 scale fill:disabled {
     background-color: transparent;
 }
 scale slider {
-    background-color: shade(@base_color, 0.6);
+    background-color: @slider_knob_color;
+    border: 1px solid @slider_knob_border_color;
     border-radius: 100%;
-    box-shadow: 0 0 0 1px shade(@base_color, 0.4), 0 1px 2px alpha(@_static_black,0.3);
+    box-shadow: none;
     transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
     transition-property: background, border;
 }
 scale slider:hover {
-    background-color: shade(@base_color, 1.0);
+    background-color: @slider_knob_color;
 }
 scale slider:active {
-    background-clip: border-box;
-    background-color: @active_color;
-    box-shadow: 0 0 0 1px alpha(@_static_black,0.4), 0 1px 2px alpha(@_static_black,0.3);
+    background-color: @slider_knob_color;
+    border-color: @slider_knob_border_color;
     transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 scale slider:disabled {
-    background-color: shade(@base_color, 1.0);
-    border-color: shade(@base_color, 0.8);
+    background-color: alpha(@slider_knob_color,0.55);
+    border-color: transparent;
 }
 menuitem:hover scale slider,
 row:selected scale slider,
@@ -3232,18 +3301,17 @@ progressbar.osd trough {
 progressbar progress {
     background-color: @active_color;
     border: none;
-    border-radius: 4px;
-    box-shadow: inset 0 1px alpha(@_static_white,0.05);
+    border-radius: 5px;
 }
 row:selected progressbar progress,
 infobar progressbar progress {
     background-color: @base_color;
 }
 progressbar trough {
-    border: 1px solid @borders;
-    border-radius: 4px;
-    background-color: shade(@base_color, 0.8);
-    box-shadow: 0 1px @hightlight_line;
+    border: none;
+    border-radius: 5px;
+    background-color: @strong_color;
+    box-shadow: none;
 }
 row:selected progressbar trough,
 infobar progressbar trough {
@@ -3429,6 +3497,37 @@ row.activatable:selected:active {
 row.activatable:selected.has-open-popup,
 row.activatable:selected:hover {
     background-color: shade(@active_color, 1.1);
+}
+list.boxed-list,
+list.content {
+    background-color: transparent;
+    border-color: transparent;
+}
+list.boxed-list row,
+list.content row {
+    min-height: 36px;
+    padding: 0 10px 0 20px;
+    background-color: @strong_color;
+}
+list.boxed-list row:not(:last-child),
+list.content row:not(:last-child) {
+    margin-bottom: 1px;
+}
+list.boxed-list row:first-child,
+list.content row:first-child {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+list.boxed-list row:last-child,
+list.content row:last-child {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+list.boxed-list row.activatable:hover,
+list.boxed-list row.activatable.has-open-popup,
+list.content row.activatable:hover,
+list.content row.activatable.has-open-popup {
+    background-color: @checked_color;
 }
 .app-notification {
     padding: 10px;
@@ -3905,11 +4004,11 @@ row:selected button:disabled:checked,
     border-color: alpha(@_static_white,0.4);
 }
 tooltip {
-    border-radius: 4px;
+    border-radius: 6px;
     box-shadow: none;
 }
 tooltip.background {
-    background-color: rgba(75, 81, 98, 0.95);
+    background-color: rgba(0, 0, 0, 0.8);
     background-clip: padding-box;
 }
 tooltip.background label {
@@ -3920,7 +4019,7 @@ tooltip decoration {
 }
 tooltip * {
     background-color: transparent;
-    color: @borders;
+    color: @_static_white;
 }
 colorswatch,
 colorswatch:drop(active) {
@@ -4100,7 +4199,7 @@ decoration:backdrop {
     box-shadow: 0 3px 6px alpha(@_static_black,0.1), 0 0 0 1px alpha(@_static_black,0.1);
 }
 tooltip.csd decoration {
-    border-radius: 4px;
+    border-radius: 6px;
     box-shadow: 0 1px 3px 1px alpha(@_static_black,0.1);
 }
 messagedialog.csd decoration {
