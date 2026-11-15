@@ -10,6 +10,31 @@
 
 ## [Unreleased]
 
+## [1.7.7] - 2026-11-16
+
+这一版把 nosDshell 搬进 monorepo，并让应用主题与壳层界面真正浑然一体：GTK/Kvantum/fcitx5 主题更名 nosd 并与设置页一比一对齐，同时修掉了让 accent 墨水色恒黑的信号处理器命名冲突。
+
+---
+
+### 新功能
+
+- 应用主题对齐 shell 控件契约（设置控件族 + 菜单/弹层/提示框，DESIGN §8）：[`19499abc1`](https://github.com/nosDshell/nosD/commit/19499abc18110168853985f6056d983c5bc24657)、[`8d3758a51`](https://github.com/nosDshell/nosD/commit/8d3758a5120e9178999de7d60229d7677de03e8a)
+- 叠加梯与控件几何机器可读契约 + DESIGN §8 应用主题映射：[`1f1ea1581`](https://github.com/nosDshell/nosD/commit/1f1ea1581b98cf6111727acf694f6115889d2c60)
+- 控件面接入壳层叠加梯（nosd-theme 派生 overlay_* 键）：[`69cc33849`](https://github.com/nosDshell/nosD/commit/69cc338497d5c1be83b7b0857d57cb3e4ae70fde)
+- Flea 文件管理器主题模板：[`1ff769343`](https://github.com/nosDshell/nosD/commit/1ff7693436b1e25b56727eab77909e8ea06f15d1)
+- onX/X 同名碰撞 lint 护栏（信号处理器名遮蔽检测）：[`a07d51d05`](https://github.com/nosDshell/nosD/commit/a07d51d052c0b200e28e8d66d9c7d3932c7a6b95)
+
+### 修复
+
+- onAccent 改名 onPrimary——信号处理器命名冲突致颜色恒黑：[`087b3a0a9`](https://github.com/nosDshell/nosD/commit/087b3a0a9b549c243fc7c0797f5e4e6062ebdd80)
+- 滚动条滑块接入叠加梯 indicator 档：[`c04653fe8`](https://github.com/nosDshell/nosD/commit/c04653fe8e8682012f7602d1d606ed736095dbcf)
+- 控件级几何与状态按令牌收敛对齐 shell：[`6ef25e055`](https://github.com/nosDshell/nosD/commit/6ef25e0554d111d4511de357743d134ddae24f37)
+
+### 重构
+
+- monorepo 布局——shell 整体移入 packages/nosdshell/：[`dd0620e4d`](https://github.com/nosDshell/nosD/commit/dd0620e4df75e9a7195f6e70a2a95a1a9db2209e)
+- monorepo 适配——组件版本/发布/CI/文档全部就位：[`a3a985e47`](https://github.com/nosDshell/nosD/commit/a3a985e475fa7cc8a698c30984716e0195b0a9b8)
+
 ## [1.7.6.1] - 2026-11-14
 
 修掉 gtk-refresh 取 GTK 主题名时对 darkman 配置的依赖：改用标准的 GTK settings.ini，不用 darkman 的系统也能正确同步明暗主题。
@@ -831,7 +856,8 @@ nosDshell 基于 Noctalia v4（Quickshell/QML），保留其全部功能，以 D
 - Guix 打包（`nosdshell.scm`）与 Nix flake（含 home-manager / NixOS 模块）。
 - 运行在上游 Quickshell 0.3.1，另带两个 pipewire UAF 补丁（`packaging/patches/`）。
 
-[Unreleased]: https://github.com/nosDshell/nosDshell/compare/v1.7.6.1...HEAD
+[Unreleased]: https://github.com/nosDshell/nosD/compare/nosdshell-v1.7.7...HEAD
+[1.7.7]: https://github.com/nosDshell/nosD/compare/v1.7.6.1...nosdshell-v1.7.7
 [1.7.6.1]: https://github.com/nosDshell/nosDshell/compare/v1.7.6...v1.7.6.1
 [1.7.6]: https://github.com/ShineBreaker/nosDshell/compare/v1.7.5...v1.7.6
 [1.7.5]: https://github.com/ShineBreaker/nosDshell/compare/v1.7.4...v1.7.5
