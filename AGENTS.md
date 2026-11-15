@@ -37,6 +37,9 @@ nosDshell 生态的 monorepo：shell 本体与周边主题集中管理，用单�
 - 历史 `v*` tag（旧 nosDshell 布局）有效但**新发版一律组件前缀**。
 - **tag 漏推 = 无 Release**：每次发版 `git ls-remote --tags origin | grep <tag>` 自查。
 - **一次 push 最多 3 个 tag**：超出则全部 workflow 不触发，分批推。
+- **发版是两段，不是一段**：Release 出包成功只算第一段；随后必须去
+  `nosd-pkgs` 把该组件的 version/commit/hash 同步到新 tag（频道只跟
+  tag，不跟 main commit）。`nosd-pkgs` 的每日 pin 校验会在落后时变红。
 
 ## 4. 工作准则
 
