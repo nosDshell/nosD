@@ -13,6 +13,7 @@ spec/tokens.toml 与跨端一致性契约逐条报告。
     tools/theme-audit/theme-audit.py audit --scheme Gruvbox --mode dark
     tools/theme-audit/theme-audit.py stage --scheme Kanagawa --mode dark   # 只渲染舞台
     tools/theme-audit/theme-audit.py probe --scheme Kanagawa --mode dark   # 渲染+测量，不判定
+    tools/theme-audit/theme-audit.py showcase --scheme Deepin --mode dark  # 四列对照截图
 
 环境覆盖（Guix 自动探测失败时用）：
     NOSD_THEME_BIN     nosd-theme 二进制路径
@@ -41,7 +42,25 @@ SCHEMES = SHELL_PKG / "Assets" / "ColorScheme"
 TOKENS = ROOT / "spec" / "tokens.toml"
 AUDIT_DIR = Path(__file__).resolve().parent
 
-THEME_FOR_MODE = {"dark": "deepin-dark", "light": "deepin"}
+THEME_FOR_MODE = {"dark": "nosd-dark", "light": "nosd"}
+
+# --- showcase：shell 参照列的几何 -----------------------------------------
+# verify.sh 的无头 sway 输出固定 1920x1080；控制中心帧 408 px 贴右缘
+# （ControlCenterPanel.qml: panelAnchorRight + preferredWidth=controlCenterWidth
+# =408），内部 = 56 px 模块导航 rail + 352 px 内容列（Style.qml:
+# settingsRailWidth=56, settingsModuleContentWidth=352）。内容列像素区间
+# x∈[1920-352, 1920) = [1568,1920)。SHELL_CROP_Y0 是模块头「显示」行上缘，
+# 按实际截图量出；下方取 815 px 盖到「深色模式计划」行底。
+VERIFY_DIR = Path("/tmp/nosd-verify-showcase")
+SHELL_CROP_X0 = 1920 - 352
+# 实测 showcase-Deepin-dark 截图：模块头「显示」行起于 y≈90；y90..905 覆盖
+# 显示组（亮度滑块/背光设备/步长/两开关）、夜间模式组、个性化→颜色组
+# （深色模式/同步系统主题/自定义强调色/深色模式计划），与 showcase 模仿窗
+# 的 A/B/C 三组一一对应。
+SHELL_CROP_Y0 = 90
+SHELL_CROP_H = 815
+SHELL_SHOT = "settings-display.png"
+ZOOM_REGION_H = 260          # -x3.png 取每列顶部这段做 3x 最近邻放大
 
 # ---------------------------------------------------------------- 环境探测
 
@@ -172,14 +191,18 @@ def make_stage(work):
         d.mkdir(exist_ok=True)
         (d / "gtk.css").write_text('@import url("nosd.css");\n')
         (d / "settings.ini").write_text(
-            "[Settings]\ngtk-application-prefer-dark-theme=1\n")
+            "[Settings]\ngtk-application-prefer-dark-theme=1\n"
+            "gtk-font-name=DejaVu Sans 9\n")
     # qt6ct：走与真机同一条链 style=Kvantum + nosdshell.conf 调色板
     qt6 = cfg / "qt6ct"
     qt6.mkdir(exist_ok=True)
     (qt6 / "qt6ct.conf").write_text(
         "[Appearance]\nstyle=Kvantum\ncustom_palette=true\n"
-        f"color_scheme_path={qt6 / 'colors' / 'nosdshell.conf'}\n")
-    for t in ("deepin", "deepin-dark"):
+        f"color_scheme_path={qt6 / 'colors' / 'nosdshell.conf'}\n"
+        "[Fonts]\n"
+        'fixed="DejaVu Sans,9,-1,5,50,0,0,0,0,0"\n'
+        'general="DejaVu Sans,9,-1,5,50,0,0,0,0,0"\n')
+    for t in ("nosd", "nosd-dark"):
         dst = data / "themes" / t
         if not dst.exists():
             os.symlink(GTK_PKG / t, dst)
@@ -244,6 +267,229 @@ def probe_qt(cfg, data, outdir, env):
     if res.get("style") != "kvantum":
         print(f"[warn] Qt 探针 style={res.get('style')!r}，不是 kvantum：结果不可信")
     return res
+
+# ---------------------------------------------------------------- showcase
+
+def showcase_gtk(gtkv, theme, cfg, data, out_png):
+    """在 Xvfb 里跑 showcase_app.py 的 GTK 端，环境与探针完全一致。"""
+    e = probe_env(cfg, data)
+    e.update({
+        "GI_TYPELIB_PATH": find_typelib(),
+        "GDK_BACKEND": "x11",
+        "GTK_THEME": theme,
+    })
+    r = run([find_xvfb(), "-a", "-s", "-screen 0 1280x900x24",
+             sys.executable, AUDIT_DIR / "showcase_app.py",
+             "--toolkit", f"gtk{gtkv}", "--out", out_png],
+            env=e, capture=True)
+    if r.returncode != 0 or not Path(out_png).exists():
+        sys.exit(f"gtk{gtkv} showcase 失败："
+                 f"{r.stderr[-3000:] if r.stderr else r.stdout[-3000:]}")
+    if r.stderr:
+        for line in r.stderr.splitlines():
+            low = line.lower()
+            if "error" in low or "warn" in low or "[info]" in low:
+                print(f"[gtk{gtkv}] {line}")
+
+
+def showcase_qt(cfg, data, out_png):
+    """offscreen 跑 showcase_app.py 的 Qt 端，环境同 probe_qt。"""
+    e = probe_env(cfg, data)
+    e.update({
+        "PYTHONPATH": ":".join(find_pyqt()),
+        "QT_QPA_PLATFORM": "offscreen",
+        "QT_QPA_PLATFORMTHEME": "qt6ct",
+        "QT_STYLE_OVERRIDE": "kvantum",
+        "QT_PLUGIN_PATH": f"{find_kvantum_plugins()}:{os.environ.get('QT_PLUGIN_PATH','')}",
+    })
+    r = run([sys.executable, AUDIT_DIR / "showcase_app.py",
+             "--toolkit", "qt", "--out", out_png], env=e, capture=True)
+    if r.returncode != 0 or not Path(out_png).exists():
+        sys.exit(f"qt showcase 失败："
+                 f"{r.stderr[-3000:] if r.stderr else r.stdout[-3000:]}")
+    style = None
+    for line in (r.stderr or "").splitlines():
+        if line.startswith("style="):
+            style = line.split("=", 1)[1].strip()
+        elif "qt.svg" in line or "kvantum" in line.lower() or "[info]" in line.lower():
+            print(f"[qt] {line}")
+    if style != "kvantum":
+        print(f"[warn] Qt showcase style={style!r}，不是 kvantum：截图不可信")
+
+
+def shell_ref(scheme, mode, work, refresh=False):
+    """verify.sh settings-display 截图 → 裁出 352px 内容列（PIL Image）。
+
+    截图缓存在 VERIFY_DIR，--refresh-shell 强制重跑。verify.sh 是唯一允许
+    跑 shell 的方式（nosdshell/AGENTS.md「运行与校验」）；--settings 的
+    JSON 深合到内置 seed 上（verify.sh 头部 merge 逻辑）。
+    """
+    name = f"showcase-{scheme}-{mode}"
+    shot = VERIFY_DIR / "shots" / name / SHELL_SHOT
+    if refresh or not shot.exists():
+        # 复用旧 home/config 会让设置页带着陈旧状态启动（行内容整列空渲染）；
+        # 刷新时重置可重建缓存，verify.sh 会重新种子化。
+        for sub in ("home", "state", "config"):
+            shutil.rmtree(VERIFY_DIR / sub, ignore_errors=True)
+        seed = Path(work) / f"seed-{scheme}-{mode}.json"
+        seed.write_text(json.dumps({
+            "colorSchemes": {
+                "predefinedScheme": scheme,
+                "darkMode": mode == "dark",
+            }}, ensure_ascii=False))
+        r = run([SHELL_PKG / "Scripts" / "test" / "verify.sh", name,
+                 "--settings", seed, "--scenes", "settings-display"],
+                env={"NOSD_VERIFY_DIR": str(VERIFY_DIR),
+                     # 不生成 foot 陪跑窗口：它们会透过半透明面板渗色
+                     "NOSD_SPAWN_WINDOWS": "0",
+                     # 本机需要 fork 构建的 qs（上游 0.3.2 无 Services.Keyring）
+                     "QS_PKG": os.environ.get("QS_PKG", "quickshell-nosd")},
+                capture=True)
+        if not shot.exists():
+            tail = ((r.stderr or "") + (r.stdout or ""))[-3000:]
+            sys.exit(f"verify.sh 未产出 {shot}：\n{tail}")
+    from PIL import Image
+    img = Image.open(shot).convert("RGB")
+    return img.crop((SHELL_CROP_X0, SHELL_CROP_Y0,
+                     SHELL_CROP_X0 + 352, SHELL_CROP_Y0 + SHELL_CROP_H))
+
+
+def compose(columns, out_png):
+    """columns = [(label, PIL Image)] → 带标签四列拼图，1:1 像素。"""
+    from PIL import Image, ImageDraw
+    label_h, gap = 22, 6
+    w = sum(i.width for _, i in columns) + gap * (len(columns) - 1)
+    h = label_h + max(i.height for _, i in columns)
+    canvas = Image.new("RGB", (w, h), "#202020")
+    d = ImageDraw.Draw(canvas)
+    x = 0
+    for label, img in columns:
+        tw = d.textlength(label)
+        d.text((x + (img.width - tw) / 2, 6), label, fill="#e0e0e0")
+        canvas.paste(img.convert("RGB"), (x, label_h))
+        x += img.width + gap
+    canvas.save(out_png)
+
+
+ZOOM_BOTTOM_H = 160           # -x3-loose.png 取每列底部这段（散落控件带）
+
+
+def zoom3(columns, out_png, bottom=False):
+    """同构图：每列裁同一高度带（顶部或底部），3x 最近邻放大后再拼。"""
+    from PIL import Image
+    h = ZOOM_BOTTOM_H if bottom else ZOOM_REGION_H
+    scaled = []
+    for label, img in columns:
+        ch = min(h, img.height)
+        box = ((0, img.height - ch, img.width, img.height) if bottom
+               else (0, 0, img.width, ch))
+        scaled.append((label, img.crop(box)
+                       .resize((img.width * 3, ch * 3),
+                               Image.Resampling.NEAREST)))
+    compose(scaled, out_png)
+
+
+def groove_step_checks(columns, palette, tokens):
+    """滑槽未填充段须比所在卡面亮一档 strong（DESIGN §8.3）。
+
+    叠加梯若烘焙成实色，滑槽(strong)与设置行卡(strong)同值→隐形。
+    这里在 showcase 真实卡面上量相对梯阶：期望 groove = card + α strong×(fg−card)。
+    """
+    alpha = tokens["overlay"]["strong"]
+    fg = hex2rgb(palette["on_surface"])
+    prim = hex2rgb(palette["primary"])
+
+    def near(p, c, tol=24):
+        return all(abs(a - b) <= tol for a, b in zip(p, c))
+
+    res = []
+    for name, im in columns:
+        if name == "shell":
+            continue
+        im = im.convert("RGBA")
+        px = im.load()
+        w, h = im.size
+        found = None
+        for y in range(10, min(h, 160)):
+            runs = []
+            prev = None
+            start = 0
+            for x in range(w):
+                p = px[x, y][:3]
+                if p != prev:
+                    if prev is not None:
+                        runs.append((start, x - 1, prev))
+                    prev = p
+                    start = x
+            runs.append((start, w - 1, prev))
+            fill = [r for r in runs if near(r[2], prim) and r[1] - r[0] > 20]
+            if not fill:
+                continue
+            f = fill[0]
+            # 旋钮在填充段右端。浅色窗口边距(#f8f8f8)也近白，须先限定「填充右侧」
+            # 再取首个白跑长，否则左边距会被误认成旋钮（深色边距#181818 不近白，
+            # 故旧逻辑只在浅色翻车）。
+            knob = [r for r in runs
+                    if near(r[2], (255, 255, 255), 12) and 3 <= r[1] - r[0] <= 22
+                    and r[0] > f[1]]
+            if knob:
+                k = knob[0]
+                left = [r for r in runs if r[1] < f[0] and r[1] - r[0] > 4]
+                right = [r for r in runs if r[0] > k[1] and r[1] - r[0] > 4]
+                if left and right:
+                    found = (left[-1][2], right[0][2])
+                    break
+        if not found:
+            res.append(("WARN", f"{name} 滑槽梯阶", "未定位滑块行"))
+            continue
+        card, groove = found
+        exp = tuple(round(c + alpha * (f - c)) for c, f in zip(card, fg))
+        ok = all(abs(a - b) <= 3 for a, b in zip(groove, exp))
+        res.append(("OK" if ok else "FAIL", f"{name} 滑槽比卡面亮一档 strong",
+                    f"卡面{card} 滑槽{groove} 期望{exp}"))
+    return res
+
+
+def do_showcase(a, mode, work, outdir):
+    """渲染+舞台 → gtk4/gtk3/qt 各一张设置模仿窗 → 与 shell 参照拼四列。"""
+    from PIL import Image  # noqa: F401
+    work = Path(work)
+    work.mkdir(parents=True, exist_ok=True)
+    sp = scheme_path(a.scheme)
+    theme = THEME_FOR_MODE[mode]
+    palette = render(find_nosd_theme(), sp, mode, work)
+    cfg, data = make_stage(work)
+
+    shots = Path(outdir)
+    shots.mkdir(parents=True, exist_ok=True)
+    stem = shots / f"col-{a.scheme}-{mode}"
+
+    columns = []
+    if not a.no_shell:
+        columns.append(("shell", shell_ref(a.scheme, mode, work,
+                                           refresh=a.refresh_shell)))
+    else:
+        print("[info] --no-shell：跳过 shell 参照列")
+    showcase_gtk(4, theme, cfg, data, Path(f"{stem}-gtk4.png"))
+    columns.append(("gtk4", Image.open(f"{stem}-gtk4.png")))
+    showcase_gtk(3, theme, cfg, data, Path(f"{stem}-gtk3.png"))
+    columns.append(("gtk3", Image.open(f"{stem}-gtk3.png")))
+    showcase_qt(cfg, data, Path(f"{stem}-qt.png"))
+    columns.append(("qt", Image.open(f"{stem}-qt.png")))
+
+    tokens = tomllib.loads(TOKENS.read_text())
+    gres = groove_step_checks(columns, palette, tokens)
+    for lv, name, detail in gres:
+        print(f"  [{lv}] {name}：{detail}")
+    if any(lv == "FAIL" for lv, _, _ in gres):
+        sys.exit("showcase 滑槽梯阶断言失败")
+
+    out = shots / f"showcase-{a.scheme}-{mode}.png"
+    compose(columns, out)
+    zoom3(columns, shots / f"showcase-{a.scheme}-{mode}-x3.png")
+    zoom3(columns, shots / f"showcase-{a.scheme}-{mode}-x3-loose.png",
+          bottom=True)
+    print(f"showcase: {out}")
 
 # ---------------------------------------------------------------- 契约判定
 
@@ -428,9 +674,12 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
         check("gtk3 button_toggled accent", close(tb3["saturated"], primary, 45),
               f"{tb3['saturated']} vs {primary}")
 
-    # 链接 = accent_standalone 族（背景上可读的 accent 文本色）
+    # 链接 = accent_standalone 族（背景上可读的 accent 文本色）。链接是稀疏
+    # accent 文字：取「离窗口底色最远」的字芯像素（farbg）。合成后 AA 边缘数量
+    # 压过字芯使 dominant 落到混色；带色底（Kanagawa 浅色）饱和度又压过文字使
+    # saturated 量到背景——farbg 对中性底与带色底都稳健。
     for src, label in ((w4, "gtk4"), (w3, "gtk3")):
-        d = src.get("link", {}).get("dominant")
+        d = src.get("link", {}).get("farbg")
         if d and P.get("accent_standalone_color"):
             check(f"{label} link ≈ accent_standalone",
                   close(d, P["accent_standalone_color"], 14),
@@ -443,10 +692,12 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
             check(f"qt {wname} ≈ surface", close(d, surf, 4),
                   f"{d} vs {surf}")
 
-    # 5) 几何令牌：按钮=radiusRow、文本字段=radiusItem（DESIGN.md / Style.qml）
+    # 5) 几何令牌：按钮=radiusPill 胶囊、文本字段=radiusItem（DESIGN.md / Style.qml）
     rt = tokens["radius"]
-    exp_radius = {"button": rt["radiusRow"], "entry": rt["radiusItem"],
-                  "combo": rt["radiusItem"], "spin": rt["radiusItem"]}
+    exp_radius = {"button": tokens["controls"]["button_radius"],
+                  "entry": rt["radiusItem"],
+                  "combo": rt["radiusItem"], "spin": rt["radiusItem"],
+                  "scrollbar": tokens["controls"]["scroll_width"] // 2}
 
     def radius_est(rec):
         g = rec.get("face") or rec.get("geom", {})
@@ -454,7 +705,7 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
 
     for src, name in ((w4, "button"), (wq, "button"), (w3, "button"),
                       (w4, "entry"), (wq, "entry"), (w3, "entry"),
-                      (wq, "combo"), (wq, "spin")):
+                      (wq, "combo"), (wq, "spin"), (wq, "scrollbar")):
         rec = src.get(name, {})
         est = radius_est(rec)
         want = exp_radius[name]
@@ -466,6 +717,55 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
               f"{(rec.get('face') or rec.get('geom', {})).get('r_tr')},"
               f"{(rec.get('face') or rec.get('geom', {})).get('r_bl')},"
               f"{(rec.get('face') or rec.get('geom', {})).get('r_br')}）")
+
+    # 6) 渲染高度：字段总高 / 开关 / 进度条厚度（DESIGN §8.3）。
+    #    静态语义在 check-tokens；这里量渲染结果，防 padding/边框/SVG 元素撑高。
+    ct = tokens["controls"]
+
+    def size_of(rec):
+        return rec.get("alloc") or rec.get("size")
+
+    for src, label in ((w4, "gtk4"), (w3, "gtk3"), (wq, "qt")):
+        for wname in ("entry", "spin", "combo"):
+            sz = size_of(src.get(wname, {}))
+            if sz:
+                check(f"{label} {wname} 渲染高 == {ct['field_height']}",
+                      abs(sz[1] - ct["field_height"]) <= 1, f"{sz[1]}")
+    sz = size_of(w4.get("dropdown", {}))
+    if sz:
+        check(f"gtk4 dropdown 渲染高 == {ct['field_height']}",
+              abs(sz[1] - ct["field_height"]) <= 1, f"{sz[1]}")
+    for src, label in ((w4, "gtk4"), (w3, "gtk3")):
+        sz = size_of(src.get("switch_on", {}))
+        if sz:
+            check(f"{label} switch 高 == {ct['switch_height']}",
+                  abs(sz[1] - ct["switch_height"]) <= 1, f"{sz[1]}")
+        sz = size_of(src.get("progressbar", {}))
+        if sz:
+            check(f"{label} 进度条厚 == {ct['slider_groove']}",
+                  abs(sz[1] - ct["slider_groove"]) <= 1, f"{sz[1]}")
+    bh = wq.get("progressbar", {}).get("bar_h")
+    if bh is not None:
+        check(f"qt 进度条渲染厚 == {ct['slider_groove']}",
+              abs(bh - ct["slider_groove"]) <= 1, f"{bh}")
+    e = wq.get("entry", {})
+    if e.get("top_edge"):
+        check("qt entry idle 无边框", close(e["top_edge"], e.get("center"), 10),
+              f"顶缘 {e['top_edge']} vs 面 {e.get('center')}（DESIGN §8.3 idle 无细边）")
+    ef = wq.get("entry_focused", {})
+    if ef.get("top_edge"):
+        # 焦点环 = primary（SVG focus 元素烘焙 primary）。参照用调色板 primary，
+        # 不用 saturated：entry 里文字光标可能比环更饱和（Kanagawa 深色），
+        # saturated 会量到光标而非环。
+        check("qt entry focus 1px accent 环",
+              close(ef["top_edge"], primary, 24),
+              f"顶缘 {ef['top_edge']} vs primary {primary}"
+              "（grab 前已等 animate_states 落定）")
+    for src, label in ((w4, "gtk4"), (w3, "gtk3"), (wq, "qt")):
+        sz = size_of(src.get("button", {}))
+        if sz:
+            check(f"{label} button 渲染高 == {ct['button_height']}",
+                  abs(sz[1] - ct["button_height"]) <= 1, f"{sz[1]}")
     return res
 
 
@@ -512,12 +812,18 @@ def do_one(args, mode, work):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("cmd", choices=("audit", "stage", "probe"))
+    ap.add_argument("cmd", choices=("audit", "stage", "probe", "showcase"))
     ap.add_argument("--scheme", default="Kanagawa")
     ap.add_argument("--mode", default="both", choices=("dark", "light", "both"))
     ap.add_argument("--work", default=None, help="舞台目录（默认 mktemp）")
     ap.add_argument("--skip-gtk3", action="store_true")
     ap.add_argument("--keep", action="store_true", help="不清理舞台")
+    ap.add_argument("--out", default="/tmp/nosd-showcase",
+                    help="showcase 出图目录")
+    ap.add_argument("--no-shell", action="store_true",
+                    help="showcase：跳过 shell 参照列")
+    ap.add_argument("--refresh-shell", action="store_true",
+                    help="showcase：无视缓存重跑 verify.sh")
     a = ap.parse_args()
 
     modes = ["dark", "light"] if a.mode == "both" else [a.mode]
@@ -533,15 +839,19 @@ def main():
             work = Path(tempfile.mkdtemp(prefix=f"audit-{a.scheme}-{mode}-"))
             cleanup = not a.keep
         try:
-            palette, g4, g3, qt = do_one(a, mode, work)
-            if a.cmd == "probe":
+            if a.cmd == "showcase":
+                do_showcase(a, mode, work, a.out)
+            elif a.cmd == "probe":
+                palette, g4, g3, qt = do_one(a, mode, work)
                 print(json.dumps({"palette": palette, "gtk4": g4,
                                   "gtk3": g3, "qt": qt},
                                  ensure_ascii=False, indent=1))
             elif a.cmd == "audit":
+                palette, g4, g3, qt = do_one(a, mode, work)
                 results = evaluate(mode, palette, tokens, g4, g3, qt)
                 total_fail += report(mode, a.scheme, results)
             else:
+                palette, g4, g3, qt = do_one(a, mode, work)
                 print(f"舞台就绪：{work}")
         finally:
             if cleanup:

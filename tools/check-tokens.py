@@ -37,7 +37,7 @@ from pathlib import Path
 GTK_PKG = Path("packages") / "nosd-gtk-theme"
 KVANTUM_PKG = Path("packages") / "nosd-kvantum-theme"
 SHELL_PKG = Path("packages") / "nosdshell"
-THEME_DIRS = ("deepin", "deepin-dark")
+THEME_DIRS = ("nosd", "nosd-dark")
 GTK_SUBDIRS = ("gtk-3.0", "gtk-4.0")
 
 # Kvantum 的 QPalette 角色全集。standardPalette() 只填充在 [GeneralColors]
@@ -107,6 +107,35 @@ def strip_comments(text: str) -> str:
         out.append(("\n" if ch == "\n" else " ") if in_comment else ch)
         i += 1
     return "".join(out)
+
+
+def _vertical_extras(text: str, block_id: int) -> float:
+    """同一规则内上下 padding + 上下边框之和（GTK3 内容高语义补差）。"""
+    if block_id < 0:
+        return 0.0
+    depth = 0
+    end = block_id
+    for i in range(block_id, len(text)):
+        if text[i] == "{":
+            depth += 1
+        elif text[i] == "}":
+            depth -= 1
+            if depth == 0:
+                end = i
+                break
+    block = text[block_id:end]
+    extra = 0.0
+    m = re.search(r"(?:^|;)\s*padding\s*:\s*([^;]+)", block)
+    if m:
+        nums = [float(p.rstrip("px")) for p in m.group(1).split()]
+        if nums:
+            extra += 2 * nums[0]
+    m = re.search(r"(?:^|;)\s*border\s*:\s*([^;]+)", block)
+    if m and m.group(1).strip() != "none":
+        bm = re.match(r"\s*([0-9.]+)px", m.group(1))
+        if bm:
+            extra += 2 * float(bm.group(1))
+    return extra
 
 
 def iter_decls(text: str):
@@ -185,11 +214,16 @@ def main() -> int:
     want_stats = "--stats" in sys.argv[1:]
     root = Path(args[0]) if args else Path(__file__).resolve().parent.parent
     tokens = tomllib.loads((root / "spec" / "tokens.toml").read_text())
+    controls = tokens.get("controls", {})
     # [radius] 下除令牌外还有 exempt/outline 子表，只取整数项。
     allowed_radii = {v for v in tokens["radius"].values() if isinstance(v, int)}
     exempt = tokens["radius"].get("exempt", {})
     outline_offset_default = tokens["radius"].get("outline", {}).get("offset", 0)
     failures = []
+    # 目录缺失会让 GTK 检查整段静默跳过（改名事故），必须显式报错。
+    for theme in THEME_DIRS:
+        if not (root / GTK_PKG / theme).is_dir():
+            failures.append(f"{GTK_PKG / theme} 不存在：THEME_DIRS 与实际目录漂移")
     stats = {"short": 0, "long": 0, "outline": 0, "ok": 0, "zero": 0, "pct": 0, "drift": 0}
 
     hex_re = re.compile(r"(?<![\w-])#[0-9a-fA-F]{3,8}\b")
@@ -349,6 +383,12 @@ def main() -> int:
             m = re.search(rf"property int {prop}: Math\.round\((\d+) \*", style)
             if m and int(m.group(1)) != tokens["radius"][token]:
                 failures.append(f"Style.qml {prop}={m.group(1)} 与 {token}={tokens['radius'][token]} 不一致")
+        # 按钮胶囊半径（NButton buttonRadius 的令牌来路）
+        m = re.search(r"property int radiusPill: (\d+)", style)
+        if m and "button_radius" in controls and int(m.group(1)) != controls["button_radius"]:
+            failures.append(
+                f"Style.qml radiusPill={m.group(1)} 与 controls.button_radius={controls['button_radius']} 不一致"
+            )
 
     # 6. Kvantum SVG / 模板 XML 良构性（QSvgRenderer 严格解析，坏一处整图失效）
     placeholder_re = re.compile(r"\{\{[^}]*\}\}")
@@ -384,11 +424,37 @@ def main() -> int:
     # 8. [overlay] 梯级 ↔ GTK 叠加面 @define-color 的 α；
     #    [controls] 控件几何 ↔ GTK 控件尺寸 / kvconfig / Style.qml。
     overlay = tokens.get("overlay", {})
-    controls = tokens.get("controls", {})
     overlay_re = re.compile(
         r"@define-color\s+(idle|subtle|hover|field|strong|checked|press|indicator)"
         r"(?:_color)?\s+alpha\(\s*@[\w-]+\s*,\s*([0-9.]+)\s*\)"
     )
+    # 7b. shell GTK 模板（审计/真机渲染的真正来源）叠加梯必须是 alpha 相对形式。
+    #     模板 define 在运行时覆盖主题包静态 define；若烘焙成 overlay_* 实色，
+    #     滑槽(strong)与设置行卡(strong)同值→滑槽隐形（DESIGN §8.1 要求 GTK 用
+    #     alpha(前景色,α)）。overlay_re 只匹配 alpha 形式，烘焙实色会判缺项。
+    for tpl_name in ("gtk3.css", "gtk4.css"):
+        tpl = root / SHELL_PKG / "Assets" / "Templates" / tpl_name
+        if not tpl.exists():
+            failures.append(f"{tpl.relative_to(root)} 不存在")
+            continue
+        ttext = strip_comments(tpl.read_text(errors="replace"))
+        trel = tpl.relative_to(root)
+        tlevels = {}
+        for m in overlay_re.finditer(ttext):
+            level, alpha = m.group(1), float(m.group(2))
+            tlevels[level] = alpha
+            if level in overlay and abs(alpha - overlay[level]) > 1e-6:
+                failures.append(
+                    f"{trel} {level}_color α={alpha:g} 与"
+                    f" overlay.{level}={overlay[level]} 不一致"
+                )
+        for level in ("idle", "field", "strong", "checked", "press"):
+            if level not in tlevels:
+                failures.append(
+                    f"{trel} 缺 @define-color {level}_color"
+                    f" alpha(<前景色>, {overlay.get(level)})"
+                    "（GTK 叠加梯须 alpha 相对形式，不得烘焙实色）"
+                )
     # 选择器 → 必须等于令牌值的 min-* 几何（px）。
     gtk_geom = {
         ("scale slider", "min-height"): "slider_knob",
@@ -403,6 +469,12 @@ def main() -> int:
         ("combobox button.combo", "min-height"): "field_height",
         ("spinbutton:not(.vertical)", "min-height"): "field_height",
         ("dropdown > button", "min-height"): "field_height",
+        ("button", "min-height"): "button_height",
+        ("progressbar trough", "min-height"): "slider_groove",
+        ("progressbar > trough > progress", "min-height"): "slider_groove",
+        ("progressbar progress", "min-height"): "slider_groove",
+        ("headerbar progressbar trough", "min-height"): "slider_groove",
+        (".primary-toolbar progressbar trough", "min-height"): "slider_groove",
     }
     for theme in THEME_DIRS:
         for sub in GTK_SUBDIRS:
@@ -433,6 +505,15 @@ def main() -> int:
                                 f" alpha(<前景色>, {overlay.get(level)})"
                             )
                 for selector, prop, val, _block, off in iter_decls(text):
+                    # 按钮胶囊半径必须恰为 button_radius（集合成员检查不够：
+                    # 4/6px 也在令牌集合内，但会把胶囊压成圆角矩形）。
+                    if (selector, prop) == ("button", "border-radius") and "button_radius" in controls:
+                        if val.rstrip("px") != str(controls["button_radius"]):
+                            ln = text.count("\n", 0, off) + 1
+                            failures.append(
+                                f"{rel}:{ln} button border-radius={val}"
+                                f" 与 controls.button_radius={controls['button_radius']}px 不一致"
+                            )
                     want = gtk_geom.get((selector, prop))
                     if want is None or want not in controls:
                         continue
@@ -440,6 +521,10 @@ def main() -> int:
                         num = float(val.rstrip("px"))
                     except ValueError:
                         continue
+                    # GTK3 的 min-height 是内容高，总高还要加上下 padding/边框；
+                    # GTK4 的 min-height 含边框与内边距，直接比令牌。
+                    if sub == "gtk-3.0" and want in ("field_height", "button_height"):
+                        num += _vertical_extras(text, _block)
                     if num != controls[want]:
                         ln = text.count("\n", 0, off) + 1
                         failures.append(
@@ -459,12 +544,71 @@ def main() -> int:
             ("tickless_slider_handle_size", "slider_knob"),
             ("scroll_width", "scroll_width"),
             ("check_size", "check_size"),
+            ("progressbar_thickness", "slider_groove"),
         ):
             m = re.search(rf"^{key}=(\d+)", kvtext, re.M)
             if m and token in controls and int(m.group(1)) != controls[token]:
                 failures.append(
                     f"{rel} {key}={m.group(1)} 与 controls.{token}={controls[token]} 不一致"
                 )
+        # 按钮胶囊：expansion 是 Kvantum 的角汇合机制——e=min(h,w)<=expansion
+        # 时四角以 e/2 汇合绘制，半径=min(h,w,expansion)/2（rendering.cpp
+        # drawExpanded）。故 expansion>=button_height 才得 R=button_radius。
+        # 同时 frame.* 须够小：文本高+frame.top+bottom 超过控件高时
+        # enoughSpace 失败，expansion 被钳到 14、frame.* 钳到 3
+        # （Kvantum.cpp），胶囊退化为 R7。16 为默认字体文本高度上界。
+        if "button_radius" in controls and "button_height" in controls:
+            sec = re.search(r"^\[PanelButtonCommand\]\n(.*?)(?=^\[|\Z)", kvtext, re.M | re.S)
+            if sec:
+                body = sec.group(1)
+                m = re.search(r"^frame\.expansion=(\d+)", body, re.M)
+                if m and int(m.group(1)) < controls["button_height"]:
+                    failures.append(
+                        f"{rel} [PanelButtonCommand] frame.expansion={m.group(1)}"
+                        f" < controls.button_height={controls['button_height']}"
+                        "（角汇合半径=min(h,w,expansion)/2，胶囊退化）"
+                    )
+                sides = []
+                for side in ("top", "bottom", "left", "right"):
+                    ms = re.search(rf"^frame\.{side}=(\d+)", body, re.M)
+                    if ms:
+                        sides.append(int(ms.group(1)))
+                if sides and (len(set(sides)) != 1
+                              or 2 * sides[0] + 16 > controls["button_height"]):
+                    failures.append(
+                        f"{rel} [PanelButtonCommand] frame.*={sides} 违反胶囊契约"
+                        f"（四边相等且 2*边+16<=button_height={controls['button_height']}，"
+                        "否则 enoughSpace 钳制生效）"
+                    )
+        # 进度条槽同款角汇合：e=thickness，expansion 须>=slider_groove。
+        # （ScrollbarSlider 的 expansion 被引擎强制 0，圆角只来自 SVG interior，
+        # 见 Kvantum.cpp drawControl CE_ScrollBarSlider，故不在此断言。）
+        if "slider_groove" in controls:
+            sec = re.search(r"^\[Progressbar\]\n(.*?)(?=^\[|\Z)", kvtext, re.M | re.S)
+            if sec:
+                m = re.search(r"^frame\.expansion=(\d+)", sec.group(1), re.M)
+                if m and int(m.group(1)) < controls["slider_groove"]:
+                    failures.append(
+                        f"{rel} [Progressbar] frame.expansion={m.group(1)}"
+                        f" < controls.slider_groove={controls['slider_groove']}（槽端角退化）"
+                    )
+        # 滚动条滑块：引擎强制 expansion=0，圆角走九切片——frame.* 须等于
+        # scroll_width 的一半，配合 SVG 四角弧成胶囊（thickness=2*frame.*
+        # 时 interior 为空，面由四边切片拉伸）。
+        if "scroll_width" in controls:
+            sec = re.search(r"^\[ScrollbarSlider\]\n(.*?)(?=^\[|\Z)", kvtext, re.M | re.S)
+            if sec:
+                sides = []
+                for side in ("top", "bottom", "left", "right"):
+                    ms = re.search(rf"^frame\.{side}=(\d+)", sec.group(1), re.M)
+                    if ms:
+                        sides.append(int(ms.group(1)))
+                if sides and (len(set(sides)) != 1
+                              or 2 * sides[0] != controls["scroll_width"]):
+                    failures.append(
+                        f"{rel} [ScrollbarSlider] frame.*={sides} 须等于 scroll_width/2"
+                        f"={controls['scroll_width'] // 2}（九切片胶囊端角）"
+                    )
     # Style.qml 侧控件几何（沿用 #5 的 Math.round(N * 缩放) 形式）
     if style_qml.exists():
         style = style_qml.read_text()

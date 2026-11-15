@@ -70,7 +70,7 @@ def measure_alpha(img):
     m["r_br"] = corner(False, False)
     return m
 
-def measure_face(img, tol=14):
+def measure_face(img, tol=14, aa=False):
     """在主色区域掩码上测控件面的几何与圆角（排除文字/边距像素干扰）。"""
     from collections import Counter
     rgba = img.convert("RGBA").load()
@@ -94,6 +94,12 @@ def measure_face(img, tol=14):
     def near(p):
         # 控件剪影 = 一切非"窗口透出"像素：面色可能与描边差到 tol 外
         #（field 面 + outline 描边分属两个键），角部内缩量在剪影上。
+        if aa:
+            # 小圆角（<=4px）端帽全是 AA 混合像素：剪影掩码把凹口 AA 也算
+            # 面内，内缩恒 0。按"离面色近还是离窗底近"二分覆盖度 >0.5。
+            return (p[3] > 100
+                    and abs(p[0]-r0)+abs(p[1]-g0)+abs(p[2]-b0)
+                    <= abs(p[0]-cp[0])+abs(p[1]-cp[1])+abs(p[2]-cp[2]))
         return p[3] > 100 and not outside(p)
     def near_plain(p):
         return (p[3] > 100 and abs(p[0]-r0) <= tol and abs(p[1]-g0) <= tol
@@ -118,6 +124,7 @@ def measure_face(img, tol=14):
         ey = y0 if top else y1
         ex = x0 if left else x1
         first = None
+        pts = []
         for d in range(min(20, (y1 - y0) // 2 + 1)):
             y = ey + (d if top else -d)
             if not (0 <= y < h):
@@ -131,13 +138,19 @@ def measure_face(img, tol=14):
             if first is None:
                 first = inner
             if inner <= max(0, first * 0.06):
-                return max(0, d)
-        return None
+                break
+            if d >= 1 and inner >= 1:
+                pts.append((d, inner))
+        if not pts:
+            return 0
+        # 圆弧内缩剖面拟合：(R-inner)²+(R-d)²=R² → R=inner+d+sqrt(2·inner·d)。
+        # 旧算法返回「变平深度」，小半径近似成立、胶囊半径系统性偏小。
+        rs = sorted(i + d + (2 * i * d) ** 0.5 for d, i in pts)
+        return rs[len(rs) // 2]
     m["r_tl"], m["r_tr"] = corner(True, True), corner(True, False)
     m["r_bl"], m["r_br"] = corner(False, True), corner(False, False)
     rs = [v for v in (m["r_tl"], m["r_tr"], m["r_bl"], m["r_br"]) if v is not None]
-    # 取均值抗噪；Qt 端描边弧切点接近真实半径，残留偏差约 1px
-    m["radius_est"] = round(sum(rs) / len(rs)) + 1 if rs else None
+    m["radius_est"] = round(sum(rs) / len(rs)) if rs else None
     return m
 
 
@@ -175,6 +188,39 @@ def strip_hex(img, min_alpha=200, rows=4):
         return None
     r, g, b = cnt.most_common(1)[0][0]
     return f"#{r:02x}{g:02x}{b:02x}"
+
+
+def edge_hex(img):
+    p = img.convert("RGBA").getpixel((img.size[0] // 2, 0))
+    return f"#{p[0]:02x}{p[1]:02x}{p[2]:02x}"
+
+
+def bar_region(img):
+    """进度条渲染条的行范围：非背景像素铺满宽度的行。"""
+    from collections import Counter
+    rgba = img.convert("RGBA")
+    w, h = rgba.size
+    px = rgba.load()
+    bg = Counter(px[x, y] for y in range(h) for x in range(w)).most_common(1)[0][0]
+    ys = [y for y in range(h)
+          if sum(1 for x in range(w)
+                 if px[x, y][3] > 8 and px[x, y] != bg) > w / 2]
+    return (ys[0], ys[-1]) if ys else None
+
+
+def pb_fill(img):
+    """条左半（填充段）主色作为 strip，条居中时底部采样会落在背景上。"""
+    reg = bar_region(img)
+    if not reg:
+        return {"bar_h": 0}
+    from collections import Counter
+    rgba = img.convert("RGBA")
+    w, _ = rgba.size
+    px = rgba.load()
+    cnt = Counter(px[x, y][:3] for y in range(reg[0], reg[1] + 1)
+                  for x in range(w // 2))
+    r, g, b = cnt.most_common(1)[0][0]
+    return {"bar_h": reg[1] - reg[0] + 1, "strip": f"#{r:02x}{g:02x}{b:02x}"}
 
 
 def dominant_hex(img, min_alpha=200):
@@ -236,30 +282,55 @@ def main():
 
     os.makedirs(a.shots, exist_ok=True)
 
-    def grab(name, w, extra=None):
+    def settle(ms=400):
+        # Kvantum animate_states=true：状态色/焦点环随动画淡入，
+        # 立即 grab 会拍到 alpha 0。泵事件 + 真实等待让动画落定。
+        import time
+        deadline = time.monotonic() + ms / 1000
+        while time.monotonic() < deadline:
+            app.processEvents()
+            time.sleep(0.02)
+
+    def grab(name, w, extra=None, focus=False, aa_face=False):
         w.adjustSize()
         w.show()
         app.processEvents()
+        settle()
+        if focus:
+            app.setActiveWindow(w)
+            w.setFocus()
+            settle()
+        else:
+            # offscreen _show_ 即自动聚焦顶层控件；焦点环随 animate_states
+            # 淡入，idle 截图必须清焦点后再等环淡出，否则拍到 accent 环。
+            fw = app.focusWidget()
+            if fw is not None:
+                fw.clearFocus()
+            settle()
         pm = w.grab()
         pm.save(os.path.join(a.shots, f"{name}.png"))
         img = img_to_pil(pm.toImage())
         rec = {"size": [w.width(), w.height()], "center": center_hex(img),
                "dominant": dominant_hex(img), "saturated": saturated_hex(img),
                "strip": strip_hex(img),
-               "geom": measure_alpha(img), "face": measure_face(img)}
+               "geom": measure_alpha(img), "face": measure_face(img, aa=aa_face)}
         if extra:
             rec.update(extra(img))
         out["widgets"][name] = rec
         w.hide()
         w.deleteLater()
 
-    grab("button", QPushButton("按钮"))
+    b = QPushButton("按钮")
+    b.setFixedHeight(30)  # NButton 契约总高（DESIGN §8.3）
+    grab("button", b)
     tb = QPushButton("切换")
     tb.setCheckable(True)
     tb.setChecked(True)
+    tb.setFixedHeight(30)
     grab("button_toggled", tb)
     db = QPushButton("禁用")
     db.setEnabled(False)
+    db.setFixedHeight(30)
     grab("button_disabled", db)
     cb = QCheckBox()
     cb.setChecked(True)
@@ -269,10 +340,10 @@ def main():
     rb.setChecked(True)
     grab("radio_on", rb)
     le = QLineEdit("文本")
-    grab("entry", le)
+    grab("entry", le, extra=lambda img: {"top_edge": edge_hex(img)})
     lef = QLineEdit("焦点")
-    lef.setFocus()
-    grab("entry_focused", lef)
+    grab("entry_focused", lef, extra=lambda img: {"top_edge": edge_hex(img)},
+         focus=True)
     sl = QSlider(Qt.Orientation.Horizontal)
     sl.setRange(0, 100)
     sl.setValue(60)
@@ -281,8 +352,10 @@ def main():
     pb = QProgressBar()
     pb.setRange(0, 100)
     pb.setValue(60)
+    # Kvantum 1.1.8 无 theme 侧 textless 开关，shell 进度条无文字由应用侧关
+    pb.setTextVisible(False)
     pb.resize(200, pb.sizeHint().height())
-    grab("progressbar", pb)
+    grab("progressbar", pb, extra=pb_fill)
     grab("spin", QSpinBox())
     co = QComboBox()
     co.addItems(["选项A", "选项B"])
@@ -310,7 +383,7 @@ def main():
     sb.setRange(0, 100)
     sb.setPageStep(30)
     sb.resize(160, sb.sizeHint().height())
-    grab("scrollbar", sb)
+    grab("scrollbar", sb, aa_face=True)
 
     with open(a.out, "w") as f:
         json.dump(out, f, ensure_ascii=False, indent=1)
