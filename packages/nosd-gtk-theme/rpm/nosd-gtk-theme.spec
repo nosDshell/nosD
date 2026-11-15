@@ -8,11 +8,9 @@ Source0:        %{url}/releases/download/%{name}-v%{version}/%{name}-%{version}.
 BuildArch:      noarch
 Provides:       nosd-app-themes = %{version}-%{release}
 Obsoletes:      nosd-app-themes < %{version}-%{release}
-Provides:       deepin-gtk-theme = %{version}-%{release}
-Obsoletes:      deepin-gtk-theme < %{version}-%{release}
 
 %description
-Deepin-style GTK+ 2/3/4 themes (deepin light and deepin-dark) for the
+nosDshell GTK+ 2/3/4 themes (nosd light and nosd-dark) for the
 nosDshell desktop environment.  The Kvantum Qt theme is packaged
 separately as nosd-kvantum-theme.
 
@@ -27,8 +25,8 @@ separately as nosd-kvantum-theme.
 %files
 %doc README.md README.zh_CN.md CHANGELOG.md
 %license LICENSE
-%{_datadir}/themes/deepin/
-%{_datadir}/themes/deepin-dark/
+%{_datadir}/themes/nosd/
+%{_datadir}/themes/nosd-dark/
 
 %changelog
 * Sat Nov 15 2026 nosDshell Theme Maintainers <noreply@nosdshell.org> - 0.2.0-1

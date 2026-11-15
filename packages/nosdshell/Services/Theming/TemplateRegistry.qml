@@ -71,7 +71,7 @@ Singleton {
       return "true";
     const home = Quickshell.env("HOME");
     const accent = root.colorToHex(Colors.mPrimary);
-    return ["deepin", "deepin-dark"].map(theme => {
+    return ["nosd", "nosd-dark"].map(theme => {
       const dir = `${home}/.local/share/themes/${theme}/${component}`;
       return `${root.themeBin} --shell-accent-out ${dir}/nosd-accent.css --theme-css ${dir}/${component}.css --accent ${accent}`;
     }).join(" && ");
@@ -239,10 +239,10 @@ Singleton {
       "input": "shell-accent.css",
       "outputs": [
         {
-          "path": "~/.local/share/themes/deepin/cinnamon/nosd-accent.css"
+          "path": "~/.local/share/themes/nosd/cinnamon/nosd-accent.css"
         },
         {
-          "path": "~/.local/share/themes/deepin-dark/cinnamon/nosd-accent.css",
+          "path": "~/.local/share/themes/nosd-dark/cinnamon/nosd-accent.css",
           "postProcess": false
         }
       ],
@@ -255,10 +255,10 @@ Singleton {
       "input": "shell-accent.css",
       "outputs": [
         {
-          "path": "~/.local/share/themes/deepin/gnome-shell/nosd-accent.css"
+          "path": "~/.local/share/themes/nosd/gnome-shell/nosd-accent.css"
         },
         {
-          "path": "~/.local/share/themes/deepin-dark/gnome-shell/nosd-accent.css",
+          "path": "~/.local/share/themes/nosd-dark/gnome-shell/nosd-accent.css",
           "postProcess": false
         }
       ],

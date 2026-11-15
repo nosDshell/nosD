@@ -1,0 +1,4 @@
+#!/usr/bin/dh-exec
+
+nosd /usr/share/fcitx5/themes/
+nosd-dark /usr/share/fcitx5/themes/

@@ -1,6 +1,6 @@
 # nosd monorepo 形状令牌（规范声明）
 #
-# 消费方：GTK CSS（packages/nosd-gtk-theme/deepin{,-dark}）、Kvantum
+# 消费方：GTK CSS（packages/nosd-gtk-theme/nosd{,-dark}）、Kvantum
 # SVG/kvconfig（packages/nosd-kvantum-theme）、packages/nosdshell 的
 # Commons/Style.qml。数值的唯一权威来源是
 # packages/nosdshell/DESIGN.md §1.4、§1.2；本文件只是把权威值抄成机器
@@ -28,6 +28,7 @@ offset = 2
 # scripts/check-tokens.py 逐条读取，匹配不到就仍报漂移。
 # 0px 由 checker 直接放行（刻意直角），无需登记。
 switch = { radius = "11px", reason = "DESIGN §3.5.4 开关 40x22 胶囊：圆角=高度一半" }
+button = { radius = "15px", reason = "DESIGN §8.3 NButton radiusPill=15 胶囊：圆角=高度一半" }
 
 
 [border]
@@ -58,11 +59,13 @@ check_size   = 14
 # （uiScaleRatio / rowHeightScale 缩放前）。
 field_height  = 30  # settingsFieldHeight：文本输入 / 下拉 / 数值框
 field_width   = 170 # settingsFieldWidth：设置行右侧控件列宽
+button_height = 30  # NButton 渲染总高（DESIGN §8.3）
+button_radius = 15  # Style.radiusPill：按钮胶囊圆角=高度一半
 row_height    = 36  # settingsRowHeight / detailRowHeight
 switch_width  = 40
 switch_height = 22
 switch_knob   = 18  # 滑块直径，内边距 (22-18)/2 = 2
-slider_groove = 2   # 滑槽厚度
+slider_groove = 2   # 滑槽厚度；进度条厚度同此值（DESIGN §8.3）
 slider_knob   = 12  # 滑块圆点直径
 
 [shadow]

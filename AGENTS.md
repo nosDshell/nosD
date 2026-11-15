@@ -10,9 +10,9 @@ nosDshell 生态的 monorepo：shell 本体与周边主题集中管理，用单�
 | 组件 | 是什么 | tag 前缀 | 改它时读 |
 |---|---|---|---|
 | `packages/nosdshell` | Noctalia v4 分叉（DDE 15 呈现层），Quickshell/QML | `nosdshell-v*` | [`packages/nosdshell/AGENTS.md`](packages/nosdshell/AGENTS.md) |
-| `packages/nosd-gtk-theme` | deepin / deepin-dark GTK 2/3/4 主题 | `nosd-gtk-theme-v*` | 组件内 README + `spec/tokens.toml` |
+| `packages/nosd-gtk-theme` | nosd / nosd-dark GTK 2/3/4 主题 | `nosd-gtk-theme-v*` | 组件内 README + `spec/tokens.toml` |
 | `packages/nosd-kvantum-theme` | nosd Kvantum 主题 + 模板工具 | `nosd-kvantum-theme-v*` | 同上 |
-| `packages/fcitx5-theme-nosd` | deepin-light / deepin-dark fcitx5 皮肤 | `fcitx5-theme-nosd-v*` | 同上 |
+| `packages/fcitx5-theme-nosd` | nosd / nosd-dark fcitx5 皮肤 | `fcitx5-theme-nosd-v*` | 同上 |
 | `spec/tokens.toml` | 跨组件 UI 令牌唯一声明（radius/color/border…） | — | 改数值先改这里 |
 | `tools/check-tokens.py` | 令牌 ↔ 各端实现漂移检查 | — | `python3 tools/check-tokens.py .` |
 | `tools/release/build.py` | 组件产物构建 + tag/版本校验（COMPONENTS 注册表） | — | 新增组件只改这里 |

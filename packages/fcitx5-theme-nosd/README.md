@@ -1,7 +1,7 @@
 # fcitx5-theme-nosd
 
-deepin 风格的 fcitx5 输入法皮肤（`deepin-light` / `deepin-dark`），
-nosd monorepo 的组件之一。源自 [linuxdeepin/fcitx5-theme-deepin](https://github.com/linuxdeepin/fcitx5-theme-deepin)。
+deepin 风格的 fcitx5 输入法皮肤（`nosd` / `nosd-dark`），
+nosd monorepo 的组件之一。源自 [linuxdeepin/fcitx5-theme-nosd](https://github.com/linuxdeepin/fcitx5-theme-nosd)。
 
 ## 安装
 
@@ -18,26 +18,26 @@ guix install fcitx5-theme-nosd
 ```sh
 git clone https://github.com/nosDshell/nosd
 cd nosd/packages/fcitx5-theme-nosd
-make install          # 装到 $PREFIX/share/fcitx5/themes/{deepin-light,deepin-dark}
+make install          # 装到 $PREFIX/share/fcitx5/themes/{nosd,nosd-dark}
 ```
 
-安装后在 fcitx5 设置里选择 `deepin-light` 或 `deepin-dark` 皮肤。
+安装后在 fcitx5 设置里选择 `nosd` 或 `nosd-dark` 皮肤。
 
 ## 预览
 
 ### 浅色主题
 
 单行：
-![deepin-light1](img/deepin-light.png)
+![nosd1](img/nosd.png)
 多行：
-![deepin-light2](img/deepin-light2.png)
+![nosd2](img/nosd2.png)
 
 ### 深色主题
 
 单行：
-![deepin-dark1](img/deepin-dark.png)
+![nosd-dark1](img/nosd-dark.png)
 多行：
-![deepin-dark2](img/deepin-dark2.png)
+![nosd-dark2](img/nosd-dark2.png)
 
 ## 已知问题
 

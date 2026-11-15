@@ -1,8 +1,8 @@
-# Kvantum → deepin GTK 收敛映射表（施工图）
+# Kvantum → nosd GTK 收敛映射表（施工图）
 
-> 用途：把 `kvantum/nosd/`（KvAdapta 底子）收敛到 `deepin/`+`deepin-dark/`（DDE 视觉）的同一张脸。
+> 用途：把 `kvantum/nosd/`（KvAdapta 底子）收敛到 `nosd/`+`nosd-dark/`（DDE 视觉）的同一张脸。
 > 读者：Worker（照表改 `nosd.svg.tpl` 与 `nosd.kvconfig`）。
-> 依据：`nosDshell/DESIGN.md` §1.1–§1.6（令牌权威）、`tokens.toml`（形状/几何机器可读值）、`deepin/gtk-3.0/gtk.css`（GTK 实测值）、`tools/nosd-theme/src/theme.rs`（可用占位符全集）。
+> 依据：`nosDshell/DESIGN.md` §1.1–§1.6（令牌权威）、`tokens.toml`（形状/几何机器可读值）、`nosd/gtk-3.0/gtk.css`（GTK 实测值）、`tools/nosd-theme/src/theme.rs`（可用占位符全集）。
 > 作者：Researcher｜日期：2026-11-13｜基线：`nosd-app-themes` HEAD `c97d13b`
 
 ## 状态
@@ -148,7 +148,7 @@ GTK 侧同名对应（供交叉核对）：
 
 ## 三、几何映射表
 
-GTK 实测值取自 `deepin/gtk-3.0/gtk.css`（浅色；深色同值）。
+GTK 实测值取自 `nosd/gtk-3.0/gtk.css`（浅色；深色同值）。
 
 | kvconfig 字段 | 现值 | GTK 对应 | 目标 | 依据 |
 |---|---|---|---|---|

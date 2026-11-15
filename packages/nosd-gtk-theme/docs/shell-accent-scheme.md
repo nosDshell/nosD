@@ -1,6 +1,6 @@
 # Cinnamon / GNOME Shell 取色方案（阶段 3 决策依据）
 
-> 范围：`deepin/{cinnamon,gnome-shell}` 与 `deepin-dark/{cinnamon,gnome-shell}` 四个主题文件如何跟随 nosd 调色板。
+> 范围：`nosd/{cinnamon,gnome-shell}` 与 `nosd-dark/{cinnamon,gnome-shell}` 四个主题文件如何跟随 nosd 调色板。
 > 附带：GTK 侧深色 `accent_*` 阴影族 9 条字面值的派生方案（Chief 阶段 3 前置调研项）。
 > 作者：Researcher｜日期：2026-11-13｜基线：`nosd-app-themes` HEAD `8fb2990`（已回滚 `1a7cc23` 对两个深色 shell 文件的改动；回滚后两文件 `@` 引用计数 **0**，字面值集合与浅色完全一致）
 
@@ -131,15 +131,15 @@
 @import url("nosd-accent.css");
 ```
 
-- 文件：`deepin/cinnamon/cinnamon.css`、`deepin/gnome-shell/gnome-shell.css`、`deepin-dark/cinnamon/cinnamon.css`、`deepin-dark/gnome-shell/gnome-shell.css`
+- 文件：`nosd/cinnamon/cinnamon.css`、`nosd/gnome-shell/gnome-shell.css`、`nosd-dark/cinnamon/cinnamon.css`、`nosd-dark/gnome-shell/gnome-shell.css`
 - 同时随包分发一个只含注释的 `nosd-accent.css` 占位（避免首次使用时 404 语义的困惑，虽然 St 不报错）
 - 注意：`@import` 在 CSS 规范里要求位于所有规则之前，**但 St 的实现是按语句顺序遍历、无此限制**（`add_matched_properties()` 对 import 与 ruleset 一视同仁）。放末尾是刻意的——为了「后声明胜出」。**这一条建议真机验证一次**。
 
 ### B2. nosDshell 侧（每次换色）
 
 1. 新增两个模板条目（`Services/Theming/TemplateRegistry.qml`），输出到用户主题目录：
-   - `~/.local/share/themes/deepin/cinnamon/nosd-accent.css`
-   - `~/.local/share/themes/deepin-dark/gnome-shell/nosd-accent.css`（含 `deepin` 浅色与 `deepin-dark` 深色两条，按 `default-mode` 取）
+   - `~/.local/share/themes/nosd/cinnamon/nosd-accent.css`
+   - `~/.local/share/themes/nosd-dark/gnome-shell/nosd-accent.css`（含 `nosd` 浅色与 `nosd-dark` 深色两条，按 `default-mode` 取）
 2. 模板内容：把主题 css 里**含 accent 字面值的声明**原样重声明一遍，值换成 `{{colors.primary.default.hex}}` 及其派生。覆盖文件很小（见下表），不必整表复制。
 
 ### B3. 需要映射的字面值（实测计数）
@@ -260,7 +260,7 @@ accent_on_bg_dim_color      shift_hue:+8.3  saturate:-12.3  lighten:+51.6  → #
 3. **生成器写盘权限**：系统级安装（`PREFIX=/usr`）下无法写覆盖文件。要么改用户目录安装，要么接受「系统安装时取色不跟随」。
 4. **覆盖文件与主题漂移**：若覆盖文件是手抄的选择器列表，主题升级会静默失配。推荐由脚本从主题 css 派生（扫描含 `#5294E2` 的声明，原样重声明）。
 5. **大小写**：`#5294E2` 与 `#5294e2` 同时存在（shell 2 处、cinnamon 1 处），替换要大小写不敏感。
-6. **9 条阴影族只在深色主题定义**（浅色 `deepin/gtk-3.0/gtk.css` 里没有这 9 个名字），派生只需产出深色侧；若将来浅色也要，别复用同一组校准常数。
+6. **9 条阴影族只在深色主题定义**（浅色 `nosd/gtk-3.0/gtk.css` 里没有这 9 个名字），派生只需产出深色侧；若将来浅色也要，别复用同一组校准常数。
 7. **`-st-accent-color` 不要用**：它跟的是 GNOME 的 9 值枚举，不是 nosd 的 M3 调色板；混用会出现「面板跟随 GNOME、菜单跟随 nosd」的割裂。
 
 ## 未能核实清单

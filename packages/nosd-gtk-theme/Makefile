@@ -4,11 +4,11 @@ all:
 
 install: install-gtk
 
-# GTK2/3/4 主题（deepin 浅色 + deepin-dark 深色）
+# GTK2/3/4 主题（nosd 浅色 + nosd-dark 深色）
 install-gtk: 
 	mkdir -p $(DESTDIR)$(PREFIX)/share/themes
-	cp -r deepin $(DESTDIR)$(PREFIX)/share/themes/
-	cp -r deepin-dark $(DESTDIR)$(PREFIX)/share/themes/
+	cp -r nosd $(DESTDIR)$(PREFIX)/share/themes/
+	cp -r nosd-dark $(DESTDIR)$(PREFIX)/share/themes/
 
 # 用户目录安装。Cinnamon / GNOME Shell 的取色注入点（各 shell 目录下的
 # nosd-accent.css）只有装在用户主题目录里才写得进去：nosDshell 按

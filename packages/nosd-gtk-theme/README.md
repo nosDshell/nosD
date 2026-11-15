@@ -30,8 +30,8 @@ The package carries no colour-extraction logic of its own. Light/dark switching 
 
 | Path | Contents | Consumed by |
 | --- | --- | --- |
-| `deepin/` | GTK 2/3/4 light theme, plus Cinnamon, GNOME Shell, Metacity, Unity and Xfwm4 skins | GTK apps, Cinnamon, GNOME Shell |
-| `deepin-dark/` | Same, dark variant | Same |
+| `nosd/` | GTK 2/3/4 light theme, plus Cinnamon, GNOME Shell, Metacity, Unity and Xfwm4 skins | GTK apps, Cinnamon, GNOME Shell |
+| `nosd-dark/` | Same, dark variant | Same |
 
 ---
 
@@ -57,7 +57,7 @@ Arch:
 makepkg -si   # run inside arch/
 ```
 
-All three packages provide `deepin-gtk-theme` and `nosd-app-themes`, so they replace the original packages cleanly. Their file layout has been verified to match: `/usr/share/themes/{deepin,deepin-dark}`.
+All three packages provide `nosd-app-themes` under their own package names. Their file layout: `/usr/share/themes/{nosd,nosd-dark}`.
 
 ### From source
 
@@ -81,10 +81,10 @@ GTK apps read `gtk-theme-name`. Add it to both `~/.config/gtk-3.0/settings.ini` 
 
 ```ini
 [Settings]
-gtk-theme-name=deepin
+gtk-theme-name=nosd
 ```
 
-For dark, use `deepin-dark`, or keep `gtk-application-prefer-dark-theme=1` and let apps pick the variant themselves.
+For dark, use `nosd-dark`, or keep `gtk-application-prefer-dark-theme=1` and let apps pick the variant themselves.
 
 Qt apps use the sibling [`nosd-kvantum-theme`](../nosd-kvantum-theme) component: install it, set `style=kvantum` in `~/.config/qt5ct/qt5ct.conf` and `~/.config/qt6ct/qt6ct.conf`, then `theme=nosd` in `~/.config/Kvantum/kvantum.kvconfig`.
 
@@ -153,7 +153,7 @@ Acceptance screenshots live in `screenshots/`; design decisions and working note
 
 | Document | Contents |
 | --- | --- |
-| [`docs/kvantum-convergence-map.md`](docs/kvantum-convergence-map.md) | Item-by-item mapping from Kvantum to deepin GTK |
+| [`docs/kvantum-convergence-map.md`](docs/kvantum-convergence-map.md) | Item-by-item mapping from Kvantum to nosd GTK |
 | [`docs/shell-accent-scheme.md`](docs/shell-accent-scheme.md) | Cinnamon / GNOME Shell accent scheme and measurements |
 | [`docs/shell-accent-decision.md`](docs/shell-accent-decision.md) | Trade-offs behind that scheme |
 | [`docs/radius-notes.md`](docs/radius-notes.md) | Upstream research behind the radius tokens |

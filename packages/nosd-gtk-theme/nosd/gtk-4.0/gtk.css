@@ -1,3 +1,6 @@
+@import url("gtk4-compat.css");
+@import url("window-controls.css");
+
 
 /* ====== nosd 颜色默认值（取色层可覆盖的 @define-color） ====== */
 @define-color window_bg_color #f9fcff;
@@ -55,10 +58,11 @@
 /* nosd 叠加梯契约面（DESIGN §1.3）：nosd.css 覆盖层在场时被方案
    mix(surface,on_surface,α) 的烘焙值替换；以下为静态回退，直接以
    表面前景色 × 阶梯透明度实现（field 0.15 / strong 0.20 /
-   checked 0.30 / idle 0.03）。 */
+   checked 0.30 / press 0.50 / idle 0.03）。 */
 @define-color field_color alpha(@text_color, 0.15);
 @define-color strong_color alpha(@text_color, 0.20);
 @define-color checked_color alpha(@text_color, 0.30);
+@define-color press_color alpha(@text_color, 0.50);
 @define-color idle_color alpha(@text_color, 0.03);
 @define-color selected_bg_color @accent_bg_color;
 @define-color selected_fg_color @accent_fg_color;
@@ -103,21 +107,10 @@
 
 * {
     background-clip: padding-box;
-    -GtkToolButton-icon-spacing: 4;
-    -GtkTextView-error-underline-color: @error_bg_color;
-    -GtkScrolledWindow-scrollbar-spacing: 0;
-    -GtkToolItemGroup-expander-size: 11;
-    -GtkTreeView-expander-size: 11;
-    -GtkTreeView-horizontal-separator: 4;
-    -GtkWidget-text-handle-width: 20;
-    -GtkWidget-text-handle-height: 20;
-    -GtkDialog-button-spacing: 4;
-    -GtkDialog-action-area-border: 0;
     outline-color: alpha(@window_fg_color,0.3);
     outline-style: none;
     outline-offset: -3px;
     outline-width: 1px;
-    -gtk-outline-radius: 2px;
 }
 .window-frame.ssd {
     background-color: @base_color;
@@ -144,7 +137,6 @@
     background-color: @bg_color;
 }
 *:disabled {
-    -gtk-icon-effect: dim;
 }
 .gtkstyle-fallback {
     background-color: @bg_color;
@@ -312,7 +304,8 @@ entry.flat:focus {
 entry placeholder {
     color: @placeholder_text_color;
 }
-entry:focus {
+entry:focus,
+entry:focus-within {
     background-clip: border-box;
     color: @theme_text_color;
     border-color: @active_color;
@@ -430,22 +423,21 @@ treeview entry:focus {
 }
 @keyframes needs_attention {
     from {
-        background-image: -gtk-gradient(radial, center center, 0, center center, 0.01, to(@active_color), to(transparent));
+        background-image: radial-gradient(circle at center, @active_color 0%, transparent 1%);
     }
     to {
-        background-image: -gtk-gradient(radial, center center, 0, center center, 0.5, to(@active_color), to(transparent));
+        background-image: radial-gradient(circle at center, @active_color 0%, transparent 50%);
     }
 }
 button {
-    min-height: 22px;
+    min-height: 30px;
     min-width: 20px;
     transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    border: 1px solid;
-    border-radius: 4px;
+    border: 1px solid transparent;
+    border-radius: 15px;
     padding: 2px 6px;
     color: @theme_text_color;
     outline-color: alpha(@window_fg_color,0.3);
-    border-color: @border_color;
     background-color: @strong_color;
 }
 button separator {
@@ -470,25 +462,15 @@ button.sidebar-button:hover:active {
 button:hover {
     color: @theme_text_color;
     outline-color: alpha(@window_fg_color,0.3);
-    border-color: @border_color;
-    background-color: @checked_color;
-    -gtk-icon-effect: highlight;
+    background-color: @press_color;
 }
 button:active,
 button:checked {
     color: @accent_fg_color;
     outline-color: alpha(@_static_white,0.3);
-    border-color: @active_color;
     background-color: @active_color;
     background-clip: border-box;
     transition-duration: 50ms;
-}
-button:active {
-    color: @theme_text_color;
-}
-button:active:hover,
-button:checked {
-    color: @accent_fg_color;
 }
 button.flat:disabled,
 button.sidebar-button:disabled {
@@ -497,8 +479,7 @@ button.sidebar-button:disabled {
     background-image: none;
 }
 button:disabled {
-    border-color: alpha(@borders,0.55);
-    background-color: alpha(@idle_color,0.55);
+    background-color: alpha(@idle_color,0.6);
 }
 button:disabled label,
 button:disabled {
@@ -506,8 +487,7 @@ button:disabled {
 }
 button:disabled:active,
 button:disabled:checked {
-    border-color: rgba(82, 148, 226, 0.75);
-    background-color: rgba(82, 148, 226, 0.75);
+    background-color: alpha(@active_color,0.6);
     opacity: 0.6;
 }
 button:disabled:active label,
@@ -759,7 +739,7 @@ button.destructive-action:disabled {
 button stacksidebar row.needs-attention > label,
 stacksidebar button row.needs-attention > label {
     animation: needs_attention 150ms ease-in;
-    background-image: -gtk-gradient(radial, center center, 0, center center, 0.5, to(@active_color), to(transparent));
+    background-image: radial-gradient(circle at center, @active_color 0%, transparent 50%);
     background-size: 6px 6px, 6px 6px;
     background-repeat: no-repeat;
     background-position: right 3px, right 4px;
@@ -979,7 +959,7 @@ toolbar.inline-toolbar toolbutton > button.sidebar-button,
 .linked:not(.vertical) > button:active,
 .linked:not(.vertical) > button:checked,
 spinbutton:not(.vertical) button,
-spinbutton:not(.vertical) entry,
+spinbutton:not(.vertical) text,
 .primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button,
 headerbar .linked:not(.vertical):not(.path-bar).stack-switcher > button,
 .primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:hover,
@@ -1018,7 +998,7 @@ toolbar.inline-toolbar toolbutton:first-child > button.flat,
 toolbar.inline-toolbar toolbutton:first-child > button.sidebar-button,
 .inline-toolbar toolbutton:first-child > button.sidebar-button,
 spinbutton:not(.vertical) button:first-child,
-spinbutton:not(.vertical) entry:first-child,
+spinbutton:not(.vertical) text:first-child,
 .linked:not(.vertical) > combobox:first-child > box > button.combo,
 .primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:first-child,
 headerbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:first-child,
@@ -1036,7 +1016,7 @@ toolbar.inline-toolbar toolbutton:last-child > button.flat,
 toolbar.inline-toolbar toolbutton:last-child > button.sidebar-button,
 .inline-toolbar toolbutton:last-child > button.sidebar-button,
 spinbutton:not(.vertical) button:last-child,
-spinbutton:not(.vertical) entry:last-child,
+spinbutton:not(.vertical) text:last-child,
 .linked:not(.vertical) > combobox:last-child > box > button.combo,
 .primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:last-child,
 headerbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:last-child,
@@ -1055,7 +1035,7 @@ toolbar.inline-toolbar toolbutton:only-child > button.flat,
 toolbar.inline-toolbar toolbutton:only-child > button.sidebar-button,
 .inline-toolbar toolbutton:only-child > button.sidebar-button,
 spinbutton:not(.vertical) button:only-child,
-spinbutton:not(.vertical) entry:only-child,
+spinbutton:not(.vertical) text:only-child,
 .linked:not(.vertical) > combobox:only-child > box > button.combo,
 .primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:only-child,
 headerbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:only-child,
@@ -1072,7 +1052,7 @@ headerbar .linked:not(.vertical).path-bar > button:only-child,
 .linked.vertical > button:active,
 .linked.vertical > button:checked,
 spinbutton.vertical button,
-spinbutton.vertical entry,
+spinbutton.vertical text,
 .linked.vertical > combobox > box > button.combo {
     border-radius: 0;
     border-bottom-style: none;
@@ -1080,7 +1060,7 @@ spinbutton.vertical entry,
 .linked.vertical > entry:first-child,
 .linked.vertical > button:first-child,
 spinbutton.vertical button:first-child,
-spinbutton.vertical entry:first-child,
+spinbutton.vertical text:first-child,
 .linked.vertical > combobox:first-child > box > button.combo {
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
@@ -1088,7 +1068,7 @@ spinbutton.vertical entry:first-child,
 .linked.vertical > entry:last-child,
 .linked.vertical > button:last-child,
 spinbutton.vertical button:last-child,
-spinbutton.vertical entry:last-child,
+spinbutton.vertical text:last-child,
 .linked.vertical > combobox:last-child > box > button.combo {
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
@@ -1097,7 +1077,7 @@ spinbutton.vertical entry:last-child,
 .linked.vertical > entry:only-child,
 .linked.vertical > button:only-child,
 spinbutton.vertical button:only-child,
-spinbutton.vertical entry:only-child,
+spinbutton.vertical text:only-child,
 .linked.vertical > combobox:only-child > box > button.combo {
     border-radius: 4px;
     border-style: solid;
@@ -1257,9 +1237,10 @@ spinbutton:not(.vertical) {
 spinbutton:not(.vertical):focus-within {
     border-color: @active_color;
 }
-spinbutton:not(.vertical) entry {
+spinbutton:not(.vertical) text {
     min-width: 28px;
     min-height: 0;
+    padding: 0 4px;
     border: none;
     border-radius: 0;
     background-color: transparent;
@@ -1277,14 +1258,14 @@ spinbutton:not(.vertical) entry {
 }
 .osd spinbutton:not(.vertical) > button:first-child:hover:not(:active),
 .osd spinbutton:not(.vertical) > button.up:dir(rtl):hover:not(:active),
-.osd spinbutton:not(.vertical) > entry + button:not(:active):hover {
+.osd spinbutton:not(.vertical) > text + button:not(:active):hover {
     box-shadow: none;
 }
-.osd spinbutton:not(.vertical) > entry:focus + button {
+.osd spinbutton:not(.vertical) > text:focus + button {
     border-left-color: rgba(26, 28, 34, 0.35);
 }
 spinbutton.vertical button,
-spinbutton.vertical entry {
+spinbutton.vertical text {
     padding-left: 4px;
     padding-right: 4px;
     min-width: 0;
@@ -1292,17 +1273,17 @@ spinbutton.vertical entry {
 spinbutton.vertical button.up {
     border-radius: 4px 4px 0 0;
 }
-spinbutton.vertical > entry:focus + button {
+spinbutton.vertical > text:focus + button {
     border-top-color: @active_color;
 }
-spinbutton.vertical > entry:drop(active) + button {
+spinbutton.vertical > text:drop(active) + button {
     border-top-color: @warning_color;
 }
 combobox button.combo {
     min-width: 0;
     min-height: 30px;
-    padding: 2px 8px;
-    border: 1px solid transparent;
+    padding: 0 8px;
+    border: none;
     border-radius: 5px;
     background-color: @field_color;
     color: @text_color;
@@ -1318,9 +1299,34 @@ combobox arrow {
     min-height: 16px;
     min-width: 16px;
 }
+dropdown > button {
+    min-height: 30px;
+    padding: 0 8px;
+    border: none;
+    border-radius: 5px;
+    background-color: @field_color;
+    background-image: none;
+    color: @text_color;
+    box-shadow: none;
+}
+dropdown > button:hover {
+    background-color: @field_color;
+}
+dropdown:focus-within > button,
+dropdown > button:active {
+    box-shadow: inset 0 0 0 1px @active_color;
+}
+combobox button.combo:focus {
+    box-shadow: inset 0 0 0 1px @active_color;
+}
+dropdown arrow {
+    -gtk-icon-source: -gtk-icontheme("pan-down-symbolic");
+    min-height: 16px;
+    min-width: 16px;
+    color: @window_fg_color;
+}
 toolbar,
 .inline-toolbar {
-    -GtkWidget-window-dragging: true;
     padding: 4px;
     background-color: @bg_color;
 }
@@ -1477,7 +1483,6 @@ headerbar.selection-mode .selection-menu,
 }
 headerbar.selection-mode .selection-menu GtkArrow,
 .selection-mode.titlebar:not(headerbar) .selection-menu GtkArrow {
-    -GtkArrow-arrow-scaling: 1;
 }
 headerbar.selection-mode .selection-menu .arrow,
 .selection-mode.titlebar:not(headerbar) .selection-menu .arrow {
@@ -1597,7 +1602,7 @@ headerbar separator.titlebutton:backdrop,
 headerbar entry {
     color: rgba(82, 93, 118, 0.8);
     border-color: rgba(82, 93, 118, 0.1);
-    /*  background-image: linear-gradient(to bottom, alpha(@_static_white,0.9));*/
+    
 
     background-color: transparent;
 }
@@ -1757,7 +1762,7 @@ headerbar .linked:not(.vertical):not(.path-bar) > button:not(:checked):not(:acti
 headerbar .linked:not(.vertical):not(.path-bar) > button:not(:checked):not(:active):not(.suggested-action):not(.destructive-action):hover + button:not(:checked):not(:active):not(.suggested-action):not(.destructive-action) {
     box-shadow: none;
 }
-/*定义nautilus顶部面包屑*/
+
 
 .primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button,
 headerbar .linked:not(.vertical):not(.path-bar).stack-switcher > button,
@@ -2076,12 +2081,12 @@ headerbar spinbutton:not(.vertical) > button:hover + button {
 }
 .primary-toolbar spinbutton:not(.vertical) > button:first-child:hover:not(:active),
 headerbar spinbutton:not(.vertical) > button:first-child:hover:not(:active),
-.primary-toolbar spinbutton:not(.vertical) > entry + button:not(:active):hover,
-headerbar spinbutton:not(.vertical) > entry + button:not(:active):hover {
+.primary-toolbar spinbutton:not(.vertical) > text + button:not(:active):hover,
+headerbar spinbutton:not(.vertical) > text + button:not(:active):hover {
     box-shadow: none;
 }
-.primary-toolbar spinbutton:not(.vertical) > entry:focus + button,
-headerbar spinbutton:not(.vertical) > entry:focus + button {
+.primary-toolbar spinbutton:not(.vertical) > text:focus + button,
+headerbar spinbutton:not(.vertical) > text:focus + button {
     border-left-color: @active_color;
 }
 .primary-toolbar combobox:disabled,
@@ -2171,7 +2176,7 @@ headerbar switch:backdrop {
 headerbar progressbar trough {
     border: none;
     border-radius: 5px;
-    min-height: 4px;
+    min-height: 2px;
     background-color: @strong_color;
 }
 .primary-toolbar progressbar:backdrop,
@@ -2245,11 +2250,6 @@ headerbar scale trough:disabled {
     padding-right: 4px;
 }
 treeview.view {
-    -GtkTreeView-grid-line-width: 1;
-    -GtkTreeView-grid-line-pattern: '';
-    -GtkTreeView-tree-line-width: 1;
-    -GtkTreeView-tree-line-pattern: '';
-    -GtkTreeView-expander-size: 16;
     border-left-color: alpha(@window_fg_color,0.15);
     border-top-color: alpha(@_static_black,0.1);
 }
@@ -2374,7 +2374,6 @@ treeview.view header.button.dnd:active {
 }
 menubar,
 .menubar {
-    -GtkWidget-window-dragging: true;
     padding: 0px;
     background-color: @base_color;
     color: @theme_text_color;
@@ -2753,8 +2752,6 @@ scrollbar {
     transition: 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 * {
-    -GtkScrollbar-has-backward-stepper: false;
-    -GtkScrollbar-has-forward-stepper: false;
 }
 scrollbar.top {
     border-bottom: 1px solid @borders;
@@ -3088,7 +3085,7 @@ scale.horizontal trough {
 }
 scale.horizontal highlight,
 scale.horizontal fill {
-    margin: 0 -4px;
+    margin: 0;
 }
 scale.vertical trough {
     padding: 4px 0;
@@ -3096,7 +3093,7 @@ scale.vertical trough {
 }
 scale.vertical highlight,
 scale.vertical fill {
-    margin: -4px 0;
+    margin: 0;
 }
 scale slider {
     min-height: 12px;
@@ -3110,11 +3107,9 @@ scale.fine-tune fill,
 scale.fine-tune highlight,
 scale.fine-tune trough {
     border-radius: 5px;
-    -gtk-outline-radius: 7px;
 }
 scale trough {
     outline-offset: 2px;
-    -gtk-outline-radius: 7px;
     border-radius: 5px;
     background-color: @strong_color;
 }
@@ -3286,18 +3281,20 @@ progressbar.osd trough {
     background-color: transparent;
     box-shadow: none;
 }
-progressbar progress {
+progressbar > trough > progress {
     background-color: @active_color;
     border: none;
     border-radius: 5px;
+    min-height: 2px;
 }
-row:selected progressbar progress,
-infobar progressbar progress {
+row:selected progressbar > trough > progress,
+infobar progressbar > trough > progress {
     background-color: @view_bg_color;
 }
 progressbar trough {
     border: none;
     border-radius: 5px;
+    min-height: 2px;
     background-color: @strong_color;
 }
 row:selected progressbar trough,
@@ -3368,7 +3365,7 @@ scrolledwindow viewport.frame {
     border-style: none;
 }
 scrolledwindow overshoot.top {
-    background-image: -gtk-gradient(radial, center top, 0, center top, 0.6, from(rgba(82, 148, 226, 0.2)), to(rgba(82, 148, 226, 0)));
+    background-image: radial-gradient(farthest-side at center top, rgba(82, 148, 226, 0.2) 0%, rgba(82, 148, 226, 0) 100%);
     background-size: 100% 60%;
     background-repeat: no-repeat;
     background-position: center top;
@@ -3377,7 +3374,7 @@ scrolledwindow overshoot.top {
     box-shadow: none;
 }
 scrolledwindow overshoot.bottom {
-    background-image: -gtk-gradient(radial, center bottom, 0, center bottom, 0.6, from(rgba(82, 148, 226, 0.2)), to(rgba(82, 148, 226, 0)));
+    background-image: radial-gradient(farthest-side at center bottom, rgba(82, 148, 226, 0.2) 0%, rgba(82, 148, 226, 0) 100%);
     background-size: 100% 60%;
     background-repeat: no-repeat;
     background-position: center bottom;
@@ -3386,7 +3383,7 @@ scrolledwindow overshoot.bottom {
     box-shadow: none;
 }
 scrolledwindow overshoot.left {
-    background-image: -gtk-gradient(radial, left center, 0, left center, 0.6, from(rgba(82, 148, 226, 0.2)), to(rgba(82, 148, 226, 0)));
+    background-image: radial-gradient(farthest-side at left center, rgba(82, 148, 226, 0.2) 0%, rgba(82, 148, 226, 0) 100%);
     background-size: 60% 100%;
     background-repeat: no-repeat;
     background-position: left center;
@@ -3395,7 +3392,7 @@ scrolledwindow overshoot.left {
     box-shadow: none;
 }
 scrolledwindow overshoot.right {
-    background-image: -gtk-gradient(radial, right center, 0, right center, 0.6, from(rgba(82, 148, 226, 0.2)), to(rgba(82, 148, 226, 0)));
+    background-image: radial-gradient(farthest-side at right center, rgba(82, 148, 226, 0.2) 0%, rgba(82, 148, 226, 0) 100%);
     background-size: 60% 100%;
     background-repeat: no-repeat;
     background-position: right center;
@@ -3723,7 +3720,6 @@ button.sidebar-button {
     margin-bottom: 2px;
     padding: 0;
     border-radius: 100%;
-    -gtk-outline-radius: 100%;
 }
 button.sidebar-button:not(:hover):not(:active) > image {
     opacity: 0.5;
@@ -4106,7 +4102,6 @@ colorchooser .popover.osd {
     background-color: @view_bg_color;
 }
 .content-view:hover {
-    -gtk-icon-effect: highlight;
 }
 .scale-popup button:hover {
     color: @theme_text_color;
@@ -4119,7 +4114,6 @@ popover.touch-selection,
 .csd popover.touch-selection,
 popover.background.touch-selection,
 .csd popover.background.touch-selection {
-    font: initial;
 }
 button.circular,
 button.nautilus-circular-button.image-button,
@@ -4128,7 +4122,6 @@ button.circular-button {
     min-width: 26px;
     min-height: 26px;
     border-radius: 50%;
-    -gtk-outline-radius: 50%;
 }
 button.circular label,
 button.nautilus-circular-button.image-button label,
@@ -4206,7 +4199,7 @@ headerbar.default-decoration button.titlebutton,
     margin: 0px;
 }
 
-/* remove the space between closebutton and right side */
+
 headerbar box.right{
 	margin-right: -7px;
 }
@@ -4251,7 +4244,7 @@ headerbar button.titlebutton.minimize,
     border: none;
 
 }
-/* make close button responsive in a bigger area*/
+
 headerbar button.titlebutton.close,
 .titlebar .button.titlebutton.close {
     margin-right: 0px;
@@ -4708,7 +4701,6 @@ layouttab {
 }
 layout {
     border: 1px solid @borders;
-    -PnlDockBin-handle-size: 1;
 }
 eggsearchbar box.search-bar {
     border-bottom: 1px solid @borders;
@@ -4741,7 +4733,6 @@ docktabstrip docktab:checked {
 }
 dockbin {
     border: 1px solid @borders;
-    -PnlDockBin-handle-size: 1;
 }
 dockpaned {
     border: 1px solid @borders;
@@ -4854,8 +4845,6 @@ button.documents-favorite:active:hover {
 }
 .gnome-panel-menu-bar na-tray-applet,
 .mate-panel-menu-bar na-tray-applet {
-    -NaTrayApplet-icon-padding: 0;
-    -NaTrayApplet-icon-size: 16px;
 }
 .xfce4-panel.panel {
     background-color: rgba(43, 46, 55, 0.95);
@@ -4952,7 +4941,7 @@ button.documents-favorite:active:hover {
     border: 1px solid alpha(@_static_black,0.35);
     border-radius: 4px;
     box-shadow: 0 2px 4px alpha(@_static_black,0.2);
-    background-color: @view_bg_color
+    background-color: @view_bg_color;
 }
 .gala-notification .title,
 .gala-notification .label {
@@ -5018,19 +5007,6 @@ button.documents-favorite:active:hover {
     opacity: 1;
 }
 UnityDecoration {
-    -UnityDecoration-extents: 28px 1 1 1;
-    -UnityDecoration-input-extents: 10px;
-    -UnityDecoration-shadow-offset-x: 0px;
-    -UnityDecoration-shadow-offset-y: 3px;
-    -UnityDecoration-active-shadow-color: alpha(@_static_black,0.2);
-    -UnityDecoration-active-shadow-radius: 12px;
-    -UnityDecoration-inactive-shadow-color: alpha(@_static_black,0.07);
-    -UnityDecoration-inactive-shadow-radius: 7px;
-    -UnityDecoration-glow-size: 10px;
-    -UnityDecoration-glow-color: @active_color;
-    -UnityDecoration-title-indent: 10px;
-    -UnityDecoration-title-fade: 35px;
-    -UnityDecoration-title-alignment: 0.0;
 }
 UnityDecoration.top {
     border: 1px solid alpha(@_static_black,0.1);
@@ -5201,8 +5177,6 @@ toolbar.bottom-toolbar button,
     padding: 2px 3px 2px 3px;
 }
 .source-list {
-    -GtkTreeView-horizontal-separator: 1px;
-    -GtkTreeView-vertical-separator: 6px;
 }
 .source-list,
 .source-list.view,
@@ -5257,7 +5231,6 @@ iconview.source-list:selected:focus,
 .source-list.category-expander {
     color: @theme_text_color;
     -gtk-icon-source: -gtk-icontheme("pan-end-symbolic");
-    -GtkTreeView-expander-size: 16;
 }
 .source-list.category-expander,
 .source-list.category-expander:backdrop {
@@ -5283,11 +5256,6 @@ GraniteWidgetsWelcome .h3 {
     border-radius: 0;
 }
 GraniteWidgetsPopOver {
-    -GraniteWidgetsPopOver-arrow-width: 21;
-    -GraniteWidgetsPopOver-arrow-height: 10;
-    -GraniteWidgetsPopOver-border-radius: 4px;
-    -GraniteWidgetsPopOver-border-width: 1;
-    -GraniteWidgetsPopOver-shadow-size: 12;
     border: 1px solid alpha(@_static_black,0.3);
     margin: 0;
 }
@@ -5481,11 +5449,7 @@ GtkListBox .h4 {
 .nautilus-window paned > separator:dir(rtl) {
     margin-right: -1px;
 }
-/*
 
-filechooser paned > separator {
-  box-shadow: inset -1px 0 @border_color; }
-*/
 
 filechooser.csd.background,
 filechooser placessidebar list,
@@ -5720,43 +5684,18 @@ filechooser actionbar entry:disabled {
     background-image: linear-gradient(to bottom, rgba(102, 109, 132, 0.2), rgba(102, 109, 132, 0.2));
 }
 
-/* deepin override settings go here */
+
 headerbar.default-decoration {
-    padding: 4px 4px 4px 0px; /* make titlebar height larger */
+    padding: 4px 4px 4px 0px; 
 }
 
 headerbar.default-decoration:backdrop {
-    padding: 4px 4px 4px 0px; /* make titlebar height larger */
+    padding: 4px 4px 4px 0px; 
 }
 
 headerbar .title {
     font-weight: bold;
 }
 
-/*
-filechooser placessidebar.sidebar scrollbar,
-.nautilus-window placessidebar.sidebar scrollbar, .nemo-window .sidebar scrollbar, .caja-side-pane scrollbar {
-  border-color: alpha(@nosd_literal_2a2d37,0.95); }
-  filechooser placessidebar.sidebar scrollbar.overlay-indicator:not(.dragging):not(.hovering) slider,
-  .nautilus-window placessidebar.sidebar scrollbar.overlay-indicator:not(.dragging):not(.hovering) slider, .nemo-window .sidebar scrollbar.overlay-indicator:not(.dragging):not(.hovering) slider, .caja-side-pane scrollbar.overlay-indicator:not(.dragging):not(.hovering) slider {
-    background-color: alpha(@text_color, 0.55);
-    border: 1px solid alpha(@text_color, 0.7); }
-  filechooser placessidebar.sidebar scrollbar slider,
-  .nautilus-window placessidebar.sidebar scrollbar slider, .nemo-window .sidebar scrollbar slider, .caja-side-pane scrollbar slider {
-    background-color: mix(@base_color, @text_color, 0.35); }
-    filechooser placessidebar.sidebar scrollbar slider:hover,
-    .nautilus-window placessidebar.sidebar scrollbar slider:hover, .nemo-window .sidebar scrollbar slider:hover, .caja-side-pane scrollbar slider:hover {
-      background-color: mix(@base_color, @text_color, 0.30);
-border:1px solid alpha(@_static_black,0.7);
-box-shadow: none;}
-    filechooser placessidebar.sidebar scrollbar slider:hover:active,
-    .nautilus-window placessidebar.sidebar scrollbar slider:hover:active, .nemo-window .sidebar scrollbar slider:hover:active, .caja-side-pane scrollbar slider:hover:active {
-      background-color: mix(@base_color, @text_color, 0.50); }
-    filechooser placessidebar.sidebar scrollbar slider:disabled,
-    .nautilus-window placessidebar.sidebar scrollbar slider:disabled, .nemo-window .sidebar scrollbar slider:disabled, .caja-side-pane scrollbar slider:disabled {
-      background-color: transparent; }
-  filechooser placessidebar.sidebar scrollbar trough,
-  .nautilus-window placessidebar.sidebar scrollbar trough, .nemo-window .sidebar scrollbar trough, .caja-side-pane scrollbar trough {
-    background-color: alpha(@base_color,0.5); }
-*/
+
 

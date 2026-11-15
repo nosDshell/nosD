@@ -32,8 +32,8 @@
 
 | 路径            | 内容                                                                      | 消费方                             |
 | ---             | ---                                                                       | ---                                |
-| `deepin/`       | GTK 2/3/4 浅色主题，附 Cinnamon、GNOME Shell、Metacity、Unity、Xfwm4 皮肤 | GTK 应用、Cinnamon、GNOME Shell    |
-| `deepin-dark/`  | 同上，深色变体                                                            | 同上                               |
+| `nosd/`         | GTK 2/3/4 浅色主题，附 Cinnamon、GNOME Shell、Metacity、Unity、Xfwm4 皮肤 | GTK 应用、Cinnamon、GNOME Shell    |
+| `nosd-dark/`    | 同上，深色变体                                                            | 同上                               |
 
 ---
 
@@ -58,7 +58,7 @@ Arch：
 makepkg -si   # 在 arch/ 目录中执行
 ```
 
-三个包都提供 `deepin-gtk-theme` 与 `nosd-app-themes`，安装后可直接替换原包。已验证落位一致：`/usr/share/themes/{deepin,deepin-dark}`。
+三个包以各自包名提供 `nosd-app-themes`。落位：`/usr/share/themes/{nosd,nosd-dark}`。
 
 ### 从源码安装
 
@@ -82,10 +82,10 @@ GTK 应用读取 `gtk-theme-name`。在 `~/.config/gtk-3.0/settings.ini` 与 `~/
 
 ```ini
 [Settings]
-gtk-theme-name=deepin
+gtk-theme-name=nosd
 ```
 
-深色把值改成 `deepin-dark`，或保留 `gtk-application-prefer-dark-theme=1` 让应用自行选择变体。
+深色把值改成 `nosd-dark`，或保留 `gtk-application-prefer-dark-theme=1` 让应用自行选择变体。
 
 Qt 应用用兄弟组件 [`nosd-kvantum-theme`](../nosd-kvantum-theme)：安装后在 `~/.config/qt5ct/qt5ct.conf` 与 `~/.config/qt6ct/qt6ct.conf` 设 `style=kvantum`，并在 `~/.config/Kvantum/kvantum.kvconfig` 写 `theme=nosd`。
 
@@ -161,7 +161,7 @@ make check               # 令牌一致性检查
 
 | 文档                                                                         | 内容                                  |
 | ---                                                                          | ---                                   |
-| [`docs/kvantum-convergence-map.md`](docs/kvantum-convergence-map.md)         | Kvantum 到 deepin GTK 的逐项收敛映射  |
+| [`docs/kvantum-convergence-map.md`](docs/kvantum-convergence-map.md)         | Kvantum 到 nosd GTK 的逐项收敛映射  |
 | [`docs/shell-accent-scheme.md`](docs/shell-accent-scheme.md)                 | Cinnamon / GNOME Shell 取色方案与实测 |
 | [`docs/shell-accent-decision.md`](docs/shell-accent-decision.md)             | 上述方案的取舍记录                    |
 | [`docs/radius-notes.md`](docs/radius-notes.md)                               | 圆角令牌的上游考据                    |

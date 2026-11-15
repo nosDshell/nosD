@@ -197,7 +197,7 @@ pub fn inject_terminal_colors(result: &mut Scheme, mode_data: &serde_json::Map<S
     }
 }
 
-/// 深色主题独有的 accent 阴影族 9 条（`deepin-dark` 的 GTK css 引用它们）。
+/// 深色主题独有的 accent 阴影族 9 条（`nosd-dark` 的 GTK css 引用它们）。
 ///
 /// 这些值不是从 accent 按固定比率派生的——它们是 2016 年移植 Adwaita 3.20 时
 /// 带进来的字面值，分属 197.3° / 212.5° / 213.0° 三个色相族。下表是原始值；

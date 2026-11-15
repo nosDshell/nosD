@@ -145,7 +145,7 @@ fn theme_for_mode(mode: &str) -> String {
             }
         }
     }
-    if mode == "light" { "deepin".to_string() } else { "deepin-dark".to_string() }
+    if mode == "light" { "nosd".to_string() } else { "nosd-dark".to_string() }
 }
 
 /// Pull `gtk-theme-name` out of a GTK settings.ini body.
@@ -316,13 +316,13 @@ mod tests {
 
     #[test]
     fn reads_gtk_theme_name_from_settings_ini() {
-        let ini = "# comment\n[Settings]\ngtk-icon-theme-name=Papirus\ngtk-theme-name=deepin-dark\n";
-        assert_eq!(read_gtk_theme_name(ini).as_deref(), Some("deepin-dark"));
+        let ini = "# comment\n[Settings]\ngtk-icon-theme-name=Papirus\ngtk-theme-name=nosd-dark\n";
+        assert_eq!(read_gtk_theme_name(ini).as_deref(), Some("nosd-dark"));
     }
 
     #[test]
     fn tolerates_quoted_theme_name() {
-        assert_eq!(read_gtk_theme_name("gtk-theme-name = \"deepin\"\n").as_deref(), Some("deepin"));
+        assert_eq!(read_gtk_theme_name("gtk-theme-name = \"nosd\"\n").as_deref(), Some("nosd"));
     }
 
     #[test]
@@ -338,7 +338,7 @@ mod tests {
         let base = tmpdir("theme_mode");
         let gtk = base.join("gtk-3.0");
         fs::create_dir_all(&gtk).unwrap();
-        fs::write(gtk.join("settings.ini"), "[Settings]\ngtk-theme-name=deepin-dark\n").unwrap();
+        fs::write(gtk.join("settings.ini"), "[Settings]\ngtk-theme-name=nosd-dark\n").unwrap();
 
         let old = env::var_os("XDG_CONFIG_HOME");
         env::set_var("XDG_CONFIG_HOME", &base);
@@ -351,9 +351,9 @@ mod tests {
             None => env::remove_var("XDG_CONFIG_HOME"),
         }
 
-        assert_eq!(from_ini, "deepin-dark");
-        assert_eq!(dark_fallback, "deepin-dark");
-        assert_eq!(light_fallback, "deepin");
+        assert_eq!(from_ini, "nosd-dark");
+        assert_eq!(dark_fallback, "nosd-dark");
+        assert_eq!(light_fallback, "nosd");
         let _ = fs::remove_dir_all(&base);
     }
 }

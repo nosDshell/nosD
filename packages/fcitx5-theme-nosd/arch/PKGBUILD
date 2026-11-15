@@ -1,10 +1,10 @@
 # Maintainer: CharOfString <root@charofstring.cc>
-pkgname=fcitx5-theme-deepin
+pkgname=fcitx5-theme-nosd
 pkgver=1.1
 pkgrel=1
-pkgdesc="Deepin looklike fcitx5 theme"
+pkgdesc="nosDshell fcitx5 themes (nosd light/dark)"
 arch=('any')
-url="https://github.com/linuxdeepin/fcitx5-theme-deepin"
+url="https://github.com/nosDshell/nosd"
 license=('CC-BY-SA-4.0')
 depends=('fcitx5')
 source=()
@@ -12,6 +12,6 @@ sha256sums=()
 
 package() {
     install -dm755 "$pkgdir/usr/share/fcitx5/themes/"
-    cp -r "$startdir/../deepin-light" "$pkgdir/usr/share/fcitx5/themes/"
-    cp -r "$startdir/../deepin-dark" "$pkgdir/usr/share/fcitx5/themes/"
+    cp -r "$startdir/../nosd" "$pkgdir/usr/share/fcitx5/themes/"
+    cp -r "$startdir/../nosd-dark" "$pkgdir/usr/share/fcitx5/themes/"
 }

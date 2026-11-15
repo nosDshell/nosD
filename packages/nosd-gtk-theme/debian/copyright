@@ -8,8 +8,8 @@ Copyright: 2015 Deepin Technology Co., Ltd.
 License: GPL-3+
 
 Files:
- deepin-dark/gnome-shell/gnome-shell.css
- deepin/gnome-shell/gnome-shell.css
+ nosd-dark/gnome-shell/gnome-shell.css
+ nosd/gnome-shell/gnome-shell.css
 Copyright: 2009, 2015 Red Hat, Inc.
 License: LGPL-2.1
 

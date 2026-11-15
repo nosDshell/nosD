@@ -7,12 +7,12 @@ Build-Depends: debhelper (>= 9),
 
 Package: nosd-gtk-theme
 Architecture: all
-Provides: nosd-app-themes, deepin-gtk-theme
-Replaces: nosd-app-themes, deepin-gtk-theme
-Conflicts: nosd-app-themes, deepin-gtk-theme
+Provides: nosd-app-themes
+Replaces: nosd-app-themes
+Conflicts: nosd-app-themes
 Depends: ${misc:Depends}
 Breaks: libgtk-3-0 ( <= 3.5.0 )
 Description: nosDshell GTK themes
- Deepin-style GTK+ 2/3/4 themes (deepin light and deepin-dark) for the
+ nosDshell GTK+ 2/3/4 themes (nosd light and nosd-dark) for the
  nosDshell desktop environment.  The Kvantum Qt theme is packaged
  separately as nosd-kvantum-theme.

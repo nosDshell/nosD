@@ -1,5 +1,5 @@
 
-*:not(.deepin-allow-global-outline) { outline-style: none; outline-width: 0; }
+*:not(.nosd-allow-global-outline) { outline-style: none; outline-width: 0; }
 window.csd {
   margin: 0;
   border-radius: 4px 4px 0 0;

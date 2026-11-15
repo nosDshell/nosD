@@ -929,6 +929,7 @@ GTK 2/3/4 与 Qt/Kvantum 应用不是 DDE 界面，但它们呈现的控件与 �
 应用窗口底面是不透明的方案表面（`mSurface`/`mSurfaceVariant`），不是 shell 的半透明蒙版。所以：
 
 - §1.3 的叠加梯在应用侧落成**表面前景色 × α** 的实绘面：GTK 用 `@define-color … alpha(<前景色>, α)`（`field_color`/`strong_color`/`checked_color`/`idle_color`），Kvantum 由模板把 `mix(surface, on_surface, α)` 烘焙成 `overlay_*` 角色。两侧都不允许把方案色当实色画在控件上——那等价于绕过令牌透明度。
+- 叠加梯是**相对量**，随所在表面逐级提亮：滑槽/进度条 trough 叠在设置行卡（本身 `strong`）上，须比卡面再亮一档 `strong`（即 `mix(card, on_surface, α)`），不能与卡面同用烘焙 `overlay_strong`——那会让二者同值、滑槽隐形。GTK 的 alpha 形式天然相对（模板 define 必须 alpha，不得烘焙实色，check-tokens 核）；Kvantum 滑槽用 `on_surface × fill-opacity` 相对合成而非烘焙（引擎有效不透明度≈标称 2/3，实测卡面 70 时标称 0.20→95、0.30→107，故标称 0.30 落回 `strong` 档），theme-audit showcase 断言核「相对卡面一档」，不依赖该系数。
 - 方案色只在两处直接进入应用主题：不透明底面本身（`window`/`base`/`view` 角色），以及强调色家族（§8.2）。
 - GTK 主题内一切颜色必须走 `@define-color`，字面值只允许出现在文件头部的 defaults 块；Kvantum `kvconfig` 必须给全 `[GeneralColors]` 28 个角色（漏项回落 Qt 默认调色板，露出浅灰带），SVG 必须保持 XML 良构（Qt 严格解析，一处重复属性整图拒载回落内置主题）。
 
@@ -948,6 +949,7 @@ GTK 2/3/4 与 Qt/Kvantum 应用不是 DDE 界面，但它们呈现的控件与 �
 | 控件 | 契约 | GTK | Kvantum |
 |---|---|---|---|
 | 字段（输入/下拉/数值框） | 高 30、radiusItem 5、`field` 面、idle 无边框、focus 1px accent 边 | `entry`/`combobox button.combo`/`spinbutton`/`dropdown > button` min-height 30、border-color transparent、:focus 边 @active_color | `lineedit-*`/`combo-*`/`spin-*` 元素 |
+| 按钮（NButton） | 高 30、radiusPill 15 胶囊、`strong` 面、无边框无发丝；hover `press`、按下/checked accent+onPrimary 文字、禁用 `idle` 面 × 0.6 | `button` min-height 30、border 1px transparent、border-radius 15、hover @press_color | `button-*` 元素 radius 15、`[PanelButtonCommand] frame.*=15` |
 | 下拉箭头 | 右侧 ▾ | `pan-down-symbolic` 16px | `combo-arrow`/`spin-arrow` |
 | 开关 | 40×22 胶囊（radius=高度一半）、knob 18、trough `strong`、checked accent+onPrimary 点 | `switch`/`switch slider` | `switch-*`（预留） |
 | 滑块 | 滑槽 2px（`strong` 未填充 / accent 已填充）、knob 12px 白点 + 发丝边 | `scale trough`/`scale slider` margin -5 | `slider_width=2`、`slider_handle_*=12`、`slidercursor-*` |
@@ -955,11 +957,17 @@ GTK 2/3/4 与 Qt/Kvantum 应用不是 DDE 界面，但它们呈现的控件与 �
 | 复选/单选 | 盒体 14、radius 4、checked accent+白形 | `check`/`radio` | `check_size=14`、`checkbox-*`/`radio-*` |
 | 分隔线 | 1px、前景 × 0.15 | `separator` 系 | kvconfig `separator_*` |
 
-进度条沿用滑槽契约：`trough` 用 `strong` 面、`progress` 用 accent。禁用态用同族面的 0.55 α（或下一级梯阶），不另造禁用色。
+进度条沿用滑槽契约：厚度同滑槽 2px、无文字；`trough` 用 `strong` 面、`progress` 用 accent。Kvantum 侧 `progressbar_thickness=2`，SVG progress 框元素自然高度同压到 2px（元素自然高度会把条撑厚）。Kvantum 1.1.8 没有 textless 开关，文字由应用侧 `setTextVisible(false)` 关闭；sizeHint 仍预留文字高，属应用布局而非主题观感，必要时用固定高压缩。禁用态用同族面的 0.55 α（或下一级梯阶），不另造禁用色。
+
+Kvantum 截图陷阱（实测结论）：`animate_states=true` 时焦点环随状态动画淡入，setFocus 后立即 grab 会拍到 alpha 0 的环，误判「焦点环缺失」；harness 必须在 grab 前等动画稳定（processEvents + sleep 循环）。曾据此误判「focus 环依赖 normal 切片 outline 路径」——不成立：idle 细边删除后焦点环仍在。Qt idle 无边框与 focus 1px accent 两项契约均成立。另：单控件 `widget.grab()` 与整窗渲染路径不同（曾掩盖按钮切片 1px 发丝导致的「耳朵」），视觉验证一律以整窗 grab / showcase 为准。offscreen 平台 show 即自动聚焦顶层控件，idle 抓图须先 clearFocus 再等环淡出，否则 idle 面拍到 accent 焦点环（曾误判「idle 有细边」）。
+
+Kvantum `frame.expansion` 是「角汇合」胶囊机制，不是裁剪开关（上游 rendering.cpp drawExpanded / Kvantum.cpp 实测）：`e=min(h,w)<=expansion` 时四角以 `e/2` 汇合绘制，可见半径=`min(h,w,expansion)/2`，与 SVG 切片弧半径无关。故按钮配方为 `[PanelButtonCommand] frame.*=3` + `frame.expansion=30`（>=button_height）→ R15 胶囊；`[Progressbar] frame.expansion=8`（>=thickness 2）→ R1 槽端。陷阱：文本高+`frame.top+bottom` 超过控件高时 enoughSpace 失败，expansion 被钳到 14、`frame.*` 钳到 3，胶囊退化为 R7——旧值 `frame.*=15` 正踩此坑（曾误读截图归咎于 expansion 正值并错误归零，已纠正）。`[ScrollbarSlider]` 例外：引擎在 drawControl CE_ScrollBarSlider 强制 `expansion=0`，kvconfig expansion 无效；圆角走九切片——`frame=true`、`frame.*=scroll_width/2=4`，配合 SVG 四角 R4 弧成胶囊（thickness=2×frame.* 时 interior 为空，面由四边切片拉伸）。check-tokens 断言 expansion>=button_height / >=slider_groove 与 `frame.*` 小值契约。
+
+字段与按钮的「高 30」指渲染总高（含边框与上下内边距）。GTK3 的 min-height 是内容高：字段声明 28 + 2×1px 边框（上下内边距 0），按钮声明 24 + 2×2px 内边距 + 2×1px 边框；GTK4 的 min-height 含边框/内边距，直接声明 30。check-tokens 按各代盒模型语义核对总高，theme-audit 另量渲染高度兜底。
 
 ### 8.4 校验面
 
-- `tools/check-tokens.py`：圆角令牌集合、`[overlay]` α ↔ GTK `*_color` define、`[controls]` 几何 ↔ GTK `min-*` / kvconfig `slider_handle_*` 等 / `Style.qml`、`[GeneralColors]` 全角色、SVG 良构、tpl 与 shell 模板逐字节一致。
-- `tools/theme-audit/`：按方案 × 明暗渲染三端控件探针并断言语义色与几何；`showcase` 子命令出 shell 参考列与 GTK4/GTK3/Qt 并排截图，新增对齐项先进断言再进图。
+- `tools/check-tokens.py`：圆角令牌集合、`[overlay]` α ↔ GTK `*_color` define、`[controls]` 几何 ↔ GTK `min-*` / kvconfig `slider_handle_*` 等 / `Style.qml`、`[GeneralColors]` 全角色、SVG 良构、tpl 与 shell 模板逐字节一致；胶囊契约（`[PanelButtonCommand] frame.expansion>=button_height` 且 `frame.*` 小值、`[Progressbar] expansion>=slider_groove`、`[ScrollbarSlider] frame.*=scroll_width/2`）。
+- `tools/theme-audit/`：按方案 × 明暗渲染三端控件探针并断言语义色与几何（含按钮/字段/组合/_spin_ 圆角与滚动条端角 ≈ `scroll_width/2`；小圆角端帽全 AA，掩码按离面色/离窗底最近二分）；`showcase` 子命令出 shell 参考列与 GTK4/GTK3/Qt 并排截图，并断言三端滑槽未填充段相对卡面亮一档 `strong`（§8.1 相对叠加），新增对齐项先进断言再进图。
 - 视觉验收以 showcase 四列对比为准，断言通过不等于观感一致。
 

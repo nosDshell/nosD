@@ -12,7 +12,7 @@
 | 产出 rpm | **无 CI 步骤**；`rpm/nosd-app-themes.spec` 存在但未被任何流程调用 | `ls rpm/` + release.yml 无 rpmbuild | 🔴 缺项 |
 | 产出 tar.gz | `tar --exclude-vcs -czf dist/nosd-app-themes-$VERSION.tar.gz` | release.yml:24-28 | ✅ |
 | AUR：复用 `arch/PKGBUILD`，包名 `nosd-app-themes-git` | `pkgname=nosd-app-themes-git`、`url=github.com/nosDshell/nosd-app-themes` | PKGBUILD:2,6 | ✅ |
-| 包内容：GTK + Kvantum 各一目录 | Makefile `install-gtk`（deepin + deepin-dark → share/themes）、`install-kvantum`（nosd → share/Kvantum） | Makefile:6-13 | ✅ |
+| 包内容：GTK + Kvantum 各一目录 | Makefile `install-gtk`（nosd + nosd-dark → share/themes）、`install-kvantum`（nosd → share/Kvantum） | Makefile:6-13 | ✅ |
 | 安装路径：GTK→/usr/share/themes/、Kvantum→/usr/share/Kvantum/ | `PREFIX=/usr` 默认，两处 cp 落位正确 | Makefile:1,8,12 | ✅ |
 | 图标拆成子包（可选） | 无 `icons/`、无子包拆分——范围外（步骤 9 已排除），PLAN 原文即「可选」 | 群范围钉死 | ✅ N/A |
 
@@ -20,7 +20,7 @@
 
 | 项 | 要求 | 现状 | 判定 |
 |---|---|---|---|
-| 4 个 `nosd-accent.css` 占位进包 | tar/deb/包 都带上 | `find` 实列 4 个在 `deepin{,-dark}/{cinnamon,gnome-shell}/`；tarball 实构建含 4 个（`deepin/cinnamon/nosd-accent.css` 等）；Makefile 整目录 `cp -r` 自动带入 | ✅ |
+| 4 个 `nosd-accent.css` 占位进包 | tar/deb/包 都带上 | `find` 实列 4 个在 `nosd{,-dark}/{cinnamon,gnome-shell}/`；tarball 实构建含 4 个（`nosd/cinnamon/nosd-accent.css` 等）；Makefile 整目录 `cp -r` 自动带入 | ✅ |
 | `@import url("nosd-accent.css")` 4 行在包内 | 主题 css 末尾 | 4 文件 `grep -l` 全命中 | ✅ |
 | `make install-user` 目标 | 落 `~/.local/share/themes` | `install-user: $(MAKE) install PREFIX=$(HOME)/.local`——语义正确：`PREFIX=~/.local` + `share/themes` = `~/.local/share/themes` ✅ | ✅ |
 | cinnamon/gnome-shell 无 `@` 颜色引用进包 | checker 规则兜底 | checker 新增 St 规则已反证（@xxx 必报），`make check` 0 告警 | ✅ |

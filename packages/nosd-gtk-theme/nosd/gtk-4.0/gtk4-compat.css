@@ -53,7 +53,7 @@
 @define-color wm_shadow alpha(black,0.35);
 /* ======================================================== */
 
-*:not(.deepin-allow-global-outline) {
+*:not(.nosd-allow-global-outline) {
   outline-style: none;
   outline-width: 0;
 }

@@ -2,14 +2,14 @@
 pkgname=nosd-gtk-theme-git
 pkgver=0.2.0
 pkgrel=1
-pkgdesc='nosDshell GTK themes (deepin light/dark)'
+pkgdesc='nosDshell GTK themes (nosd light/dark)'
 arch=('any')
 url="https://github.com/nosDshell/nosd"
 license=('GPL-3.0-or-later')
 optdepends=('gtk-engine-murrine: for the GTK2 theme')
 makedepends=('git')
-provides=('nosd-gtk-theme' 'nosd-app-themes' 'deepin-gtk-theme')
-conflicts=('nosd-gtk-theme' 'nosd-app-themes' 'deepin-gtk-theme')
+provides=('nosd-gtk-theme' 'nosd-app-themes')
+conflicts=('nosd-gtk-theme' 'nosd-app-themes')
 source=()
 sha512sums=()
 
