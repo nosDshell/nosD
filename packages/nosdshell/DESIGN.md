@@ -919,3 +919,47 @@ Noctalia 卡片的对应关系：
 - 复制 `references/` 的素材或代码却不留出处（出处规则见 §1.9）。
 - 用 Tabler 字形或 QML 近似重画参考仓库里已有原件的 DDE 专属素材（见 §1.9）。
 - 在组件里写死颜色、尺寸或时长，绕过令牌。动画时长写成数字字面量（`check-motion.py` 检查）。
+
+## 8. 应用主题契约（GTK / Kvantum）
+
+GTK 2/3/4 与 Qt/Kvantum 应用不是 DDE 界面，但它们呈现的控件与 §3.5.4 是同一套视觉语言。本节是 shell 令牌到应用主题两侧的映射表；机器可读声明在 `spec/tokens.toml`（`[overlay]`、`[controls]`），`tools/check-tokens.py` 检查两侧漂移。改本节数值时同步 tokens.toml 与两侧实现。
+
+### 8.1 表面模型的差异
+
+应用窗口底面是不透明的方案表面（`mSurface`/`mSurfaceVariant`），不是 shell 的半透明蒙版。所以：
+
+- §1.3 的叠加梯在应用侧落成**表面前景色 × α** 的实绘面：GTK 用 `@define-color … alpha(<前景色>, α)`（`field_color`/`strong_color`/`checked_color`/`idle_color`），Kvantum 由模板把 `mix(surface, on_surface, α)` 烘焙成 `overlay_*` 角色。两侧都不允许把方案色当实色画在控件上——那等价于绕过令牌透明度。
+- 方案色只在两处直接进入应用主题：不透明底面本身（`window`/`base`/`view` 角色），以及强调色家族（§8.2）。
+- GTK 主题内一切颜色必须走 `@define-color`，字面值只允许出现在文件头部的 defaults 块；Kvantum `kvconfig` 必须给全 `[GeneralColors]` 28 个角色（漏项回落 Qt 默认调色板，露出浅灰带），SVG 必须保持 XML 良构（Qt 严格解析，一处重复属性整图拒载回落内置主题）。
+
+### 8.2 强调色与文字角色
+
+| shell 令牌 | GTK 角色 | Kvantum 角色 |
+|---|---|---|
+| `accent`（mPrimary） | `accent_bg_color`、`active_color`、`selected_bg_color`、`:focus` 边框 | `highlight`、`-focused` 框线、`button-pressed`、滑槽已填充段 |
+| `onPrimary`（mOnPrimary） | `accent_fg_color`、`selected_fg_color` | `highlight.text`、checked 开关滑块 |
+| `accent_standalone` | 推荐按钮与链接文字 | 同左（`text.focus.color` 等） |
+| 链接 | `link_color` 走 accent，不另造色 | accent |
+
+白色控件点（开关滑块、滑块圆点）不走 `onPrimary`：它们是固定的 `#FFFFFF` 面 + `knobBorder`（黑 × 0.1）发丝边（§3.5.4，Material 暗色方案的 mOnPrimary 本身是深色，不能借）。GTK 侧是 `switch_knob_color`/`slider_knob_color` + `slider_knob_border_color`；Kvantum 侧是 `slidercursor-*` 元素。
+
+### 8.3 控件几何（基准值，随 uiScaleRatio 缩放）
+
+| 控件 | 契约 | GTK | Kvantum |
+|---|---|---|---|
+| 字段（输入/下拉/数值框） | 高 30、radiusItem 5、`field` 面、idle 无边框、focus 1px accent 边 | `entry`/`combobox button.combo`/`spinbutton`/`dropdown > button` min-height 30、border-color transparent、:focus 边 @active_color | `lineedit-*`/`combo-*`/`spin-*` 元素 |
+| 下拉箭头 | 右侧 ▾ | `pan-down-symbolic` 16px | `combo-arrow`/`spin-arrow` |
+| 开关 | 40×22 胶囊（radius=高度一半）、knob 18、trough `strong`、checked accent+onPrimary 点 | `switch`/`switch slider` | `switch-*`（预留） |
+| 滑块 | 滑槽 2px（`strong` 未填充 / accent 已填充）、knob 12px 白点 + 发丝边 | `scale trough`/`scale slider` margin -5 | `slider_width=2`、`slider_handle_*=12`、`slidercursor-*` |
+| 设置行 | 高 36、左右内边距 (20,10) | —（应用侧无对应物） | — |
+| 复选/单选 | 盒体 14、radius 4、checked accent+白形 | `check`/`radio` | `check_size=14`、`checkbox-*`/`radio-*` |
+| 分隔线 | 1px、前景 × 0.15 | `separator` 系 | kvconfig `separator_*` |
+
+进度条沿用滑槽契约：`trough` 用 `strong` 面、`progress` 用 accent。禁用态用同族面的 0.55 α（或下一级梯阶），不另造禁用色。
+
+### 8.4 校验面
+
+- `tools/check-tokens.py`：圆角令牌集合、`[overlay]` α ↔ GTK `*_color` define、`[controls]` 几何 ↔ GTK `min-*` / kvconfig `slider_handle_*` 等 / `Style.qml`、`[GeneralColors]` 全角色、SVG 良构、tpl 与 shell 模板逐字节一致。
+- `tools/theme-audit/`：按方案 × 明暗渲染三端控件探针并断言语义色与几何；`showcase` 子命令出 shell 参考列与 GTK4/GTK3/Qt 并排截图，新增对齐项先进断言再进图。
+- 视觉验收以 showcase 四列对比为准，断言通过不等于观感一致。
+

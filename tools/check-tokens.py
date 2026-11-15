@@ -381,6 +381,106 @@ def main() -> int:
                 "（同一模板两份存放已漂移）"
             )
 
+    # 8. [overlay] 梯级 ↔ GTK 叠加面 @define-color 的 α；
+    #    [controls] 控件几何 ↔ GTK 控件尺寸 / kvconfig / Style.qml。
+    overlay = tokens.get("overlay", {})
+    controls = tokens.get("controls", {})
+    overlay_re = re.compile(
+        r"@define-color\s+(idle|subtle|hover|field|strong|checked|press|indicator)"
+        r"(?:_color)?\s+alpha\(\s*@[\w-]+\s*,\s*([0-9.]+)\s*\)"
+    )
+    # 选择器 → 必须等于令牌值的 min-* 几何（px）。
+    gtk_geom = {
+        ("scale slider", "min-height"): "slider_knob",
+        ("scale slider", "min-width"): "slider_knob",
+        ("scale trough", "min-height"): "slider_groove",
+        ("scale.vertical trough", "min-width"): "slider_groove",
+        ("switch", "min-width"): "switch_width",
+        ("switch", "min-height"): "switch_height",
+        ("switch slider", "min-width"): "switch_knob",
+        ("switch slider", "min-height"): "switch_knob",
+        ("entry", "min-height"): "field_height",
+        ("combobox button.combo", "min-height"): "field_height",
+        ("spinbutton:not(.vertical)", "min-height"): "field_height",
+        ("dropdown > button", "min-height"): "field_height",
+    }
+    for theme in THEME_DIRS:
+        for sub in GTK_SUBDIRS:
+            css_dir = root / GTK_PKG / theme / sub
+            if not css_dir.is_dir():
+                continue
+            for css in sorted(css_dir.rglob("*.css")):
+                raw = css.read_text(errors="replace")
+                text = strip_comments(raw)
+                rel = css.relative_to(root)
+                found_levels = set()
+                for m in overlay_re.finditer(text):
+                    level, alpha = m.group(1), float(m.group(2))
+                    found_levels.add(level)
+                    if level in overlay and abs(alpha - overlay[level]) > 1e-6:
+                        ln = text.count("\n", 0, m.start()) + 1
+                        failures.append(
+                            f"{rel}:{ln} {level}_color α={alpha:g} 与"
+                            f" overlay.{level}={overlay[level]} 不一致"
+                        )
+                # 完整控件样式表（含 entry 规则）必须声明四个核心叠加面；
+                # window-controls/gtk4-compat 这类片段不强制。
+                if re.search(r"^entry\s*\{", text, re.M):
+                    for level in ("idle", "field", "strong", "checked"):
+                        if level not in found_levels:
+                            failures.append(
+                                f"{rel} 缺 @define-color {level}_color"
+                                f" alpha(<前景色>, {overlay.get(level)})"
+                            )
+                for selector, prop, val, _block, off in iter_decls(text):
+                    want = gtk_geom.get((selector, prop))
+                    if want is None or want not in controls:
+                        continue
+                    try:
+                        num = float(val.rstrip("px"))
+                    except ValueError:
+                        continue
+                    if num != controls[want]:
+                        ln = text.count("\n", 0, off) + 1
+                        failures.append(
+                            f"{rel}:{ln} {selector} {prop}={val} 与"
+                            f" controls.{want}={controls[want]}px 不一致"
+                        )
+    # kvconfig 侧控件几何
+    kvcfg_tpl = root / KVANTUM_PKG / "nosd" / "nosd.kvconfig.tpl"
+    for kv in (kvcfg, kvcfg_tpl):
+        if not kv.exists():
+            continue
+        kvtext = kv.read_text()
+        rel = kv.relative_to(root)
+        for key, token in (
+            ("slider_handle_width", "slider_knob"),
+            ("slider_handle_length", "slider_knob"),
+            ("tickless_slider_handle_size", "slider_knob"),
+            ("scroll_width", "scroll_width"),
+            ("check_size", "check_size"),
+        ):
+            m = re.search(rf"^{key}=(\d+)", kvtext, re.M)
+            if m and token in controls and int(m.group(1)) != controls[token]:
+                failures.append(
+                    f"{rel} {key}={m.group(1)} 与 controls.{token}={controls[token]} 不一致"
+                )
+    # Style.qml 侧控件几何（沿用 #5 的 Math.round(N * 缩放) 形式）
+    if style_qml.exists():
+        style = style_qml.read_text()
+        for prop, token in (
+            ("switchWidth", "switch_width"),
+            ("switchHeight", "switch_height"),
+            ("settingsFieldHeight", "field_height"),
+            ("settingsFieldWidth", "field_width"),
+            ("detailRowHeight", "row_height"),
+        ):
+            m = re.search(rf"property (?:int|real) {prop}: Math\.round\((\d+)", style)
+            if m and token in controls and int(m.group(1)) != controls[token]:
+                failures.append(
+                    f"Style.qml {prop}={m.group(1)} 与 controls.{token}={controls[token]} 不一致"
+                )
+
     if want_stats:
         print(
             "radius 统计："

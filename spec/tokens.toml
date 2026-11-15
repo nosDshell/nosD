@@ -27,7 +27,7 @@ offset = 2
 # 精确相等，不做子串匹配），值是该选择器允许的圆角与理由。
 # scripts/check-tokens.py 逐条读取，匹配不到就仍报漂移。
 # 0px 由 checker 直接放行（刻意直角），无需登记。
-# 当前为空：原 .help_button 100px 是死代码，已随本轮删除。
+switch = { radius = "11px", reason = "DESIGN §3.5.4 开关 40x22 胶囊：圆角=高度一半" }
 
 
 [border]
@@ -36,10 +36,34 @@ hairline      = 1   # 全部边框的统一宽度
 focus_offset  = 1   # 焦点描边相对控件外缘的偏移
 focus_width   = 1.5 # 焦点描边宽度（CDS）
 
+[overlay]
+# DESIGN.md §1.3 前景叠加阶梯：状态层 = 表面前景色 × α。
+# shell 侧是 onSurface 色盖在半透明蒙版上；应用主题底面不透明，
+# GTK 落成 @define-color … alpha(<前景色>, α)，Kvantum 由模板把
+# mix(surface, on_surface, α) 烘焙成 overlay_* 角色。
+idle      = 0.03
+subtle    = 0.05
+hover     = 0.10
+field     = 0.15
+strong    = 0.20
+checked   = 0.30
+press     = 0.50
+indicator = 0.25
+
 [controls]
 # Qt/Kvantum 侧控件几何（与 KvAdapta 默认一致即可，见 PLAN §5.2）
 scroll_width = 8
 check_size   = 14
+# DESIGN §3.5.4 设置控件几何：shell 与 GTK/Kvantum 共用基准值
+# （uiScaleRatio / rowHeightScale 缩放前）。
+field_height  = 30  # settingsFieldHeight：文本输入 / 下拉 / 数值框
+field_width   = 170 # settingsFieldWidth：设置行右侧控件列宽
+row_height    = 36  # settingsRowHeight / detailRowHeight
+switch_width  = 40
+switch_height = 22
+switch_knob   = 18  # 滑块直径，内边距 (22-18)/2 = 2
+slider_groove = 2   # 滑槽厚度
+slider_knob   = 12  # 滑块圆点直径
 
 [shadow]
 # 菜单/提示框阴影深度（Kvantum menu_shadow_depth / tooltip_shadow_depth）
