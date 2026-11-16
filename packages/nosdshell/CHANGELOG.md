@@ -10,6 +10,25 @@
 
 ## [Unreleased]
 
+## [1.7.7.1] - 2026-11-16
+
+Kvantum 主题改用上游形状，本仓只负责把调色板注入模板。
+
+### 变更
+
+- Kvantum 模板换成由上游 KvLibadwaita 草稿版生成的
+  `kvantum-kvlibadwaita.{svg,kvconfig}`；主题名与上游一致，
+  `TemplateRegistry` 输出改为 `~/.config/Kvantum/<上游主题名>/`。
+- 分发包 `nosd-kvantum-theme` 同步为上游 src 原样（GPL-3.0-only）。
+- `check-tokens` 不再校验 Kvantum 控件几何（形状不由本仓控制），
+  保留 `[GeneralColors]` 与 SVG 良构检查。
+
+### 升级注意
+
+- 需把 `~/.config/Kvantum/kvantum.kvconfig` 的 `theme` 改为新主题名，
+  然后重启 Qt 应用；旧的 `~/.config/Kvantum/nosd/` 可以删除。
+
+
 ## [1.7.7] - 2026-11-16
 
 这一版把 nosDshell 搬进 monorepo，并让应用主题与壳层界面真正浑然一体：GTK/Kvantum/fcitx5 主题更名 nosd 并与设置页一比一对齐，同时修掉了让 accent 墨水色恒黑的信号处理器命名冲突。
