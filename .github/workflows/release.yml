@@ -164,6 +164,11 @@ jobs:
           set -euo pipefail
           sed -i 's/isDevelopment: false/isDevelopment: true/' \
             packages/nosdshell/Commons/Version.qml
+          # 幂等：release commit 若已在本地做过 reopen，这里就无事可做。
+          if git diff --quiet -- packages/nosdshell/Commons/Version.qml; then
+            echo "::notice::isDevelopment 已是 true（本地已 reopen），跳过提交"
+            exit 0
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add packages/nosdshell/Commons/Version.qml
