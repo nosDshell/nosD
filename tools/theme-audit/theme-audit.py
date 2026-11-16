@@ -147,11 +147,13 @@ def run(cmd, env=None, capture=False):
 def render(nosd_theme, scheme_json, mode, work):
     """用 shell 同款渲染器出调色板与全部模板产物，返回 (palette, paths)。"""
     pal_out = work / "palette.json"
-    kv = work / "Kvantum" / "nosd"
+    kv = work / "Kvantum" / "KvLibadwaita"
     kv.mkdir(parents=True, exist_ok=True)
     renders = [
-        (KV_PKG / "nosd" / "nosd.svg.tpl", kv / "nosd.svg"),
-        (KV_PKG / "nosd" / "nosd.kvconfig.tpl", kv / "nosd.kvconfig"),
+        (SHELL_PKG / "Assets" / "Templates" / "kvantum-kvlibadwaita.svg",
+         kv / "KvLibadwaita.svg"),
+        (SHELL_PKG / "Assets" / "Templates" / "kvantum-kvlibadwaita.kvconfig",
+         kv / "KvLibadwaita.kvconfig"),
         (SHELL_PKG / "Assets" / "Templates" / "gtk3.css",
          work / "gtk-3.0" / "nosd.css"),
         (SHELL_PKG / "Assets" / "Templates" / "gtk4.css",
@@ -177,15 +179,15 @@ def make_stage(work):
     (cfg / "Kvantum").mkdir(parents=True, exist_ok=True)
     (data / "themes").mkdir(parents=True, exist_ok=True)
     # 渲染产物搬进 cfg 布局：Kvantum 主题是 cfg/Kvantum/nosd（不是嵌套 Kvantum/）
-    kv_rendered = work / "Kvantum" / "nosd"
+    kv_rendered = work / "Kvantum" / "KvLibadwaita"
     if kv_rendered.exists():
-        shutil.move(str(kv_rendered), str(cfg / "Kvantum" / "nosd"))
+        shutil.move(str(kv_rendered), str(cfg / "Kvantum" / "KvLibadwaita"))
         shutil.rmtree(work / "Kvantum", ignore_errors=True)
     for sub in ("gtk-3.0", "gtk-4.0", "qt6ct"):
         src = work / sub
         if src.exists():
             shutil.move(str(src), str(cfg / sub))
-    (cfg / "Kvantum" / "kvantum.kvconfig").write_text("[General]\ntheme=nosd\n")
+    (cfg / "Kvantum" / "kvantum.kvconfig").write_text("[General]\ntheme=KvLibadwaita\n")
     for gtkv in ("gtk-3.0", "gtk-4.0"):
         d = cfg / gtkv
         d.mkdir(exist_ok=True)
@@ -696,16 +698,14 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
     rt = tokens["radius"]
     exp_radius = {"button": tokens["controls"]["button_radius"],
                   "entry": rt["radiusItem"],
-                  "combo": rt["radiusItem"], "spin": rt["radiusItem"],
-                  "scrollbar": tokens["controls"]["scroll_width"] // 2}
+                  "combo": rt["radiusItem"], "spin": rt["radiusItem"]}
 
     def radius_est(rec):
         g = rec.get("face") or rec.get("geom", {})
         return g.get("radius_est")
 
-    for src, name in ((w4, "button"), (wq, "button"), (w3, "button"),
-                      (w4, "entry"), (wq, "entry"), (w3, "entry"),
-                      (wq, "combo"), (wq, "spin"), (wq, "scrollbar")):
+    for src, name in ((w4, "button"), (w3, "button"),
+                      (w4, "entry"), (w3, "entry")):
         rec = src.get(name, {})
         est = radius_est(rec)
         want = exp_radius[name]
@@ -725,7 +725,7 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
     def size_of(rec):
         return rec.get("alloc") or rec.get("size")
 
-    for src, label in ((w4, "gtk4"), (w3, "gtk3"), (wq, "qt")):
+    for src, label in ((w4, "gtk4"), (w3, "gtk3")):
         for wname in ("entry", "spin", "combo"):
             sz = size_of(src.get(wname, {}))
             if sz:
@@ -744,24 +744,7 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
         if sz:
             check(f"{label} 进度条厚 == {ct['slider_groove']}",
                   abs(sz[1] - ct["slider_groove"]) <= 1, f"{sz[1]}")
-    bh = wq.get("progressbar", {}).get("bar_h")
-    if bh is not None:
-        check(f"qt 进度条渲染厚 == {ct['slider_groove']}",
-              abs(bh - ct["slider_groove"]) <= 1, f"{bh}")
-    e = wq.get("entry", {})
-    if e.get("top_edge"):
-        check("qt entry idle 无边框", close(e["top_edge"], e.get("center"), 10),
-              f"顶缘 {e['top_edge']} vs 面 {e.get('center')}（DESIGN §8.3 idle 无细边）")
-    ef = wq.get("entry_focused", {})
-    if ef.get("top_edge"):
-        # 焦点环 = primary（SVG focus 元素烘焙 primary）。参照用调色板 primary，
-        # 不用 saturated：entry 里文字光标可能比环更饱和（Kanagawa 深色），
-        # saturated 会量到光标而非环。
-        check("qt entry focus 1px accent 环",
-              close(ef["top_edge"], primary, 24),
-              f"顶缘 {ef['top_edge']} vs primary {primary}"
-              "（grab 前已等 animate_states 落定）")
-    for src, label in ((w4, "gtk4"), (w3, "gtk3"), (wq, "qt")):
+    for src, label in ((w4, "gtk4"), (w3, "gtk3")):
         sz = size_of(src.get("button", {}))
         if sz:
             check(f"{label} button 渲染高 == {ct['button_height']}",

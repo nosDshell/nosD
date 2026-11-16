@@ -1,35 +1,43 @@
 # nosd-kvantum-theme
 
-nosDshell 的 Kvantum Qt 控件主题（`nosd`），与 GTK 组件
-[`nosd-gtk-theme`](../nosd-gtk-theme)、shell 的
-[`Commons/Style.qml`](../nosdshell/Commons/Style.qml) 共用
-[`spec/tokens.toml`](../../spec/tokens.toml) 的形状令牌。
+nosDshell 的 Kvantum Qt 控件主题。形状直接采用上游
+[KvLibadwaita](https://github.com/GabePoel/KvLibadwaita)
+（Libadwaita 风格的 Kvantum 主题），本仓不再自研控件形状。
 
 ## 内容
 
 | 路径 | 内容 |
 | --- | --- |
-| `nosd/nosd.kvconfig` | Kvantum 主题配置（含 `[GeneralColors]` 契约） |
-| `nosd/nosd.svg` | 控件 SVG 素材 |
-| `nosd/*.tpl` | 模板源——nosDshell 把壁纸调色板代入占位符，写出 `~/.config/Kvantum/nosd/` |
-| `tools/svg-round.py` | SVG 圆角参数化工具 |
+| `KvLibadwaita/KvLibadwaita.kvconfig` `KvLibadwaita.svg` | 浅色主题（上游原样） |
+| `KvLibadwaita/KvLibadwaitaDark.kvconfig` `KvLibadwaitaDark.svg` | 深色变体（上游原样，放在浅色目录内，Kvantum 原生契约） |
+| `KvLibadwaita/CREDITS` | 上游来源与致谢 |
 
 ## 安装
 
 ```sh
-make install          # 装到 $PREFIX/share/Kvantum/nosd（PREFIX 默认 /usr）
+make install          # 装到 $PREFIX/share/Kvantum/KvLibadwaita（PREFIX 默认 /usr）
 ```
 
-Qt 应用侧：安装 `kvantum` 包，`~/.config/qt5ct/qt5ct.conf` 与
-`~/.config/qt6ct/qt6ct.conf` 设 `style=kvantum`，
-`~/.config/Kvantum/kvantum.kvconfig` 写 `theme=nosd`。
-Qt5 需要发行版提供 Kvantum 的 Qt5 插件（Guix 等只打 Qt6 插件的发行版
-退回 qt5ct 调色板）。
+Qt 应用侧：安装 `kvantum` 包，`~/.config/qt5ct/qt5ct.conf` 与 `~/.config/qt6ct/qt6ct.conf` 设 `style=Kvantum`，
+`~/.config/Kvantum/kvantum.kvconfig` 写 `theme=KvLibadwaita`。
+浅色与深色变体由 Qt style 名选择（`kvantum` → 浅色，`kvantum-dark` → 深色）。
+
+## 与 nosDshell 的关系
+
+nosDshell 运行时会把壁纸调色板代入自己的模板
+（`packages/nosdshell/Assets/Templates/kvantum-kvlibadwaita.{svg,kvconfig}`），
+渲染到 `~/.config/Kvantum/KvLibadwaita/`，覆盖这里的静态素材。
+模板与静态素材形状同源（上游草稿 vs 上游产物），颜色来源不同属预期。
+
+## 许可
+
+`KvLibadwaita/` 下的主题素材来自上游 KvLibadwaita，GPL-3.0-only，
+见仓根 `LICENSES/GPL-3.0-only.txt` 与素材目录内 `CREDITS`。
 
 ## 打包
 
 分发在 [`nosd-pkgs`](https://github.com/nosDshell/nosd-pkgs)：
-`guix install nosd-kvantum-theme` 或 flake 的同名包。
+`guix install nosd-kvantum-theme` 或 flake 的同名包（下次发版时同步 install-plan）。
 
 ## 发版
 

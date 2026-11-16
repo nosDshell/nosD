@@ -207,13 +207,15 @@ Singleton {
       ]
     },
     {
+      // 形状来自 KvLibadwaita，颜色由壁纸调色板代入：主题名与 Kvantum 的
+      // dark 变体目录契约（浅色目录里可放 <名>Dark）对齐。
       "id": "kvantum",
       "name": "Kvantum",
       "category": "system",
-      "input": "kvantum-nosd.svg",
+      "input": "kvantum-kvlibadwaita.svg",
       "outputs": [
         {
-          "path": "~/.config/Kvantum/nosd/nosd.svg"
+          "path": "~/.config/Kvantum/KvLibadwaita/KvLibadwaita.svg"
         }
       ]
     },
@@ -268,10 +270,10 @@ Singleton {
       "id": "kvantum-config",
       "name": "Kvantum 配置",
       "category": "system",
-      "input": "kvantum-nosd.kvconfig",
+      "input": "kvantum-kvlibadwaita.kvconfig",
       "outputs": [
         {
-          "path": "~/.config/Kvantum/nosd/nosd.kvconfig"
+          "path": "~/.config/Kvantum/KvLibadwaita/KvLibadwaita.kvconfig"
         }
       ]
     },

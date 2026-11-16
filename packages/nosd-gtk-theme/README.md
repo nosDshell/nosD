@@ -86,7 +86,7 @@ gtk-theme-name=nosd
 
 For dark, use `nosd-dark`, or keep `gtk-application-prefer-dark-theme=1` and let apps pick the variant themselves.
 
-Qt apps use the sibling [`nosd-kvantum-theme`](../nosd-kvantum-theme) component: install it, set `style=kvantum` in `~/.config/qt5ct/qt5ct.conf` and `~/.config/qt6ct/qt6ct.conf`, then `theme=nosd` in `~/.config/Kvantum/kvantum.kvconfig`.
+Qt apps use the sibling [`nosd-kvantum-theme`](../nosd-kvantum-theme) component: install it, set `style=kvantum` in `~/.config/qt5ct/qt5ct.conf` and `~/.config/qt6ct/qt6ct.conf`, then `theme=KvLibadwaita` in `~/.config/Kvantum/kvantum.kvconfig`.
 
 ### Dependencies
 

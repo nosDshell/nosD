@@ -5,7 +5,7 @@
     QT_QPA_PLATFORM=offscreen python3 qt_probe.py --out /tmp/probe.json --shots /tmp/shots
 
 环境（编排器已设置）：
-- XDG_CONFIG_HOME 指向含 Kvantum/{kvantum.kvconfig,nosd/*} 与 qt6ct 的舞台；
+- XDG_CONFIG_HOME 指向含 Kvantum/{kvantum.kvconfig,KvLibadwaita/*} 与 qt6ct 的舞台；
 - QT_QPA_PLATFORMTHEME=qt6ct（走完整部署链：qt6ct 读 style=Kvantum）；
 - PYTHONPATH 指向 PyQt6 与 pyqt6-sip 的 site-packages。
 

@@ -12,18 +12,19 @@
    只有 at-rule 合法）。
 4. GTK CSS 中非 defaults 块不得出现硬编码 hex 颜色（defaults 块由
    '@define-color' 行界定：检查仅对不在 '@define-color' 声明里的颜色值生效）。
-4. Kvantum nosd.kvconfig 必须给出 [GeneralColors] 全套角色。Kvantum 的
+4. Kvantum 模板 kvconfig 必须给出 [GeneralColors] 全套角色。Kvantum 的
    polish(QPalette&) 只做 standardPalette()，而 standardPalette() 只填这里
    出现过的角色；漏掉的角色回落到 QPalette 默认构造值（Window = #efefef），
-   表现为菜单栏/工具栏/页签栏露出的浅灰带。
+   表现为菜单栏/工具栏/页签栏露出的浅灰带。形状与几何由上游 KvLibadwaita
+   决定，本检查只管颜色契约。
 5. packages/nosdshell/Commons/Style.qml 的 radius 家族与 tokens.toml 一致。
 6. Kvantum SVG 与模板 XML 良构性。Qt SVG 是严格 XML 解析：一个重复属性
    （如 ry="2" 出现两次）就让 QSvgRenderer.isValid() 为 false，Kvantum
    整图拒载、全部元素回落内置默认主题——单个字符级手误即可让主题整体
    失效，必须进检查。
-7. nosd-kvantum-theme 的 *.tpl 与 packages/nosdshell/Assets/Templates/
-   下对应模板逐字节一致。两份是同一模板在「仓库静态版」与「shell 渲染
-   输入」两种角色下的存放形态，漂移会让部署产物与仓内校验结果脱节。
+7. 分发静态素材与 shell 渲染输入同源：nosd-kvantum-theme 下的 KvLibadwaita
+   两套是上游原样（light 目录内放 Dark 变体），shell 模板由同一上游草稿
+   生成；两者形状来源不同属预期，不做逐字节比对。
 
 用法: tools/check-tokens.py [--stats] [nosd 仓根目录]
 退出码: 0 = 全部通过；1 = 存在漂移（打印每一项）。
@@ -349,7 +350,7 @@ def main() -> int:
                         break
 
     # 4. kvconfig 必须给出 [GeneralColors] 全套角色
-    kvcfg = root / KVANTUM_PKG / "nosd" / "nosd.kvconfig"
+    kvcfg = root / SHELL_PKG / "Assets" / "Templates" / "kvantum-kvlibadwaita.kvconfig"
     if kvcfg.exists():
         text = kvcfg.read_text()
         rel = kvcfg.relative_to(root)
@@ -393,9 +394,9 @@ def main() -> int:
     # 6. Kvantum SVG / 模板 XML 良构性（QSvgRenderer 严格解析，坏一处整图失效）
     placeholder_re = re.compile(r"\{\{[^}]*\}\}")
     svg_paths = [
-        root / KVANTUM_PKG / "nosd" / "nosd.svg",
-        root / KVANTUM_PKG / "nosd" / "nosd.svg.tpl",
-        root / SHELL_PKG / "Assets" / "Templates" / "kvantum-nosd.svg",
+        root / KVANTUM_PKG / "KvLibadwaita" / "KvLibadwaita.svg",
+        root / KVANTUM_PKG / "KvLibadwaita" / "KvLibadwaitaDark.svg",
+        root / SHELL_PKG / "Assets" / "Templates" / "kvantum-kvlibadwaita.svg",
     ]
     for svg in svg_paths:
         rel = svg.relative_to(root)
@@ -409,16 +410,6 @@ def main() -> int:
             failures.append(
                 f"{rel} XML 解析失败：{e}"
                 "（QSvgRenderer 会拒载整图，Kvantum 全部回落内置默认主题）"
-            )
-
-    # 7. 主题包 tpl 与 shell 侧模板逐字节一致
-    for name in ("nosd.svg", "nosd.kvconfig"):
-        tpl = root / KVANTUM_PKG / "nosd" / f"{name}.tpl"
-        shell_tpl = root / SHELL_PKG / "Assets" / "Templates" / f"kvantum-{name}"
-        if tpl.exists() and shell_tpl.exists() and tpl.read_bytes() != shell_tpl.read_bytes():
-            failures.append(
-                f"{tpl.relative_to(root)} 与 {shell_tpl.relative_to(root)} 不一致"
-                "（同一模板两份存放已漂移）"
             )
 
     # 8. [overlay] 梯级 ↔ GTK 叠加面 @define-color 的 α；
@@ -531,84 +522,6 @@ def main() -> int:
                             f"{rel}:{ln} {selector} {prop}={val} 与"
                             f" controls.{want}={controls[want]}px 不一致"
                         )
-    # kvconfig 侧控件几何
-    kvcfg_tpl = root / KVANTUM_PKG / "nosd" / "nosd.kvconfig.tpl"
-    for kv in (kvcfg, kvcfg_tpl):
-        if not kv.exists():
-            continue
-        kvtext = kv.read_text()
-        rel = kv.relative_to(root)
-        for key, token in (
-            ("slider_handle_width", "slider_knob"),
-            ("slider_handle_length", "slider_knob"),
-            ("tickless_slider_handle_size", "slider_knob"),
-            ("scroll_width", "scroll_width"),
-            ("check_size", "check_size"),
-            ("progressbar_thickness", "slider_groove"),
-        ):
-            m = re.search(rf"^{key}=(\d+)", kvtext, re.M)
-            if m and token in controls and int(m.group(1)) != controls[token]:
-                failures.append(
-                    f"{rel} {key}={m.group(1)} 与 controls.{token}={controls[token]} 不一致"
-                )
-        # 按钮胶囊：expansion 是 Kvantum 的角汇合机制——e=min(h,w)<=expansion
-        # 时四角以 e/2 汇合绘制，半径=min(h,w,expansion)/2（rendering.cpp
-        # drawExpanded）。故 expansion>=button_height 才得 R=button_radius。
-        # 同时 frame.* 须够小：文本高+frame.top+bottom 超过控件高时
-        # enoughSpace 失败，expansion 被钳到 14、frame.* 钳到 3
-        # （Kvantum.cpp），胶囊退化为 R7。16 为默认字体文本高度上界。
-        if "button_radius" in controls and "button_height" in controls:
-            sec = re.search(r"^\[PanelButtonCommand\]\n(.*?)(?=^\[|\Z)", kvtext, re.M | re.S)
-            if sec:
-                body = sec.group(1)
-                m = re.search(r"^frame\.expansion=(\d+)", body, re.M)
-                if m and int(m.group(1)) < controls["button_height"]:
-                    failures.append(
-                        f"{rel} [PanelButtonCommand] frame.expansion={m.group(1)}"
-                        f" < controls.button_height={controls['button_height']}"
-                        "（角汇合半径=min(h,w,expansion)/2，胶囊退化）"
-                    )
-                sides = []
-                for side in ("top", "bottom", "left", "right"):
-                    ms = re.search(rf"^frame\.{side}=(\d+)", body, re.M)
-                    if ms:
-                        sides.append(int(ms.group(1)))
-                if sides and (len(set(sides)) != 1
-                              or 2 * sides[0] + 16 > controls["button_height"]):
-                    failures.append(
-                        f"{rel} [PanelButtonCommand] frame.*={sides} 违反胶囊契约"
-                        f"（四边相等且 2*边+16<=button_height={controls['button_height']}，"
-                        "否则 enoughSpace 钳制生效）"
-                    )
-        # 进度条槽同款角汇合：e=thickness，expansion 须>=slider_groove。
-        # （ScrollbarSlider 的 expansion 被引擎强制 0，圆角只来自 SVG interior，
-        # 见 Kvantum.cpp drawControl CE_ScrollBarSlider，故不在此断言。）
-        if "slider_groove" in controls:
-            sec = re.search(r"^\[Progressbar\]\n(.*?)(?=^\[|\Z)", kvtext, re.M | re.S)
-            if sec:
-                m = re.search(r"^frame\.expansion=(\d+)", sec.group(1), re.M)
-                if m and int(m.group(1)) < controls["slider_groove"]:
-                    failures.append(
-                        f"{rel} [Progressbar] frame.expansion={m.group(1)}"
-                        f" < controls.slider_groove={controls['slider_groove']}（槽端角退化）"
-                    )
-        # 滚动条滑块：引擎强制 expansion=0，圆角走九切片——frame.* 须等于
-        # scroll_width 的一半，配合 SVG 四角弧成胶囊（thickness=2*frame.*
-        # 时 interior 为空，面由四边切片拉伸）。
-        if "scroll_width" in controls:
-            sec = re.search(r"^\[ScrollbarSlider\]\n(.*?)(?=^\[|\Z)", kvtext, re.M | re.S)
-            if sec:
-                sides = []
-                for side in ("top", "bottom", "left", "right"):
-                    ms = re.search(rf"^frame\.{side}=(\d+)", sec.group(1), re.M)
-                    if ms:
-                        sides.append(int(ms.group(1)))
-                if sides and (len(set(sides)) != 1
-                              or 2 * sides[0] != controls["scroll_width"]):
-                    failures.append(
-                        f"{rel} [ScrollbarSlider] frame.*={sides} 须等于 scroll_width/2"
-                        f"={controls['scroll_width'] // 2}（九切片胶囊端角）"
-                    )
     # Style.qml 侧控件几何（沿用 #5 的 Math.round(N * 缩放) 形式）
     if style_qml.exists():
         style = style_qml.read_text()

@@ -1,5 +1,7 @@
 # 实施日志
 
+> **2026-11-16 起此路线被取代**：控件形状改用上游 KvLibadwaita，本文是历史施工记录，不再代表当前实现。现实现见 `packages/nosd-kvantum-theme/README.md` 与 `packages/nosdshell/DESIGN.md` §8。
+
 本文件是 `PLAN-app-theme-unification.md` 的逐步实施记录：每步做了什么、验证方式、
 遇到的岔路与遗留项。面向使用者的版本变更见 [CHANGELOG.md](../CHANGELOG.md)。
 

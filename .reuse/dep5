@@ -57,3 +57,10 @@ Files: packages/nosd-gtk-theme/deepin-dark/*.png packages/nosd-gtk-theme/deepin/
 	packages/fcitx5-theme-nosd/img/*.png packages/fcitx5-theme-nosd/*/*.png
 Copyright: UnionTech Software Technology Co., Ltd.
 License: GPL-3.0-or-later
+
+# Kvantum：上游 KvLibadwaita 素材与派生模板（GPL-3.0-only）
+Files: packages/nosd-kvantum-theme/KvLibadwaita/*
+	packages/nosdshell/Assets/Templates/kvantum-kvlibadwaita.svg
+	packages/nosdshell/Assets/Templates/kvantum-kvlibadwaita.kvconfig
+Copyright: Gabriel Perko-Engel, Vince Liuice, Tsu Jan
+License: GPL-3.0-only

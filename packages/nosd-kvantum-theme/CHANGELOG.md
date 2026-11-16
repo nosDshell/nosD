@@ -8,6 +8,22 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-16
+
+控件形状改用上游 KvLibadwaita，本组件只保留颜色注入。
+
+### 变更
+
+- 主题目录 `nosd/` 改为 `KvLibadwaita/`，内容为上游 src 原样：浅色
+  `KvLibadwaita.kvconfig|svg` + 同目录 `KvLibadwaitaDark.kvconfig|svg`
+  （Kvantum 原生「浅色目录内放深色变体」布局）。
+- 删除自研 `nosd.kvconfig`/`nosd.svg`、两份 `.tpl` 与 `tools/svg-round.py`；
+  shell 渲染输入的唯一源是 `packages/nosdshell/Assets/Templates/kvantum-kvlibadwaita.*`。
+- 上游素材按 GPL-3.0-only 收录，新增 `LICENSES/GPL-3.0-only.txt` 与素材内 `CREDITS`。
+- 运行时主题名改为 `KvLibadwaita`；`theme=nosd` 的部署需同步改
+  `~/.config/Kvantum/kvantum.kvconfig`。
+
+
 ## [0.2.0] - 2026-11-16
 
 nosd Kvantum 主题与 nosDshell 设置页一比一对齐：控件面、叠加梯、按钮胶囊与
