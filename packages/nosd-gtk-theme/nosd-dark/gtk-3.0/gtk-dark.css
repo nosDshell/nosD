@@ -196,7 +196,7 @@ iconview,
 iconview text,
 textview text {
     color: @text_color;
-    background-color: shade(@base_color, 0.9);
+    background-color: @view_bg_color;
 }
 .view:selected,
 iconview:selected,
@@ -2608,7 +2608,7 @@ notebook.frame > header.right {
     padding-bottom: 0;
 }
 notebook > stack:not(:only-child) {
-    background-color: shade(@base_color, 0.9);
+    background-color: @view_bg_color;
 }
 notebook > header {
     padding: 2px;
@@ -3487,7 +3487,7 @@ separator {
     min-height: 1px;
 }
 list {
-    background-color: shade(@base_color, 0.9);
+    background-color: @view_bg_color;
     border-color: @borders;
 }
 list row {
@@ -3688,7 +3688,7 @@ filechooserbutton:drop(active) {
 }
 .sidebar {
     border-style: none;
-    background-color: shade(@base_color, 0.9);
+    background-color: @view_bg_color;
 }
 stacksidebar.sidebar:dir(ltr) list,
 stacksidebar.sidebar.left list,
