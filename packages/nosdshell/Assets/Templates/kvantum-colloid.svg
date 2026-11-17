@@ -3363,7 +3363,7 @@
     <path
        d="m1-80c-3.324 0-6 2.676-6 6h6z"
        id="path1524"
-       style="fill:{{colors.on_surface.default.hex}};opacity:0.20" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.1" />
   </g>
   <g
      id="button-normal-top"
@@ -3374,7 +3374,7 @@
        width="26"
        height="6"
        id="rect1527"
-       style="fill:{{colors.on_surface.default.hex}};opacity:0.20" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.1" />
   </g>
   <g
      id="button-normal"
@@ -3385,7 +3385,7 @@
        width="26"
        height="26"
        id="rect1530"
-       style="fill:{{colors.on_surface.default.hex}};opacity:0.20" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.1" />
   </g>
   <use
      id="button-normal-topright"
@@ -3437,7 +3437,7 @@
     <path
        d="m1-80c-3.324 0-6 2.676-6 6h6z"
        id="path1541"
-       style="fill:{{colors.on_surface.default.hex}};opacity:0.50" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.15" />
   </g>
   <g
      id="button-focused-top"
@@ -3448,7 +3448,7 @@
        width="26"
        height="6"
        id="rect1544"
-       style="fill:{{colors.on_surface.default.hex}};opacity:0.50" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.15" />
   </g>
   <g
      id="button-focused"
@@ -3459,7 +3459,7 @@
        width="26"
        height="26"
        id="rect1547"
-       style="fill:{{colors.on_surface.default.hex}};opacity:0.50" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.15" />
   </g>
   <use
      id="button-focused-topright"
@@ -3511,7 +3511,7 @@
     <path
        d="m1-80c-3.324 0-6 2.676-6 6h6z"
        id="path1558"
-       style="fill:{{colors.primary.default.hex}};opacity:1" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.3" />
   </g>
   <g
      id="button-pressed-top"
@@ -3522,7 +3522,7 @@
        width="26"
        height="6"
        id="rect1561"
-       style="fill:{{colors.primary.default.hex}};opacity:1" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.3" />
   </g>
   <g
      id="button-pressed"
@@ -3533,7 +3533,7 @@
        width="26"
        height="26"
        id="rect1564"
-       style="fill:{{colors.primary.default.hex}};opacity:1" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.3" />
   </g>
   <use
      id="button-pressed-topright"
@@ -3584,8 +3584,8 @@
        id="rect1573" />
     <path
        d="m1-80c-3.324 0-6 2.676-6 6h6z"
-       style="paint-order:markers stroke fill;fill:{{colors.primary.default.hex}};fill-opacity:1"
-       id="path1575"  opacity="1"/>
+       style="paint-order:markers stroke fill;fill:{{colors.on_surface.default.hex}};fill-opacity:1"
+       id="path1575"  opacity="0.3"/>
   </g>
   <g
      id="button-toggled-top"
@@ -3595,8 +3595,8 @@
        y="-80"
        width="26"
        height="6"
-       style="paint-order:markers stroke fill;fill:{{colors.primary.default.hex}};fill-opacity:1"
-       id="rect1578"  opacity="1"/>
+       style="paint-order:markers stroke fill;fill:{{colors.on_surface.default.hex}};fill-opacity:1"
+       id="rect1578"  opacity="0.3"/>
   </g>
   <g
      id="button-toggled"
@@ -3606,8 +3606,8 @@
        y="-74"
        width="26"
        height="26.000259"
-       style="fill:{{colors.primary.default.hex}};fill-opacity:1;stroke-width:1.00001;paint-order:markers stroke fill"
-       id="rect1581"  opacity="1"/>
+       style="fill:{{colors.on_surface.default.hex}};fill-opacity:1;stroke-width:1.00001;paint-order:markers stroke fill"
+       id="rect1581"  opacity="0.3"/>
   </g>
   <use
      id="button-toggled-topright"
@@ -3712,7 +3712,7 @@
     <path
        d="m24.342 15.875c-1.7589 0-3.175 1.416-3.175 3.175h3.175z"
        id="path1604"
-       style="fill:{{colors.on_surface.default.hex}};opacity:0.15" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.3" />
   </g>
   <g
      id="tbutton-toggled-top"
@@ -3723,7 +3723,7 @@
        width="3.175"
        height="3.175"
        id="rect1607"
-       style="fill:{{colors.on_surface.default.hex}};opacity:0.15" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.3" />
   </g>
   <use
      id="tbutton-toggled-topright"
@@ -3762,7 +3762,7 @@
     <path
        d="m24.342 15.875c-1.7589 0-3.175 1.416-3.175 3.175h3.175z"
        id="path1616"
-       style="fill:{{colors.on_surface.default.hex}};opacity:0.2" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.3" />
   </g>
   <g
      id="tbutton-pressed-top"
@@ -3773,7 +3773,7 @@
        width="3.175"
        height="3.175"
        id="rect1619"
-       style="fill:{{colors.on_surface.default.hex}};opacity:0.2" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.3" />
   </g>
   <use
      id="tbutton-pressed-topright"
@@ -3836,7 +3836,7 @@
        width="16"
        height="1"
        id="rect1633"
-       style="fill:{{colors.on_surface.default.hex}};opacity:0.2" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.3" />
   </g>
   <g
      id="tbutton-pressed"
@@ -3847,7 +3847,7 @@
        width="16"
        height="1"
        id="rect1636"
-       style="fill:{{colors.on_surface.default.hex}};opacity:0.2" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.3" />
   </g>
   <use
      id="tbutton-pressed-right"
@@ -3864,7 +3864,7 @@
        width="16"
        height="1"
        id="rect1640"
-       style="fill:{{colors.on_surface.default.hex}};opacity:0.15" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.3" />
   </g>
   <g
      id="tbutton-toggled"
@@ -3875,7 +3875,7 @@
        width="16"
        height="1"
        id="rect1643"
-       style="fill:{{colors.on_surface.default.hex}};opacity:0.15" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.3" />
   </g>
   <use
      id="tbutton-toggled-right"
