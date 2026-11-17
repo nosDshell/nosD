@@ -87,11 +87,11 @@ gtk-theme-name=nosd
 
 深色把值改成 `nosd-dark`，或保留 `gtk-application-prefer-dark-theme=1` 让应用自行选择变体。
 
-Qt 应用用兄弟组件 [`nosd-kvantum-theme`](../nosd-kvantum-theme)：安装后在 `~/.config/qt5ct/qt5ct.conf` 与 `~/.config/qt6ct/qt6ct.conf` 设 `style=kvantum`，并在 `~/.config/Kvantum/kvantum.kvconfig` 写 `theme=KvLibadwaita`。
+Qt 应用用兄弟组件 [`nosd-kvantum-theme`](../nosd-kvantum-theme)：安装后在 `~/.config/qt5ct/qt5ct.conf` 与 `~/.config/qt6ct/qt6ct.conf` 设 `style=kvantum`，并在 `~/.config/Kvantum/kvantum.kvconfig` 写 `theme=Colloid`。
 
 ```ini
 [General]
-theme=KvLibadwaita
+theme=Colloid
 ```
 
 Qt 5 需要发行版额外提供 Kvantum 的 Qt5 插件（见兄弟组件说明）。

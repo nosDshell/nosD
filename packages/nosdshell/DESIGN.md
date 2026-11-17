@@ -924,7 +924,7 @@ Noctalia 卡片的对应关系：
 
 GTK 2/3/4 与 Qt/Kvantum 应用不是 DDE 界面，但它们呈现的控件与 §3.5.4 是同一套视觉语言。本节是 shell 令牌到应用主题两侧的映射表；机器可读声明在 `spec/tokens.toml`（`[overlay]`、`[controls]`），`tools/check-tokens.py` 检查两侧漂移。改本节数值时同步 tokens.toml 与两侧实现。
 
-形状来源是外部主题：GTK 推荐直接安装 adw-gtk3，Qt 用上游 KvLibadwaita。nosDshell 只按当前调色板向两者的模板注入颜色，不再自己维护控件形状；本节 Kvantum 部分只约束颜色映射，控件几何由上游决定。
+形状来源是外部主题：GTK 推荐直接安装 adw-gtk3，Qt 用上游 Colloid。nosDshell 只按当前调色板向两者的模板注入颜色，不再自己维护控件形状；本节 Kvantum 部分只约束颜色映射，控件几何由上游决定。
 
 ### 8.1 表面模型的差异
 
@@ -948,7 +948,7 @@ GTK 2/3/4 与 Qt/Kvantum 应用不是 DDE 界面，但它们呈现的控件与 �
 
 ### 8.3 控件几何（GTK 侧）
 
-Qt/Kvantum 的形状与几何由上游 KvLibadwaita 提供，本节不再声明其数值；nosDshell 只向它的模板注入颜色。
+Qt/Kvantum 的形状与几何由上游 Colloid 提供，本节不再声明其数值；nosDshell 只向它的模板注入颜色。
 
 | 控件 | 契约 | GTK |
 |---|---|---|

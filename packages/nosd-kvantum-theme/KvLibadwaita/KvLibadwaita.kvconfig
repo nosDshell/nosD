@@ -5,14 +5,14 @@ x11drag=menubar_and_primary_toolbar
 alt_mnemonic=true
 left_tabs=false
 attach_active_tab=false
-mirror_doc_tabs=false
-group_toolbar_buttons=true
+mirror_doc_tabs=true
+group_toolbar_buttons=false
 toolbar_item_spacing=0
 toolbar_interior_spacing=2
 spread_progressbar=true
 composite=true
-menu_shadow_depth=16
-spread_menuitems=true
+menu_shadow_depth=6
+spread_menuitems=false
 tooltip_shadow_depth=7
 splitter_width=1
 scroll_width=9
@@ -49,8 +49,8 @@ combo_focus_rect=false
 groupbox_top_label=true
 inline_spin_indicators=true
 joined_inactive_tabs=false
-layout_spacing=6
-layout_margin=9
+layout_spacing=3
+layout_margin=3
 scrollbar_in_view=true
 transient_scrollbar=true
 transient_groove=true
@@ -79,18 +79,18 @@ tooltip_blur_radius=0
 window.color=#F5F5F5
 base.color=#ffffff
 alt.base.color=#f8f8f8
-button.color=#f2f2f4
+button.color=#f2f2f2
 light.color=#ffffff
 mid.light.color=#f0f0f0
 dark.color=#c8c8c8
-mid.color=#e1e1e196
+mid.color=#e1e1e1
 highlight.color=#3c84f7
 inactive.highlight.color=#3c84f7
 text.color=#444444
 window.text.color=#444444
 button.text.color=#444444
 disabled.text.color=#44444474
-tooltip.text.color=#efefef
+tooltip.text.color=#444444
 highlight.text.color=#333333
 link.color=#0057AE
 link.visited.color=#E040FB
@@ -154,7 +154,7 @@ text.toggle.color=white
 text.disabled.color=#44444474
 text.bold=false
 indicator.element=arrow
-indicator.size=0
+indicator.size=8
 frame.expansion=0
 
 [ToolbarButton]
@@ -214,6 +214,8 @@ frame=false
 interior.element=radio
 text.normal.color=#444444
 text.focus.color=#444444
+text.press.color=#333333
+text.toggle.color=#333333
 min_width=+0.3font
 min_height=+0.3font
 
@@ -223,6 +225,8 @@ frame=false
 interior.element=checkbox
 text.normal.color=#444444
 text.focus.color=#444444
+text.press.color=#333333
+text.toggle.color=#333333
 min_width=+0.3font
 min_height=+0.3font
 
@@ -280,7 +284,6 @@ text.focus.color=#444444
 
 [Tab]
 inherits=PanelButtonCommand
-focusFrame=true
 interior.element=tab
 text.margin.left=8
 text.margin.right=8
@@ -304,10 +307,10 @@ text.bold=false
 inherits=PanelButtonCommand
 frame.element=tabframe
 interior.element=tabframe
-frame.top=24
-frame.bottom=24
-frame.left=24
-frame.right=24
+frame.top=6
+frame.bottom=6
+frame.left=6
+frame.right=6
 
 [TreeExpander]
 inherits=PanelButtonCommand
@@ -430,14 +433,15 @@ frame=false
 
 [Menu]
 inherits=PanelButtonCommand
-frame.top=8
-frame.bottom=8
-frame.left=8
-frame.right=8
+frame.top=10
+frame.bottom=10
+frame.left=10
+frame.right=10
 frame.element=menu
 interior.element=menu
 text.normal.color=#444444
 text.shadow=false
+frame.expansion=0
 text.bold=false
 
 [MenuItem]
@@ -454,8 +458,8 @@ text.margin.left=6
 text.margin.right=6
 frame.top=4
 frame.bottom=4
-frame.left=12
-frame.right=12
+frame.left=4
+frame.right=4
 text.bold=false
 frame.expansion=0
 
@@ -552,8 +556,10 @@ text.shadow=0
 text.margin=6
 interior.element=tooltip
 frame.element=tooltip
-text.normal.color=#efefef
-text.focus.color=#efefef
+text.normal.color=#444444
+text.focus.color=#333333
+text.press.color=#333333
+text.toggle.color=#333333
 frame.expansion=6
 
 [StatusBar]

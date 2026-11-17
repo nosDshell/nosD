@@ -8,6 +8,21 @@
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-17
+
+控件形状换成上游 Colloid，主题名保持 `KvLibadwaita` 不变；并按 adw-gtk3 的圆角规格对齐。
+
+### 变更
+
+- 主题目录内容换成上游 `Kvantum/Colloid/` 原样，文件名保持
+  `KvLibadwaita.kvconfig|svg` + 同目录 `KvLibadwaitaDark.kvconfig|svg`。
+- shell 模板改为 `kvantum-colloid.{svg,kvconfig}`：SVG 只替换语义色
+  （accent → primary、紫 → tertiary、红 → error），灰阶与控件参数保持上游。
+- 圆角按 adw-gtk3 对齐：按钮/输入框/下拉框 6 → 9px，菜单 10px，菜单项 6px，
+  ToolTip 8px。
+- 菜单项上下内边距 4 → 6px，文字左右留白 6 → 8px。
+- 禁用 Kvantum 焦点框：上游未定义 `focus` 元素，回落的内置直角虚框与圆角控件不协调。
+
 ## [0.3.0] - 2026-11-16
 
 控件形状改用上游 KvLibadwaita，本组件只保留颜色注入。

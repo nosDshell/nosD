@@ -15,7 +15,7 @@
 4. Kvantum 模板 kvconfig 必须给出 [GeneralColors] 全套角色。Kvantum 的
    polish(QPalette&) 只做 standardPalette()，而 standardPalette() 只填这里
    出现过的角色；漏掉的角色回落到 QPalette 默认构造值（Window = #efefef），
-   表现为菜单栏/工具栏/页签栏露出的浅灰带。形状与几何由上游 KvLibadwaita
+   表现为菜单栏/工具栏/页签栏露出的浅灰带。形状与几何由上游 Colloid
    决定，本检查只管颜色契约。
 5. packages/nosdshell/Commons/Style.qml 的 radius 家族与 tokens.toml 一致。
 6. Kvantum SVG 与模板 XML 良构性。Qt SVG 是严格 XML 解析：一个重复属性
@@ -350,7 +350,7 @@ def main() -> int:
                         break
 
     # 4. kvconfig 必须给出 [GeneralColors] 全套角色
-    kvcfg = root / SHELL_PKG / "Assets" / "Templates" / "kvantum-kvlibadwaita.kvconfig"
+    kvcfg = root / SHELL_PKG / "Assets" / "Templates" / "kvantum-colloid.kvconfig"
     if kvcfg.exists():
         text = kvcfg.read_text()
         rel = kvcfg.relative_to(root)
@@ -396,7 +396,7 @@ def main() -> int:
     svg_paths = [
         root / KVANTUM_PKG / "KvLibadwaita" / "KvLibadwaita.svg",
         root / KVANTUM_PKG / "KvLibadwaita" / "KvLibadwaitaDark.svg",
-        root / SHELL_PKG / "Assets" / "Templates" / "kvantum-kvlibadwaita.svg",
+        root / SHELL_PKG / "Assets" / "Templates" / "kvantum-colloid.svg",
     ]
     for svg in svg_paths:
         rel = svg.relative_to(root)
