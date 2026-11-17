@@ -3708,7 +3708,7 @@
     <path
        d="m24.342 15.875c-1.7589 0-3.175 1.416-3.175 3.175h3.175z"
        id="path1604"
-       style="fill:{{colors.primary.default.hex}};opacity:1" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.15" />
   </g>
   <g
      id="tbutton-toggled-top"
@@ -3719,7 +3719,7 @@
        width="3.175"
        height="3.175"
        id="rect1607"
-       style="fill:{{colors.primary.default.hex}};opacity:1" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.15" />
   </g>
   <use
      id="tbutton-toggled-topright"
@@ -3758,7 +3758,7 @@
     <path
        d="m24.342 15.875c-1.7589 0-3.175 1.416-3.175 3.175h3.175z"
        id="path1616"
-       style="fill:{{colors.primary.default.hex}};opacity:1" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.2" />
   </g>
   <g
      id="tbutton-pressed-top"
@@ -3769,7 +3769,7 @@
        width="3.175"
        height="3.175"
        id="rect1619"
-       style="fill:{{colors.primary.default.hex}};opacity:1" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.2" />
   </g>
   <use
      id="tbutton-pressed-topright"
@@ -3832,7 +3832,7 @@
        width="16"
        height="1"
        id="rect1633"
-       style="fill:{{colors.primary.default.hex}};opacity:1" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.2" />
   </g>
   <g
      id="tbutton-pressed"
@@ -3843,7 +3843,7 @@
        width="16"
        height="1"
        id="rect1636"
-       style="fill:{{colors.primary.default.hex}};opacity:1" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.2" />
   </g>
   <use
      id="tbutton-pressed-right"
@@ -3860,7 +3860,7 @@
        width="16"
        height="1"
        id="rect1640"
-       style="fill:{{colors.primary.default.hex}};opacity:1" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.15" />
   </g>
   <g
      id="tbutton-toggled"
@@ -3871,7 +3871,7 @@
        width="16"
        height="1"
        id="rect1643"
-       style="fill:{{colors.primary.default.hex}};opacity:1" />
+       style="fill:{{colors.on_surface.default.hex}};opacity:0.15" />
   </g>
   <use
      id="tbutton-toggled-right"
