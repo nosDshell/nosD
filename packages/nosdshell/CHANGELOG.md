@@ -10,6 +10,19 @@
 
 ## [Unreleased]
 
+## [1.7.7.3] - 2026-11-17
+
+Kvantum 自动染色与 adw-gtk3 逐像素对齐：控件状态层统一为前景叠加语义，菜单悬停、按钮选中/按下、列表选中态的颜色全部收敛。
+
+### 修复
+
+- 控件状态层从 black×α 暗洗改为 on_surface×α 前景叠加（暗态提亮、亮态压暗），accent 面文字统一 on_primary，Qt 调色板 base/light/button 收敛 surface（fcbd1fed8）。
+- 工具栏 toolbutton 的 checked/pressed 面收敛回前景弱叠加，不再渲染成 accent 色块（e2b4ebff0）。
+- 修正 itemview 状态语义：聚焦视图中的选中行（`-pressed` 元素）渲染 accent，与 GTK `view:selected` 一致（5d10429a5）。
+- 菜单与 menubar 悬停回退为前景 10% 叠加，与 GTK `menuitem:hover` 一致（d8faa6dc1）。
+- 按钮/工具按钮态层按 adw-gtk3 的 mix 梯档校准：常态 0.10、悬停 0.15、按下/选中 0.30，与 GTK 实测像素一致（b29b253fe）。
+- 主题审计工具跟上模板改名，修正 Qt 探针的假 hover/焦点采样与 transient 滚动条采样（fcbd1fed8）。
+
 ## [1.7.7.2] - 2026-11-17
 
 Qt 控件主题同步上游 Colloid，修掉 pcmanfm-qt 的灰底与直角标签；控件圆角按 adw-gtk3 对齐。

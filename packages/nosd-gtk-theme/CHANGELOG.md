@@ -12,6 +12,18 @@
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-11-17
+
+修复 nosd-dark 内容面漂移：列表、侧栏、编辑区收敛到 `view_bg`，与亮色主题
+及 Qt 端 `surface` 语义一致。
+
+### 修复
+
+- *暗色主题内容面收敛 `view_bg_color`*：`.view`、`list`、notebook stack、
+  `.sidebar` 及 gedit 面板此前用 `shade(@base_color, 0.9)` 烘焙色，绕过了
+  nosd.css 注入的 `view_bg_color` 覆盖层，导致 Thunar 侧栏与文件区底色偏暗、
+  与 pcmanfm-qt 的 `surface` 面不一致（d8c60af0c）。
+
 ## [0.3.0] - 2026-11-16
 
 主题更名 nosd，并与 nosDshell 设置页一比一对齐：控件面、叠加梯、按钮胶囊与

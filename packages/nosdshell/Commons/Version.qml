@@ -7,8 +7,8 @@ Singleton {
   // Version constants for display (About page) and diagnostics.
   // Keep baseVersion in sync with the package version in nosd-pkgs
   // (guix/nosd/packages.scm %nosdshell-version / nix flake nosdshellVersion).
-  readonly property string baseVersion: "1.7.7.2"
-  readonly property bool isDevelopment: true
+  readonly property string baseVersion: "1.7.7.3"
+  readonly property bool isDevelopment: false
   readonly property string developmentSuffix: "-git"
   readonly property string currentVersion: `v${!isDevelopment ? baseVersion : baseVersion + developmentSuffix}`
 }
