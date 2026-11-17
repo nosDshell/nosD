@@ -10,6 +10,20 @@
 
 ## [Unreleased]
 
+## [1.7.7.2] - 2026-11-17
+
+Qt 控件主题同步上游 Colloid，修掉 pcmanfm-qt 的灰底与直角标签；控件圆角按 adw-gtk3 对齐。
+
+### 变更
+
+- Kvantum 形状来源换成上游 Colloid（vinceliuice/Colloid-kde），主题名保持
+  `KvLibadwaita` 不变；`nosd-kvantum-theme` 素材同步为上游 `Kvantum/Colloid/` 原样。
+- 圆角按 adw-gtk3 对齐：按钮/输入框/下拉框 9px、菜单 10px、菜单项 6px、ToolTip 8px；
+  菜单项内边距收紧（上下 6px、文字左右 8px）。
+- 禁用 Kvantum 焦点框：上游没有 `focus` 图形，回落的内置直角虚框与圆角控件不协调。
+- Qt 调色板 `base` 从 `overlay_field` 改为 `surface_container_lowest`：pcmanfm-qt
+  等 Qt 应用的图标视图与侧栏不再发灰。
+
 ## [1.7.7.1] - 2026-11-16
 
 Kvantum 主题改用上游形状，本仓只负责把调色板注入模板。
