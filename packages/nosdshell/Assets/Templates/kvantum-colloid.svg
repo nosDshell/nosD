@@ -952,39 +952,39 @@
   <path
      id="menubaritem-focused-left"
      d="m116 946v-17.999h-6l3.6e-4 18z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.1" />
   <path
      id="menubaritem-focused-topleft"
      d="m116 921c-3.2999-1e-4 -6 2.7-6 5.9999h6z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.1" />
   <path
      id="menubaritem-focused"
      d="m117 928v18h18v-18z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.1" />
   <path
      id="menubaritem-focused-right"
      d="m136 946v-17.999h6l-3.7e-4 18z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.1" />
   <path
      id="menubaritem-focused-topright"
      d="m136 921c3.2999-1e-4 6 2.7 6 5.9999h-6z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.1" />
   <path
      id="menubaritem-focused-top"
      d="m117 927h17.999v-6h-18z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.1" />
   <path
      id="menubaritem-focused-bottom"
      d="m135 947h-17.999v6h18z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.1" />
   <path
      id="menubaritem-focused-bottomleft"
      d="m116 953c-3.2999 0-5.9999-2.7-5.9999-5.9999l5.9999-1e-4z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.1" />
   <path
      id="menubaritem-focused-bottomright"
      d="m136 953c3.2999 0 5.9999-2.7 5.9999-5.9999l-5.9999-1e-4z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.1" />
   <path
      d="m223.93 399.69v32h32v-32z"
      id="titlebar-normal"
@@ -3886,75 +3886,75 @@
   <path
      id="menubaritem-pressed-left"
      d="m188 946v-17.999h-6l3.6e-4 18z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.2" />
   <path
      id="menubaritem-pressed-topleft"
      d="m188 921c-3.2999-8e-5 -6 2.7-6 5.9999h6z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.2" />
   <path
      id="menubaritem-pressed"
      d="m189 928v18h18v-18z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.2" />
   <path
      id="menubaritem-pressed-right"
      d="m208 946v-17.999h6l-3.7e-4 18z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.2" />
   <path
      id="menubaritem-pressed-topright"
      d="m208 921c3.2999-8e-5 6 2.7 6 5.9999h-6z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.2" />
   <path
      id="menubaritem-pressed-top"
      d="m189 927h17.999v-6h-18z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.2" />
   <path
      id="menubaritem-pressed-bottom"
      d="m207 947h-17.999v6h18z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.2" />
   <path
      id="menubaritem-pressed-bottomleft"
      d="m188 953c-3.2999 0-5.9999-2.7-5.9999-5.9999l5.9999-1.1e-4z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.2" />
   <path
      id="menubaritem-pressed-bottomright"
      d="m208 953c3.2999 0 5.9999-2.7 5.9999-5.9999l-5.9999-1.1e-4z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.2" />
   <path
      id="menubaritem-toggled-left"
      d="m152 946v-17.999h-6l3.6e-4 18z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.15" />
   <path
      id="menubaritem-toggled-topleft"
      d="m152 921c-3.2999-7e-5 -6 2.7-6 5.9999h6z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.15" />
   <path
      id="menubaritem-toggled"
      d="m153 928v18h18v-18z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.15" />
   <path
      id="menubaritem-toggled-right"
      d="m172 946v-17.999h6l-3.7e-4 18z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.15" />
   <path
      id="menubaritem-toggled-topright"
      d="m172 921c3.2999-7e-5 6 2.7 6 5.9999h-6z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.15" />
   <path
      id="menubaritem-toggled-top"
      d="m153 927h17.999v-6h-18z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.15" />
   <path
      id="menubaritem-toggled-bottom"
      d="m171 947h-17.999v6h18z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.15" />
   <path
      id="menubaritem-toggled-bottomleft"
      d="m152 953c-3.2999 0-5.9999-2.7-5.9999-5.9999l5.9999-1.2e-4z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.15" />
   <path
      id="menubaritem-toggled-bottomright"
      d="m172 953c3.2999 0 5.9999-2.7 5.9999-5.9999l-5.9999-1.2e-4z"
-     style="fill:{{colors.primary.default.hex}};opacity:1" />
+     style="fill:{{colors.on_surface.default.hex}};opacity:0.15" />
   <use
      id="tab-toggled-topright"
      transform="matrix(-1,0,0,1,188,-2.5e-6)"
@@ -5553,39 +5553,39 @@
   <path
      id="menuitem-normal-top"
      d="m 191,495 h 8 v 4 h -8 z"
-     style="opacity:1;fill:{{colors.primary.default.hex}}" />
+     style="opacity:0.1;fill:{{colors.on_surface.default.hex}}" />
   <path
      id="menuitem-normal-bottom"
      d="m 191,507 h 8 v 4 h -8 z"
-     style="opacity:1;fill:{{colors.primary.default.hex}}" />
+     style="opacity:0.1;fill:{{colors.on_surface.default.hex}}" />
   <path
      id="menuitem-normal"
      d="m 191,499 h 8 v 8 h -8 z"
-     style="opacity:1;fill:{{colors.primary.default.hex}}" />
+     style="opacity:0.1;fill:{{colors.on_surface.default.hex}}" />
   <path
      id="menuitem-normal-right"
      d="m 199,499 h 4 v 8 h -4 z"
-     style="opacity:1;fill:{{colors.primary.default.hex}}" />
+     style="opacity:0.1;fill:{{colors.on_surface.default.hex}}" />
   <path
      id="menuitem-normal-left"
      d="m 187,499 h 4 v 8 h -4 z"
-     style="opacity:1;fill:{{colors.primary.default.hex}}" />
+     style="opacity:0.1;fill:{{colors.on_surface.default.hex}}" />
   <path
      id="menuitem-normal-topleft"
      d="m 191,495 c -2.216,0 -4,1.784 -4,4 h 4 z"
-     style="opacity:1;fill:{{colors.primary.default.hex}}" />
+     style="opacity:0.1;fill:{{colors.on_surface.default.hex}}" />
   <path
      id="menuitem-normal-topright"
      d="m 199,495 v 4 h 4 c 0,-2.216 -1.784,-4 -4,-4 z"
-     style="opacity:1;fill:{{colors.primary.default.hex}}" />
+     style="opacity:0.1;fill:{{colors.on_surface.default.hex}}" />
   <path
      id="menuitem-normal-bottomleft"
      d="m 187,507 c 0,2.216 1.784,4 4,4 v -4 z"
-     style="opacity:1;fill:{{colors.primary.default.hex}}" />
+     style="opacity:0.1;fill:{{colors.on_surface.default.hex}}" />
   <path
      id="menuitem-normal-bottomright"
      d="m 199,507 v 4 c 2.216,0 4,-1.784 4,-4 z"
-     style="opacity:1;fill:{{colors.primary.default.hex}}" />
+     style="opacity:0.1;fill:{{colors.on_surface.default.hex}}" />
   <use
      x="0"
      y="0"
