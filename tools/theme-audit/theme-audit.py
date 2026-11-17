@@ -150,9 +150,9 @@ def render(nosd_theme, scheme_json, mode, work):
     kv = work / "Kvantum" / "KvLibadwaita"
     kv.mkdir(parents=True, exist_ok=True)
     renders = [
-        (SHELL_PKG / "Assets" / "Templates" / "kvantum-kvlibadwaita.svg",
+        (SHELL_PKG / "Assets" / "Templates" / "kvantum-colloid.svg",
          kv / "KvLibadwaita.svg"),
-        (SHELL_PKG / "Assets" / "Templates" / "kvantum-kvlibadwaita.kvconfig",
+        (SHELL_PKG / "Assets" / "Templates" / "kvantum-colloid.kvconfig",
          kv / "KvLibadwaita.kvconfig"),
         (SHELL_PKG / "Assets" / "Templates" / "gtk3.css",
          work / "gtk-3.0" / "nosd.css"),
@@ -560,15 +560,11 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
     # 2) Qt palette 契约（[GeneralColors] 全套角色）
     check("qt palette window == surface", close(qpal.get("window"), surf, 2),
           f"{qpal.get('window')} vs {surf}")
-    if ovl_field:
-        # qt Base 角色 = 可编辑面 = overlay_field（DESIGN §1.3 梯档烘焙）
-        check("qt palette base == overlay_field",
-              close(qpal.get("base"), ovl_field, 2),
-              f"{qpal.get('base')} vs {ovl_field}")
-    else:
-        check("qt palette base == surface",
-              close(qpal.get("base"), surf, 2),
-              f"{qpal.get('base')} vs {surf}")
+    # qt Base 角色 = 视图/输入面 = surface（与 GTK view_bg_color 对齐，
+    # cf8991098 起从 overlay_field/surface_container_lowest 收敛到 surface）
+    check("qt palette base == surface",
+          close(qpal.get("base"), surf, 2),
+          f"{qpal.get('base')} vs {surf}")
     check("qt palette highlight == primary", close(qpal.get("highlight"), primary, 2),
           f"{qpal.get('highlight')} vs {primary}")
     check("qt palette text == on_surface", close(qpal.get("text"), onsurf, 2),
@@ -606,11 +602,13 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
                       close(d, ovl_field, 14), f"{d} vs {ovl_field}")
     if ovl_ind:
         # 滚动条滑块 = indicator 梯档：GTK 半透明滑块按窗口色合成取 edge，
-        # Qt 实心滑块取 dominant。GTK 允许更大容差（内容色参与合成）。
-        for src, label, key, tol in ((w4, "gtk4", "edge", 20),
-                                   (w3, "gtk3", "edge", 20),
-                                   (wq, "qt", "dominant", 14)):
-            d = src.get("scrollbar", {}).get(key)
+        # Qt transient 滑块 idle 整体淡出，须取 hover 采样（focused=0.30，
+        # 与 GTK slider:hover 同档，比 indicator 高一级，容差内）。
+        for src, label, wname, key, tol in (
+                (w4, "gtk4", "scrollbar", "edge", 20),
+                (w3, "gtk3", "scrollbar", "edge", 20),
+                (wq, "qt", "scrollbar_hover", "center", 14)):
+            d = src.get(wname, {}).get(key)
             if d:
                 check(f"{label} 滚动条滑块 ≈ overlay_indicator",
                       close(d, ovl_ind, tol), f"{d} vs {ovl_ind}")

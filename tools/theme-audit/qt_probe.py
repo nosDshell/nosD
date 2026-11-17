@@ -252,8 +252,8 @@ def main():
         QProgressBar, QLineEdit, QComboBox, QSpinBox, QTabWidget,
         QMenuBar, QWidget, QLabel, QToolBar,
     )
-    from PyQt6.QtCore import Qt, QRect
-    from PyQt6.QtGui import QPalette
+    from PyQt6.QtCore import Qt, QRect, QPoint
+    from PyQt6.QtGui import QPalette, QCursor
 
     app = QApplication(sys.argv)
     style_name = QApplication.style().objectName()
@@ -291,21 +291,31 @@ def main():
             app.processEvents()
             time.sleep(0.02)
 
-    def grab(name, w, extra=None, focus=False, aa_face=False):
+    def grab(name, w, extra=None, focus=False, aa_face=False, hover=False):
+        if not focus:
+            # offscreen 下 show() 自动聚焦顶层控件且光标停在 (0,0) 落在
+            # 控件内 = hover；常态采样须把光标挪出控件、禁焦点策略，
+            # 保证测到 -normal 元素而不是 -focused。
+            w.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         w.adjustSize()
         w.show()
         app.processEvents()
         settle()
-        if focus:
-            app.setActiveWindow(w)
-            w.setFocus()
-            settle()
-        else:
-            # offscreen _show_ 即自动聚焦顶层控件；焦点环随 animate_states
-            # 淡入，idle 截图必须清焦点后再等环淡出，否则拍到 accent 环。
+        if not focus:
             fw = app.focusWidget()
             if fw is not None:
                 fw.clearFocus()
+            if hover:
+                # transient 滑块只在光标进入时才以全量 alpha 出现
+                QCursor.setPos(w.mapToGlobal(w.rect().center()))
+            else:
+                QCursor.setPos(w.mapToGlobal(w.rect().bottomRight())
+                               + QPoint(500, 500))
+            app.processEvents()
+            settle()
+        if focus:
+            app.setActiveWindow(w)
+            w.setFocus()
             settle()
         pm = w.grab()
         pm.save(os.path.join(a.shots, f"{name}.png"))
@@ -382,8 +392,17 @@ def main():
     sb = QScrollBar(Qt.Orientation.Horizontal)
     sb.setRange(0, 100)
     sb.setPageStep(30)
+    sb.setValue(50)  # 滑块居中：center 采样落在滑块上而非槽里
     sb.resize(160, sb.sizeHint().height())
     grab("scrollbar", sb, aa_face=True)
+    # transient_scrollbar 静止时滑块整体淡出(~0.45×)；悬停才是全量 alpha。
+    # hover 抓一张用于滑块色阶审计（focused 元素 = GTK slider:hover 一档）。
+    sb2 = QScrollBar(Qt.Orientation.Horizontal)
+    sb2.setRange(0, 100)
+    sb2.setPageStep(30)
+    sb2.setValue(50)
+    sb2.resize(160, sb2.sizeHint().height())
+    grab("scrollbar_hover", sb2, aa_face=True, hover=True)
 
     with open(a.out, "w") as f:
         json.dump(out, f, ensure_ascii=False, indent=1)
