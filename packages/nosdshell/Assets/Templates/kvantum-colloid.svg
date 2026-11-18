@@ -4052,7 +4052,7 @@
        height="6"
        x="88"
        y="683"
-       style="opacity:1;fill:{{colors.surface.default.hex}}" />
+       style="opacity:0.2;fill:{{colors.on_surface.default.hex}}" />
   </g>
   <g
      id="tab-toggled-topleft"
@@ -4067,7 +4067,7 @@
     <path
        id="rect90366"
        d="m 88,677 c -3.324,0 -6,2.676 -6,6 h 6 z"
-       style="opacity:1;fill:{{colors.surface.default.hex}}" />
+       style="opacity:0.2;fill:{{colors.on_surface.default.hex}}" />
   </g>
   <g
      id="tab-toggled-top"
@@ -4085,7 +4085,7 @@
        height="6"
        x="88"
        y="677"
-       style="opacity:1;fill:{{colors.surface.default.hex}}" />
+       style="opacity:0.2;fill:{{colors.on_surface.default.hex}}" />
   </g>
   <g
      id="tab-toggled-left"
@@ -4103,7 +4103,7 @@
        height="6"
        x="82"
        y="683"
-       style="opacity:1;fill:{{colors.surface.default.hex}}" />
+       style="opacity:0.2;fill:{{colors.on_surface.default.hex}}" />
   </g>
   <use
      x="0"
@@ -4129,7 +4129,7 @@
        height="6"
        x="88"
        y="677"
-       style="opacity:1;fill:{{colors.surface.default.hex}}" />
+       style="opacity:0.2;fill:{{colors.on_surface.default.hex}}" />
   </g>
   <g
      id="tab-toggled-bottomright"
@@ -4144,7 +4144,7 @@
     <path
        id="path90823"
        d="m 88,677 c -3.324,0 -6,2.676 -6,6 h 6 z"
-       style="opacity:1;fill:{{colors.surface.default.hex}}" />
+       style="opacity:0.2;fill:{{colors.on_surface.default.hex}}" />
   </g>
   <g
      id="tab-toggled-bottomleft"
@@ -4159,7 +4159,7 @@
     <path
        id="path90817"
        d="m 88,677 c -3.324,0 -6,2.676 -6,6 h 6 z"
-       style="opacity:1;fill:{{colors.surface.default.hex}}" />
+       style="opacity:0.2;fill:{{colors.on_surface.default.hex}}" />
   </g>
   <use
      id="tab-focused-topright"
