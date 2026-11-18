@@ -42,7 +42,11 @@ SCHEMES = SHELL_PKG / "Assets" / "ColorScheme"
 TOKENS = ROOT / "spec" / "tokens.toml"
 AUDIT_DIR = Path(__file__).resolve().parent
 
-THEME_FOR_MODE = {"dark": "nosd-dark", "light": "nosd"}
+# GTK 探针对象 = adw-gtk3（线上 gtk-theme-name，nosd.css 调色板经
+# gtk-3.0/gtk.css 叠加其上），语义基准就是它：按钮常态 on_surface@0.10、
+# hover 0.15、pressed/checked 0.30，无 accent 按钮面。仓内 nosd/nosd-dark
+# 主题 checked=accent 与基准有意分歧，暂不作探针对象（symlink 保留备用）。
+THEME_FOR_MODE = {"dark": "adw-gtk3-dark", "light": "adw-gtk3"}
 
 # --- showcase：shell 参照列的几何 -----------------------------------------
 # verify.sh 的无头 sway 输出固定 1920x1080；控制中心帧 408 px 贴右缘
@@ -553,8 +557,10 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
         res.append(("WARN", "gtk3 探针", "无数据（--skip-gtk3 或探针失败）"))
 
     # 叠加梯档（nosd-theme 派生键；旧渲染器缺席时跳过，不阻断）
+    ovl_hover = P.get("overlay_hover")
     ovl_field = P.get("overlay_field")
     ovl_strong = P.get("overlay_strong")
+    ovl_checked = P.get("overlay_checked")
     ovl_ind = P.get("overlay_indicator")
 
     # 2) Qt palette 契约（[GeneralColors] 全套角色）
@@ -575,19 +581,21 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
     check("qt palette link == primary", close(qpal.get("link"), primary, 2),
           f"{qpal.get('link')} vs {primary}")
 
-    # 3a) 契约面：控件面应等于叠加梯烘焙色（按钮=strong、字段=field）。
+    # 3a) 契约面：控件面应等于叠加梯烘焙色。adw-gtk3 语义：
+    #     按钮常态 = on_surface@0.10（hover 梯档）；checked/pressed = 0.30
+    #     （checked 梯档）；输入字段 = 0.15（field 梯档）。
     #     dominant 是控件面主色；描边/文字是少数像素。
-    if ovl_strong:
+    if ovl_hover:
         for src, label in ((w4, "gtk4"), (wq, "qt"), (w3, "gtk3")):
             d = src.get("button", {}).get("dominant")
             if d:
-                check(f"{label} 按钮面 ≈ overlay_strong", close(d, ovl_strong, 14),
-                      f"{d} vs {ovl_strong}")
-        # GTK3 下拉是按钮形态（切换钮+箭头），面色取 strong 而非 field
+                check(f"{label} 按钮面 ≈ overlay_hover", close(d, ovl_hover, 14),
+                      f"{d} vs {ovl_hover}")
+        # GTK3 下拉是按钮形态（切换钮+箭头），面色与按钮同档
         d = w3.get("combo", {}).get("dominant")
         if d:
-            check("gtk3 combo面 ≈ overlay_strong", close(d, ovl_strong, 14),
-                  f"{d} vs {ovl_strong}")
+            check("gtk3 combo面 ≈ overlay_hover", close(d, ovl_hover, 14),
+                  f"{d} vs {ovl_hover}")
     if ovl_field:
         for wname in ("entry", "combo"):
             for src, label in ((w4, "gtk4"), (wq, "qt")):
@@ -601,17 +609,20 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
                 check(f"gtk3 {wname}面 ≈ overlay_field",
                       close(d, ovl_field, 14), f"{d} vs {ovl_field}")
     if ovl_ind:
-        # 滚动条滑块 = indicator 梯档：GTK 半透明滑块按窗口色合成取 edge，
-        # Qt transient 滑块 idle 整体淡出，须取 hover 采样（focused=0.30，
-        # 与 GTK slider:hover 同档，比 indicator 高一级，容差内）。
-        for src, label, wname, key, tol in (
-                (w4, "gtk4", "scrollbar", "edge", 20),
-                (w3, "gtk3", "scrollbar", "edge", 20),
-                (wq, "qt", "scrollbar_hover", "center", 14)):
-            d = src.get(wname, {}).get(key)
-            if d:
-                check(f"{label} 滚动条滑块 ≈ overlay_indicator",
-                      close(d, ovl_ind, tol), f"{d} vs {ovl_ind}")
+        # 滚动条滑块 = indicator 梯档：Qt transient 滑块 idle 整体淡出，
+        # 须取 hover 采样（focused=0.30，与 GTK slider:hover 同档，
+        # 比 indicator 高一级，容差内）。
+        d = wq.get("scrollbar_hover", {}).get("center")
+        if d:
+            check("qt 滚动条滑块 ≈ overlay_indicator",
+                  close(d, ovl_ind, 14), f"{d} vs {ovl_ind}")
+        # adw-gtk3 的滑块是 alpha(fg,0.3) 细指示条，idle 只有 3px 且
+        # 落在控件边缘——edge 采样经常打到槽/窗口上，降 WARN 只做提示。
+        for src, label in ((w4, "gtk4"), (w3, "gtk3")):
+            d = src.get("scrollbar", {}).get("edge")
+            if d and not close(d, ovl_ind, 20):
+                res.append(("WARN", f"{label} 滚动条滑块",
+                            f"{d}（adw-gtk3 细指示条采样不稳，未达 {ovl_ind}）"))
 
     # 3b) 跨端「同一张脸」：关键控件像素对齐。
     pairs = [
@@ -621,8 +632,9 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
          wq.get("entry", {}).get("dominant"), 14),
         ("下拉框面", w4.get("combo", {}).get("dominant"),
          wq.get("combo", {}).get("dominant"), 14),
-        ("开关 accent", w4.get("switch_on", {}).get("center"),
-         wq.get("button_toggled", {}).get("dominant"), 24),
+        # 切换钮 checked 面：adw-gtk3 = on_surface@0.30，两端同语义
+        ("切换钮面", w4.get("button_toggled", {}).get("dominant"),
+         wq.get("button_toggled", {}).get("dominant"), 14),
         # 进度条：填充色 = accent，是控件内最饱和区域（避开文字像素；
         # GTK 槽在控件中部、Qt 在底部，位置无关采样）
         ("进度填充", w4.get("progressbar", {}).get("strip"),
@@ -659,31 +671,26 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
         if sat:
             check(f"{label} {key} accent", close(sat, primary, 45),
                   f"{sat} vs {primary}")
-    qtb = wq.get("button_toggled", {})
-    if qtb.get("dominant"):
-        # center 会落在按钮文字 AA 像素上，面色用 dominant
-        check("qt button_toggled accent", close(qtb["dominant"], primary, 30),
-              f"{qtb['dominant']} vs {primary}")
     pb3 = w3.get("progressbar", {})
     if pb3.get("dominant"):
         check("gtk3 进度填充 accent", close(pb3["dominant"], primary, 45),
               f"{pb3['dominant']} vs {primary}")
-    tb3 = w3.get("button_toggled", {})
-    if tb3.get("saturated"):
-        # GTK3 toggled 面是压暗色，accent 在描边/指示像素
-        check("gtk3 button_toggled accent", close(tb3["saturated"], primary, 45),
-              f"{tb3['saturated']} vs {primary}")
+    # adw-gtk3 的 checked 按钮是 on_surface@0.30 叠加深色面，无 accent
+    if ovl_checked:
+        for src, label in ((w4, "gtk4"), (wq, "qt"), (w3, "gtk3")):
+            d = src.get("button_toggled", {}).get("dominant")
+            if d:
+                check(f"{label} button_toggled ≈ overlay_checked",
+                      close(d, ovl_checked, 14), f"{d} vs {ovl_checked}")
 
-    # 链接 = accent_standalone 族（背景上可读的 accent 文本色）。链接是稀疏
-    # accent 文字：取「离窗口底色最远」的字芯像素（farbg）。合成后 AA 边缘数量
-    # 压过字芯使 dominant 落到混色；带色底（Kanagawa 浅色）饱和度又压过文字使
-    # saturated 量到背景——farbg 对中性底与带色底都稳健。
+    # 链接：adw-gtk3 的 LinkButton 用 @accent_color（即我们的 primary），
+    # 不是仓内 nosd 主题的 accent_standalone 族。链接是稀疏文字：取「离窗口
+    # 底色最远」的字芯像素（farbg），AA 混色多，容差放宽。
     for src, label in ((w4, "gtk4"), (w3, "gtk3")):
         d = src.get("link", {}).get("farbg")
-        if d and P.get("accent_standalone_color"):
-            check(f"{label} link ≈ accent_standalone",
-                  close(d, P["accent_standalone_color"], 14),
-                  f"{d} vs {P['accent_standalone_color']}")
+        if d:
+            check(f"{label} link ≈ primary", close(d, primary, 45),
+                  f"{d} vs {primary}")
 
     # 容器面：menubar/toolbar/notebook 贴窗口 surface（Qt 端采样）
     for wname in ("menubar", "toolbar", "notebook"):
@@ -692,7 +699,13 @@ def evaluate(mode, palette, tokens, g4, g3, qt):
             check(f"qt {wname} ≈ surface", close(d, surf, 4),
                   f"{d} vs {surf}")
 
-    # 5) 几何令牌：按钮=radiusPill 胶囊、文本字段=radiusItem（DESIGN.md / Style.qml）
+    # 5) 几何令牌：按钮=radiusPill 胶囊、文本字段=radiusItem（DESIGN.md / Style.qml）。
+    #    几何契约只管我们自己的实现（nosd 主题、Kvantum 为上游 Colloid 几何只注色
+    #    ——见 DESIGN §8）；adw-gtk3 是颜色/状态层基准，几何属上游设计，跳过。
+    theme = THEME_FOR_MODE[mode]
+    if not theme.startswith("nosd"):
+        res.append(("WARN", "几何契约", f"{theme} 非自有主题，圆角/高度检查跳过"))
+        return res
     rt = tokens["radius"]
     exp_radius = {"button": tokens["controls"]["button_radius"],
                   "entry": rt["radiusItem"],

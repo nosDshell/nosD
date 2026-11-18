@@ -924,13 +924,13 @@ Noctalia 卡片的对应关系：
 
 GTK 2/3/4 与 Qt/Kvantum 应用不是 DDE 界面，但它们呈现的控件与 §3.5.4 是同一套视觉语言。本节是 shell 令牌到应用主题两侧的映射表；机器可读声明在 `spec/tokens.toml`（`[overlay]`、`[controls]`），`tools/check-tokens.py` 检查两侧漂移。改本节数值时同步 tokens.toml 与两侧实现。
 
-形状来源是外部主题：GTK 推荐直接安装 adw-gtk3，Qt 用上游 Colloid。nosDshell 只按当前调色板向两者的模板注入颜色，不再自己维护控件形状；本节 Kvantum 部分只约束颜色映射，控件几何由上游决定。
+形状来源是外部主题：GTK 推荐直接安装 adw-gtk3，Qt 用上游 Colloid。nosDshell 只按当前调色板向两者的模板注入颜色，不再自己维护控件形状；本节 Kvantum 部分只约束颜色映射，控件几何由上游决定。**颜色与状态层语义的对齐基准是 adw-gtk3**（线上 `gtk-theme-name`，nosd.css 只覆写调色板）：它的控件状态一律用 `alpha(currentColor, α)` 前景叠加，按钮无 accent 面。仓内 `nosd-gtk-theme` 包是另一套自有设计（checked=accent 等），与基准有意分歧，不反过来约束 Kvantum。
 
 ### 8.1 表面模型的差异
 
 应用窗口底面是不透明的方案表面（`mSurface`/`mSurfaceVariant`），不是 shell 的半透明蒙版。所以：
 
-- §1.3 的叠加梯在应用侧落成**表面前景色 × α** 的实绘面：GTK 用 `@define-color … alpha(<前景色>, α)`（`field_color`/`strong_color`/`checked_color`/`idle_color`），Kvantum 模板把同一批 α 烘焙成 `overlay_*` 角色（形状来自上游主题）。两侧都不允许把方案色当实色画在控件上——那等价于绕过令牌透明度。
+- §1.3 的叠加梯在应用侧落成**表面前景色 × α** 的实绘面：GTK 用 `@define-color … alpha(<前景色>, α)`（`field_color`/`strong_color`/`checked_color`/`idle_color`），Kvantum 模板把同一批 α 烘焙成 `overlay_*` 角色（形状来自上游主题）。两侧都不允许把方案色当实色画在控件上——那等价于绕过令牌透明度；**同色实色面画在同色底上会让控件直接隐形**（`tab-toggled` 曾用 `opacity:1;fill:surface`，激活 tab 在 window/base/surface 同色的调色板里整面消失，见 8ba0403bb）。
 - 叠加梯是**相对量**，随所在表面逐级提亮：滑槽/进度条 trough 叠在设置行卡（本身 `strong`）上，须比卡面再亮一档 `strong`（即 `mix(card, on_surface, α)`），不能与卡面同用烘焙 `overlay_strong`——那会让二者同值、滑槽隐形。GTK 的 alpha 形式天然相对（模板 define 必须 alpha，不得烘焙实色，check-tokens 核）。
 - 方案色只在两处直接进入应用主题：不透明底面本身（`window`/`base`/`view` 角色），以及强调色家族（§8.2）。
 - GTK 主题内一切颜色必须走 `@define-color`，字面值只允许出现在文件头部的 defaults 块；Kvantum `kvconfig` 必须给全 `[GeneralColors]` 28 个角色（漏项回落 Qt 默认调色板，露出浅灰带），SVG 必须保持 XML 良构（Qt 严格解析，一处重复属性整图拒载回落内置主题）。
@@ -939,16 +939,27 @@ GTK 2/3/4 与 Qt/Kvantum 应用不是 DDE 界面，但它们呈现的控件与 �
 
 | shell 令牌 | GTK 角色 | Kvantum 角色 |
 |---|---|---|
-| `accent`（mPrimary） | `accent_bg_color`、`active_color`、`selected_bg_color`、`:focus` 边框 | `highlight`、`-focused` 框线、`button-pressed`、滑槽已填充段 |
-| `onPrimary`（mOnPrimary） | `accent_fg_color`、`selected_fg_color` | `highlight.text`、checked 开关滑块 |
+| `accent`（mPrimary） | `accent_bg_color`、`active_color`、`selected_bg_color`、`:focus` 边框 | `highlight`、`entry/combo` 的 `-focused` 描边、`itemview-pressed`/`itemview-toggled` 选中项、`check`/`radio` 勾形面、滑槽已填充段、进度填充 |
+| `onPrimary`（mOnPrimary） | `accent_fg_color`、`selected_fg_color` | `highlight.text`、选中项/勾形上的文字、checked 开关滑块 |
 | `accent_standalone` | 推荐按钮与链接文字 | 同左（`text.focus.color` 等） |
 | 链接 | `link_color` 走 accent，不另造色 | accent |
+
+控件状态层（adw-gtk3 基准，Kvantum 元素名在括号内）：
+
+| 状态 | 语义 | GTK（adw-gtk3 规则） | Kvantum |
+|---|---|---|---|
+| 按钮常态 | `on_surface` × 0.10 | `mix(currentColor,bg,0.9)` | `button-normal`/`tbutton-normal` |
+| 按钮 hover | × 0.15 | `mix(0.853)` | `button-focused`/`tbutton-focused` |
+| 按钮 pressed/checked | × 0.30 | `mix(0.7)` | `button-pressed`/`-toggled`（非 accent 面） |
+| 菜单/栏项 hover | × 0.10 | `alpha(currentColor,0.1)` | `menuitem-normal`、`menubaritem-focused`（非 accent） |
+| 选中项（聚焦/失焦同） | accent 面 + `on_primary` 字 | `view:selected` → accent（失焦不变灰） | `itemview-pressed`（聚焦选中）/`itemview-toggled`（失焦选中）——**Kvantum 命名与直觉相反** |
+| 激活 tab | `on_surface` × 0.20 浮起，非激活全透明 | — | `tab-toggled` 族 = 叠加；`tab-normal` 组 `opacity:0` |
 
 白色控件点（开关滑块、滑块圆点）不走 `onPrimary`：它们是固定的 `#FFFFFF` 面 + `knobBorder`（黑 × 0.1）发丝边（§3.5.4，Material 暗色方案的 mOnPrimary 本身是深色，不能借）。GTK 侧是 `switch_knob_color`/`slider_knob_color` + `slider_knob_border_color`；Kvantum 侧由上游主题的滑块元素决定。
 
 ### 8.3 控件几何（GTK 侧）
 
-Qt/Kvantum 的形状与几何由上游 Colloid 提供，本节不再声明其数值；nosDshell 只向它的模板注入颜色。
+Qt/Kvantum 的形状与几何由上游 Colloid 提供，本节不再声明其数值；nosDshell 只向它的模板注入颜色。下表描述仓内 `nosd-gtk-theme` 的自有设计（含 checked=accent 等与 adw-gtk3 基准的分歧点）；线上 GTK 用 adw-gtk3 时几何与状态层均由上游决定，nosd.css 只覆写调色板变量。
 
 | 控件 | 契约 | GTK |
 |---|---|---|
@@ -966,6 +977,6 @@ Qt/Kvantum 的形状与几何由上游 Colloid 提供，本节不再声明其数
 ### 8.4 校验面
 
 - `tools/check-tokens.py`：圆角令牌集合、`[overlay]` α ↔ GTK `*_color` define、`[controls]` 几何 ↔ GTK `min-*` 与 `Style.qml`、Kvantum 模板 `[GeneralColors]` 全角色与 SVG 良构。Kvantum 控件几何由上游主题决定，不再校验。
-- `tools/theme-audit/`：按方案 × 明暗渲染三端控件探针并断言语义色与几何（含按钮/字段/组合/_spin_ 圆角与滚动条端角 ≈ `scroll_width/2`；小圆角端帽全 AA，掩码按离面色/离窗底最近二分）；`showcase` 子命令出 shell 参考列与 GTK4/GTK3/Qt 并排截图，并断言三端滑槽未填充段相对卡面亮一档 `strong`（§8.1 相对叠加），新增对齐项先进断言再进图。
+- `tools/theme-audit/`：按方案 × 明暗渲染三端控件探针并断言语义色与几何。GTK 探针对象 = adw-gtk3（颜色/状态层基准；nosd.css 调色板经 gtk-*.0/gtk.css 叠加），几何断言只对 `nosd*` 自有主题生效（上游几何不属本契约）；Kvantum 探针管全量（palette 角色、叠加梯档面色、accent 跟随、容器面）。`showcase` 子命令出 shell 参考列与 GTK4/GTK3/Qt 并排截图，并断言三端滑槽未填充段相对卡面亮一档 `strong`（§8.1 相对叠加），新增对齐项先进断言再进图。
 - 视觉验收以 showcase 四列对比为准，断言通过不等于观感一致。
 
