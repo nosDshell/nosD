@@ -22,7 +22,7 @@ nav_exclude: true
 
    ⚠️ 一次 push 最多 3 个 tag，超出则全部 workflow 不触发（GitHub 静默丢弃 push 事件）。多组件同发时分批推。
 
-`Scripts/dev/release.sh <X.Y.Z>`（`just release`）把这三步串起来：`[Unreleased]` 为空时先生成带 commit 链接的条目草稿并停下，填好简介后重跑，完成落版、改版号、lint、关于页截图、提交、打 tag 和推送。`--no-push` 只在本地提交并打 tag（CI 因此不会运行），`--skip-verify` 跳过 lint 和关于页截图。
+`Scripts/dev/release.sh <version>`（`just release`）把这三步串起来。版号是点分数字，可有任意多段（当前版本线如 `1.7.7.4`）；`[Unreleased]` 为空时先生成带 commit 链接的条目草稿并停下，填好简介后重跑，完成落版、改版号、lint、关于页截图、提交、打 tag 和推送。`--no-push` 只在本地提交并打 tag（CI 因此不会运行），`--skip-verify` 跳过 lint 和关于页截图。
 
 发版会推送 tag 和 main，只在用户要求时进行。
 
@@ -46,7 +46,7 @@ nav_exclude: true
 
 | 位置 | 字段 | 发版时改成 |
 | --- | --- | --- |
-| `Commons/Version.qml` | `baseVersion` | 新版号（如 `"1.1"`） |
+| `Commons/Version.qml` | `baseVersion` | 新版号（如 `"1.7.7.4"`） |
 | `Commons/Version.qml` | `isDevelopment` | 发版提交里设为 `false`，CI 在 reopen job 里改回 `true` |
 | `tools/*/Cargo.toml` | 各工具的 `version` | 独立版本，按需修改，不跟随 shell 版号 |
 
@@ -74,5 +74,5 @@ nav_exclude: true
 
 ## tag 约定
 
-- 一律用附注 tag，命名为 `nosdshell-v<baseVersion>`（如 `nosdshell-v1.7.7`）。历史 `v*` tag（旧 nosDshell 布局，shell 在仓根）仍有效可引用，但**新 tag 一律带组件前缀**——`v*` 不再触发发布流水线。
+- 一律用附注 tag，命名为 `nosdshell-v<baseVersion>`（如 `nosdshell-v1.7.7.4`）。历史 `v*` tag（旧 nosDshell 布局，shell 在仓根）仍有效可引用，但**新 tag 一律带组件前缀**——`v*` 不再触发发布流水线。
 - tag 推送后不再移动。打错且还没推送时，本地 `git tag -d` 后重打；已推送的错误 tag 用新版号纠正，不删除远端 tag。

@@ -19,7 +19,7 @@
 #   1. If [Unreleased] is empty the script scaffolds a changelog entry — a TODO
 #      intro paragraph plus a commit-linked bullet list grouped by type — then
 #      STOPS. Write the marketing intro, re-run the same command.
-#   2. With a filled [Unreleased] it lands the entry as `## [X.Y.Z] - <date>`,
+#   2. With a filled [Unreleased] it lands the entry as `## [<version>] - <date>`,
 #      bumps the version spot (Commons/Version.qml), lints, shoots the About
 #      page, commits `chore(release):`, tags -a nosdshell-v* and pushes
 #      main+tag.  The tag is what starts the release; everything after it
@@ -40,7 +40,7 @@ for arg in "$@"; do
     *) echo "unknown arg: $arg" >&2; exit 2 ;;
   esac
 done
-[[ "$VER" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "usage: release.sh <X.Y.Z> [--no-push] [--skip-verify]" >&2; exit 2; }
+[[ "$VER" =~ ^[0-9]+(\.[0-9]+)*$ ]] || { echo "usage: release.sh <version> [--no-push] [--skip-verify]" >&2; exit 2; }
 
 PREV=$(grep -oP 'baseVersion:\s*"\K[^"]+' Commons/Version.qml)
 [[ "$PREV" != "$VER" ]] || { echo "$VER is already the baseVersion" >&2; exit 1; }
@@ -118,7 +118,7 @@ src = src.replace("## [Unreleased]\n",
                   f"## [Unreleased]\n\n## [{ver}] - {today}\n", 1)
 
 # Footer links: point Unreleased at the new tag, insert the new compare line.
-# tag 形如 nosdshell-vX.Y.Z（monorepo 组件前缀）。
+# tag 形如 nosdshell-v<version>（monorepo 组件前缀）。
 unrel = re.search(r"^\[Unreleased\]: (\S+)/compare/\S+\.\.\.HEAD$", src, re.M)
 base = unrel.group(1)
 src = src.replace(unrel.group(0), f"[Unreleased]: {base}/compare/nosdshell-v{ver}...HEAD")
@@ -129,7 +129,20 @@ open("CHANGELOG.md", "w", encoding="utf-8").write(src)
 PYEOF
 
 # ---------- version bumps ----------------------------------------------------
-sed -i "s/baseVersion: \"$PREV\"/baseVersion: \"$VER\"/; s/isDevelopment: true/isDevelopment: false/" Commons/Version.qml
+python3 - "$PREV" "$VER" <<'PYEOF'
+import sys
+from pathlib import Path
+
+prev, ver = sys.argv[1:3]
+path = Path("Commons/Version.qml")
+src = path.read_text(encoding="utf-8")
+old = f'baseVersion: "{prev}"'
+if src.count(old) != 1:
+    sys.exit(f"Version.qml: expected exactly one {old!r}")
+src = src.replace(old, f'baseVersion: "{ver}"')
+src = src.replace("isDevelopment: true", "isDevelopment: false")
+path.write_text(src, encoding="utf-8")
+PYEOF
 
 # ---------- verify ------------------------------------------------------------
 if [ $VERIFY -eq 1 ]; then

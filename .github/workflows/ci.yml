@@ -98,6 +98,8 @@ jobs:
           find tools -name "*.py" -print0 | xargs -0 -n1 python3 -m py_compile
       - name: build.py --list
         run: python3 tools/release/build.py --list
+      - name: release script version guard
+        run: python3 tools/release/test_release_script.py
 
   # docs/legacy/ is generated — fail if it drifts from the vendored source
   # or the converter itself (catches both hand edits and stale output).
