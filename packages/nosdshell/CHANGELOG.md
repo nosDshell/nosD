@@ -18,15 +18,15 @@ Kvantum 激活标签页的高亮重新浮现：状态面从与底色相同的实
 
 ### 修复
 
-- 修复激活 tab 高亮消失：[`8ba0403bb`](https://github.com/nosDshell/nosd/commit/8ba0403bb937d6d81655179d0fe7a3a4b17d8dd0)
+- 修复激活 tab 高亮消失：[`523b9b16e`](https://github.com/nosDshell/nosd/commit/523b9b16e)
 
 ### 文档
 
-- 契约基准落档 + 审计重定向到 adw-gtk3：[`5006da726`](https://github.com/nosDshell/nosd/commit/5006da7267533f7e5efe0fdc5bf7f1c61d26b681)
+- 契约基准落档 + 审计重定向到 adw-gtk3：[`ae71a47fa`](https://github.com/nosDshell/nosd/commit/ae71a47fa)
 
 ### 工程
 
-- 发布脚本接受多段点分版号，四段版本线不再被三段校验挡住：[`27d9b5323`](https://github.com/nosDshell/nosd/commit/27d9b53232463536df3b2672bd68bfddebc71d45)
+- 发布脚本接受多段点分版号，四段版本线不再被三段校验挡住：[`61af78b03`](https://github.com/nosDshell/nosd/commit/61af78b03)
 
 ## [1.7.7.3] - 2026-11-17
 
