@@ -10,6 +10,24 @@
 
 ## [Unreleased]
 
+## [1.7.7.4] - 2026-11-21
+
+Kvantum 激活标签页的高亮重新浮现：状态面从与底色相同的实色改为前景叠加，并补上守护这条规则的契约与审计基准。
+
+---
+
+### 修复
+
+- 修复激活 tab 高亮消失：[`8ba0403bb`](https://github.com/nosDshell/nosd/commit/8ba0403bb937d6d81655179d0fe7a3a4b17d8dd0)
+
+### 文档
+
+- 契约基准落档 + 审计重定向到 adw-gtk3：[`5006da726`](https://github.com/nosDshell/nosd/commit/5006da7267533f7e5efe0fdc5bf7f1c61d26b681)
+
+### 工程
+
+- 发布脚本接受多段点分版号，四段版本线不再被三段校验挡住：[`27d9b5323`](https://github.com/nosDshell/nosd/commit/27d9b53232463536df3b2672bd68bfddebc71d45)
+
 ## [1.7.7.3] - 2026-11-17
 
 Kvantum 自动染色与 adw-gtk3 逐像素对齐：控件状态层统一为前景叠加语义，菜单悬停、按钮选中/按下、列表选中态的颜色全部收敛。
@@ -902,7 +920,8 @@ nosDshell 基于 Noctalia v4（Quickshell/QML），保留其全部功能，以 D
 - Guix 打包（`nosdshell.scm`）与 Nix flake（含 home-manager / NixOS 模块）。
 - 运行在上游 Quickshell 0.3.1，另带两个 pipewire UAF 补丁（`packaging/patches/`）。
 
-[Unreleased]: https://github.com/nosDshell/nosD/compare/nosdshell-v1.7.7...HEAD
+[Unreleased]: https://github.com/nosDshell/nosD/compare/nosdshell-v1.7.7.4...HEAD
+[1.7.7.4]: https://github.com/nosDshell/nosD/compare/nosdshell-v1.7.7.3...nosdshell-v1.7.7.4
 [1.7.7]: https://github.com/nosDshell/nosD/compare/v1.7.6.1...nosdshell-v1.7.7
 [1.7.6.1]: https://github.com/nosDshell/nosDshell/compare/v1.7.6...v1.7.6.1
 [1.7.6]: https://github.com/ShineBreaker/nosDshell/compare/v1.7.5...v1.7.6
